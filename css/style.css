@@ -369,15 +369,16 @@ img {
   height: 590px;
 }
 
-/* Decorative offset arch behind the Hero photo */
+/* Soft sage offset arch behind the Hero photo */
 .hero-visual::before {
   content: "";
   position: absolute;
   width: 72%;
   height: 90%;
-  right: calc(7% + 16px);
-  top: calc(3% - 16px);
-  border: 1.5px solid rgba(84, 116, 90, .42);
+  right: calc(7% - 24px);
+  top: calc(3% - 22px);
+  background: rgba(168, 183, 155, .38);
+  border: 0;
   border-radius: 240px 240px 35px 35px;
   pointer-events: none;
   z-index: 0;
@@ -1446,6 +1447,8 @@ img {
 
   .hero-visual::before {
     width: 82%;
+    right: -6px;
+    top: calc(3% - 18px);
   }
 
 
@@ -1574,8 +1577,8 @@ img {
   .hero-visual::before {
     width: 85%;
     height: 95%;
-    right: 12px;
-    top: calc(3% - 12px);
+    right: -14px;
+    top: calc(3% - 14px);
     border-radius: 180px 180px 20px 20px;
   }
 .hero-bottom-text {
