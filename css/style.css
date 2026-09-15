@@ -421,22 +421,6 @@ img {
   border-radius: 50%;
 }
 
-.decoration-one {
-  width: 500px;
-  height: 500px;
-
-  left: -300px;
-  top: 60px;
-}
-
-.decoration-two {
-  width: 220px;
-  height: 220px;
-
-  right: -80px;
-  bottom: -90px;
-}
-
 .hero-bottom-text {
   position: absolute;
 
