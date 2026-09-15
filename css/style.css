@@ -392,18 +392,6 @@ img {
 .hero-image-content {
   display: none;
 
-  position: absolute;
-
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex-direction: column;
-
-  color:
-    rgba(36, 75, 54, .16);
 }
 
 .hero-image-content .small-text {
