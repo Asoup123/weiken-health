@@ -383,20 +383,15 @@ img {
 
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 55% 35%,
-      rgba(255,255,255,.7),
-      transparent 25%
-    ),
-    linear-gradient(
-      145deg,
-      #bdcbae,
-      #e2ddc8
-    );
+  background-image: url("../images/hero-weiken.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero-image-content {
+  display: none;
+
   position: absolute;
 
   inset: 0;
