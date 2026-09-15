@@ -387,53 +387,43 @@ img {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  z-index: 1;
 }
 
-.hero-note {
+
+.hero-big-type {
   position: absolute;
-
+  top: 35px;
   left: 0;
-  bottom: 30px;
-
-  width: 190px;
-  height: 190px;
-
-  padding: 25px;
-
+  z-index: 0;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
-
-  background: var(--yellow);
-
-  border-radius: 50%;
+  color: rgba(36, 75, 54, .10);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(100px, 10vw, 165px);
+  font-weight: 500;
+  line-height: .82;
+  letter-spacing: -.055em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }
 
-.hero-note span {
-  font-size: 11px;
-}
-
-.hero-note p {
-  padding-left: 18px;
-
-  color: var(--forest-deep);
-
-  font-size: 15px;
-  font-weight: 600;
+.hero-big-type span:last-child {
+  margin-top: 30px;
+  margin-left: 80px;
 }
 
 .hero-leaf {
   position: absolute;
-
-  right: -10px;
-  top: 30px;
-
-  color:
-    rgba(36, 75, 54, .35);
-
-  font-size: 75px;
-
-  transform: rotate(25deg);
+  right: -5px;
+  top: 40px;
+  z-index: 2;
+  color: rgba(36, 75, 54, .28);
+  font-size: 58px;
+  transform: rotate(20deg);
+  pointer-events: none;
 }
 
 .hero-decoration {
@@ -1591,20 +1581,7 @@ img {
     border-radius:
       180px 180px 20px 20px;
   }
-
-  .hero-note {
-    width: 145px;
-    height: 145px;
-
-    left: -5px;
-    bottom: -10px;
-  }
-
-  .hero-note p {
-    font-size: 12px;
-  }
-
-  .hero-leaf {
+.hero-leaf {
     display: none;
   }
 
