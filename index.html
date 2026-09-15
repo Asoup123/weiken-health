@@ -11,7 +11,6 @@
     content="威肯健康生活用品館，提供輪椅、助行輔具、沐浴如廁、居家照護與健康生活用品。"
   >
 
-  <!-- 網站 CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -22,80 +21,38 @@
   ========================== -->
   <header class="site-header">
 
-    <div class="header-container">
+    <div class="header-inner">
 
-      <!-- LOGO -->
       <a href="index.html" class="brand">
-        <img
-          src="images/logo.png"
-          alt="威肯健康生活用品館"
-          class="brand-logo"
-        >
+        <img src="images/logo.png" alt="威肯健康生活用品館">
       </a>
 
-      <!-- 電腦版導覽 -->
-      <nav class="main-nav" aria-label="主要導覽">
-        <a href="index.html" class="active">首頁</a>
+      <nav class="desktop-nav">
         <a href="products.html">商品專區</a>
-
-        <div class="nav-dropdown">
-          <button class="nav-dropdown-button" type="button">
-            商品分類
-            <span class="dropdown-arrow">⌄</span>
-          </button>
-
-          <div class="nav-dropdown-menu">
-            <a href="products.html?category=wheelchair">輪椅</a>
-            <a href="products.html?category=walking">助行輔具</a>
-            <a href="products.html?category=bathroom">沐浴如廁</a>
-            <a href="products.html?category=homecare">居家照護</a>
-            <a href="products.html?category=health">健康用品</a>
-            <a href="products.html?category=care">照護用品</a>
-          </div>
-        </div>
-
-        <a href="#about">關於威肯</a>
+        <a href="#category">商品分類</a>
+        <a href="#popular">本月熱門</a>
+        <a href="#life">威肯生活</a>
         <a href="#store">門市資訊</a>
       </nav>
 
-      <!-- 右側搜尋 -->
-      <div class="header-actions">
+      <div class="header-right">
 
-        <form class="header-search" id="headerSearch">
+        <form class="search-box" id="headerSearch">
           <input
-            type="search"
             id="searchInput"
+            type="search"
             placeholder="搜尋商品"
             aria-label="搜尋商品"
           >
 
           <button type="submit" aria-label="搜尋">
-            <svg
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-              aria-hidden="true"
-            >
-              <circle
-                cx="11"
-                cy="11"
-                r="7"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              />
-              <path
-                d="M16.5 16.5L21 21"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
+            <svg viewBox="0 0 24 24">
+              <circle cx="10.8" cy="10.8" r="6.8"></circle>
+              <path d="M16 16L21 21"></path>
             </svg>
           </button>
         </form>
 
-        <!-- 手機版選單 -->
         <button
           class="mobile-menu-button"
           id="mobileMenuButton"
@@ -104,19 +61,17 @@
         >
           <span></span>
           <span></span>
-          <span></span>
         </button>
 
       </div>
 
     </div>
 
-    <!-- 手機版導覽 -->
     <nav class="mobile-nav" id="mobileNav">
-      <a href="index.html">首頁</a>
       <a href="products.html">商品專區</a>
-      <a href="#categories">商品分類</a>
-      <a href="#about">關於威肯</a>
+      <a href="#category">商品分類</a>
+      <a href="#popular">本月熱門</a>
+      <a href="#life">威肯生活</a>
       <a href="#store">門市資訊</a>
     </nav>
 
@@ -130,144 +85,193 @@
     ========================== -->
     <section class="hero">
 
-      <div class="hero-background"></div>
+      <div class="hero-decoration decoration-one"></div>
+      <div class="hero-decoration decoration-two"></div>
 
-      <div class="hero-content">
+      <div class="hero-inner">
 
-        <p class="hero-label">
-          HEALTHY LIFE
-        </p>
+        <div class="hero-copy">
 
-        <h1>
-          讓健康生活，<br>
-          從安心選擇開始。
-        </h1>
+          <div class="eyebrow">
+            WEIKEN · HEALTHY LIFE
+          </div>
 
-        <p class="hero-description">
-          從日常照護到行動輔具，
-          威肯陪你找到更適合生活的選擇。
-        </p>
+          <h1>
+            讓照護，
+            <span>成為生活舒服的一部分。</span>
+          </h1>
 
-        <a href="products.html" class="primary-button">
-          探索商品
-          <span>→</span>
-        </a>
+          <p>
+            不只是找到一件輔具，
+            而是找到更適合自己與家人的生活方式。
+          </p>
 
+          <div class="hero-actions">
+
+            <a href="products.html" class="main-button">
+              開始逛商品
+              <span>↗</span>
+            </a>
+
+            <a href="#category" class="secondary-link">
+              依需求找商品
+              <span>↓</span>
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+          <div class="hero-image-main">
+
+            <div class="hero-image-content">
+              <span class="small-text">WEIKEN</span>
+
+              <strong>
+                HEALTHY<br>
+                LIVING
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="hero-note">
+            <span>01</span>
+
+            <p>
+              日常照護<br>
+              也可以很自然
+            </p>
+          </div>
+
+
+          <div class="hero-leaf">
+            ☘
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="hero-bottom-text">
+        SCROLL TO EXPLORE
+        <span></span>
       </div>
 
     </section>
 
 
+
     <!-- =========================
-         商品分類
+         CATEGORY
     ========================== -->
-    <section class="section categories-section" id="categories">
+    <section class="category-section" id="category">
 
       <div class="section-container">
 
-        <div class="section-heading">
+        <div class="category-heading">
 
           <div>
-            <p class="section-label">CATEGORY</p>
-            <h2>商品分類</h2>
+            <span class="section-number">01</span>
+
+            <p class="section-en">
+              FIND WHAT YOU NEED
+            </p>
+
+            <h2>
+              你正在找什麼？
+            </h2>
           </div>
 
-          <a href="products.html" class="section-link">
-            查看全部商品 →
-          </a>
+          <p class="category-description">
+            從生活需求開始找，
+            比從一大堆商品裡慢慢翻更簡單。
+          </p>
 
         </div>
 
 
-        <div class="category-grid">
+        <div class="category-list">
 
           <a
             href="products.html?category=wheelchair"
-            class="category-card"
+            class="category-item"
           >
-            <div class="category-image">
-              <span>輪椅</span>
+            <div class="category-circle">
+              <span class="category-icon">♿</span>
             </div>
 
-            <div class="category-info">
-              <h3>輪椅</h3>
-              <span>查看商品 →</span>
-            </div>
+            <strong>輪椅</strong>
+            <span class="category-arrow">↗</span>
           </a>
 
 
           <a
             href="products.html?category=walking"
-            class="category-card"
+            class="category-item category-offset"
           >
-            <div class="category-image">
-              <span>助行</span>
+            <div class="category-circle">
+              <span class="category-icon">⌁</span>
             </div>
 
-            <div class="category-info">
-              <h3>助行輔具</h3>
-              <span>查看商品 →</span>
-            </div>
+            <strong>助行輔具</strong>
+            <span class="category-arrow">↗</span>
           </a>
 
 
           <a
-            href="products.html?category=bathroom"
-            class="category-card"
+            href="products.html?category=toilet"
+            class="category-item"
           >
-            <div class="category-image">
-              <span>沐浴如廁</span>
+            <div class="category-circle">
+              <span class="category-icon">○</span>
             </div>
 
-            <div class="category-info">
-              <h3>沐浴如廁</h3>
-              <span>查看商品 →</span>
+            <strong>如廁用品</strong>
+            <span class="category-arrow">↗</span>
+          </a>
+
+
+          <a
+            href="products.html?category=bath"
+            class="category-item category-offset"
+          >
+            <div class="category-circle">
+              <span class="category-icon">♨</span>
             </div>
+
+            <strong>沐浴用品</strong>
+            <span class="category-arrow">↗</span>
           </a>
 
 
           <a
             href="products.html?category=homecare"
-            class="category-card"
+            class="category-item"
           >
-            <div class="category-image">
-              <span>居家照護</span>
+            <div class="category-circle">
+              <span class="category-icon">⌂</span>
             </div>
 
-            <div class="category-info">
-              <h3>居家照護</h3>
-              <span>查看商品 →</span>
-            </div>
+            <strong>居家照護</strong>
+            <span class="category-arrow">↗</span>
           </a>
 
 
           <a
-            href="products.html?category=health"
-            class="category-card"
+            href="products.html"
+            class="category-item category-offset"
           >
-            <div class="category-image">
-              <span>健康</span>
+            <div class="category-circle category-all">
+              <span class="category-icon">＋</span>
             </div>
 
-            <div class="category-info">
-              <h3>健康用品</h3>
-              <span>查看商品 →</span>
-            </div>
-          </a>
-
-
-          <a
-            href="products.html?category=care"
-            class="category-card"
-          >
-            <div class="category-image">
-              <span>照護</span>
-            </div>
-
-            <div class="category-info">
-              <h3>照護用品</h3>
-              <span>查看商品 →</span>
-            </div>
+            <strong>全部商品</strong>
+            <span class="category-arrow">↗</span>
           </a>
 
         </div>
@@ -277,105 +281,99 @@
     </section>
 
 
+
     <!-- =========================
-         熱門商品
+         POPULAR
     ========================== -->
-    <section class="section popular-section">
+    <section class="popular-section" id="popular">
 
       <div class="section-container">
 
-        <div class="section-heading">
+        <div class="popular-heading">
 
           <div>
-            <p class="section-label">POPULAR</p>
-            <h2>熱門商品</h2>
+            <span class="section-number">02</span>
+            <p class="section-en">WEIKEN SELECT</p>
+            <h2>最近大家都在看</h2>
           </div>
 
-          <a href="products.html" class="section-link">
-            查看更多 →
+          <a href="products.html" class="view-all">
+            查看全部商品
+            <span>↗</span>
           </a>
 
         </div>
 
 
-        <div class="product-grid">
+        <div class="editorial-products">
 
-          <!-- 之後再把真正商品放進來 -->
+          <!-- 商品 1 -->
+          <a href="#" class="editorial-product product-large">
 
-          <article class="product-card">
+            <div class="product-photo">
+              <span>商品圖片</span>
 
-            <a href="#" class="product-image">
-              <div class="product-placeholder">
-                商品圖片
+              <div class="product-index">
+                01
               </div>
-            </a>
-
-            <div class="product-info">
-              <span class="product-category">輪椅</span>
-              <h3>熱門商品名稱</h3>
-              <a href="#" class="product-more">
-                查看商品 →
-              </a>
             </div>
 
-          </article>
-
-
-          <article class="product-card">
-
-            <a href="#" class="product-image">
-              <div class="product-placeholder">
-                商品圖片
+            <div class="product-copy">
+              <div>
+                <span>輪椅系列</span>
+                <h3>熱門商品名稱</h3>
               </div>
-            </a>
 
-            <div class="product-info">
-              <span class="product-category">助行輔具</span>
-              <h3>熱門商品名稱</h3>
-              <a href="#" class="product-more">
-                查看商品 →
-              </a>
+              <span class="round-arrow">↗</span>
             </div>
 
-          </article>
+          </a>
 
 
-          <article class="product-card">
+          <!-- 商品 2 -->
+          <a href="#" class="editorial-product product-small">
 
-            <a href="#" class="product-image">
-              <div class="product-placeholder">
-                商品圖片
+            <div class="product-photo product-photo-alt">
+              <span>商品圖片</span>
+
+              <div class="product-index">
+                02
               </div>
-            </a>
-
-            <div class="product-info">
-              <span class="product-category">沐浴如廁</span>
-              <h3>熱門商品名稱</h3>
-              <a href="#" class="product-more">
-                查看商品 →
-              </a>
             </div>
 
-          </article>
-
-
-          <article class="product-card">
-
-            <a href="#" class="product-image">
-              <div class="product-placeholder">
-                商品圖片
+            <div class="product-copy">
+              <div>
+                <span>居家照護</span>
+                <h3>熱門商品名稱</h3>
               </div>
-            </a>
 
-            <div class="product-info">
-              <span class="product-category">居家照護</span>
-              <h3>熱門商品名稱</h3>
-              <a href="#" class="product-more">
-                查看商品 →
-              </a>
+              <span class="round-arrow">↗</span>
             </div>
 
-          </article>
+          </a>
+
+
+          <!-- 商品 3 -->
+          <a href="#" class="editorial-product product-small">
+
+            <div class="product-photo product-photo-third">
+              <span>商品圖片</span>
+
+              <div class="product-index">
+                03
+              </div>
+            </div>
+
+            <div class="product-copy">
+              <div>
+                <span>助行輔具</span>
+                <h3>熱門商品名稱</h3>
+              </div>
+
+              <span class="round-arrow">↗</span>
+            </div>
+
+          </a>
 
         </div>
 
@@ -384,69 +382,81 @@
     </section>
 
 
+
     <!-- =========================
-         YouTube / 資訊
+         WEIKEN LIFE / YOUTUBE
     ========================== -->
-    <section class="section media-section">
+    <section class="life-section" id="life">
+
+      <div class="life-title">
+
+        <span>WEIKEN</span>
+        <span class="life-title-light">LIFE</span>
+
+      </div>
+
 
       <div class="section-container">
 
-        <div class="section-heading">
+        <div class="life-grid">
 
-          <div>
-            <p class="section-label">WEIKEN VIDEO</p>
-            <h2>威肯影音</h2>
-          </div>
+          <div class="life-copy">
 
-        </div>
+            <span class="section-number light-number">
+              03
+            </span>
 
-
-        <div class="media-layout">
-
-          <!-- YouTube -->
-          <div class="youtube-area">
-
-            <div class="youtube-placeholder">
-
-              <div class="youtube-play">
-                ▶
-              </div>
-
-              <p>
-                YouTube 影片將放在這裡
-              </p>
-
-            </div>
-
-            <!--
-              之後有 YouTube 影片網址後，
-              這裡會改成 iframe。
-            -->
-
-          </div>
-
-
-          <!-- 右側內容 -->
-          <div class="media-content">
-
-            <p class="section-label">
+            <p class="section-en light-en">
               HEALTHY LIFE
             </p>
 
-            <h3>
-              陪你一起，
-              找到更適合的照護方式。
-            </h3>
+            <h2>
+              照護不只是器材，
+              <span>也是每天生活的一部分。</span>
+            </h2>
 
-            <p>
-              威肯提供多元健康生活用品與輔具，
-              從日常行動、居家照護到沐浴如廁，
-              讓需要的商品更容易找到。
+            <p class="life-description">
+              從怎麼挑選，到怎麼使用。
+              威肯希望用更簡單的方式，
+              陪你了解真正適合自己的商品。
             </p>
 
-            <a href="products.html" class="text-button">
-              前往商品專區 →
+            <a href="#" class="life-link">
+              前往 YouTube
+              <span>↗</span>
             </a>
+
+          </div>
+
+
+          <div class="video-block">
+
+            <div class="video-placeholder">
+
+              <div class="video-top">
+                <span>WEIKEN VIDEO</span>
+                <span>2026</span>
+              </div>
+
+              <button
+                class="play-button"
+                type="button"
+                aria-label="播放影片"
+              >
+                ▶
+              </button>
+
+              <div class="video-bottom">
+                <strong>
+                  日常照護，從了解開始。
+                </strong>
+
+                <span>
+                  WATCH VIDEO ↗
+                </span>
+              </div>
+
+            </div>
 
           </div>
 
@@ -457,40 +467,49 @@
     </section>
 
 
+
     <!-- =========================
-         ABOUT
+         BRAND MESSAGE
     ========================== -->
-    <section class="about-section" id="about">
+    <section class="brand-message">
 
       <div class="section-container">
 
-        <div class="about-layout">
+        <div class="brand-message-grid">
 
-          <div class="about-logo-area">
-
+          <div class="brand-message-logo">
             <img
               src="images/logo.png"
               alt="威肯健康生活用品館"
             >
-
           </div>
 
 
-          <div class="about-content">
+          <div class="brand-message-copy">
 
-            <p class="section-label">
-              ABOUT WEIKEN
+            <p>
+              我們相信，
             </p>
 
             <h2>
-              威肯健康生活用品館
+              好的照護用品，
+              不該讓生活看起來更像醫院。
             </h2>
 
-            <p>
-              提供多元健康生活用品、行動輔具與居家照護用品，
-              希望透過更清楚的商品資訊與便利的諮詢方式，
-              協助每一位顧客找到適合自己的生活選擇。
-            </p>
+            <div class="brand-message-bottom">
+
+              <p>
+                威肯健康生活用品館
+                希望從實用、安全與生活感之間，
+                找到更舒服的平衡。
+              </p>
+
+              <a href="#" class="about-link">
+                關於威肯
+                <span>↗</span>
+              </a>
+
+            </div>
 
           </div>
 
@@ -501,56 +520,62 @@
     </section>
 
 
+
     <!-- =========================
-         門市資訊
+         STORE / CONTACT
     ========================== -->
     <section class="store-section" id="store">
 
       <div class="section-container">
 
-        <div class="store-layout">
+        <div class="store-top">
 
-          <div class="store-heading">
-
-            <p class="section-label">
-              STORE
-            </p>
+          <div>
+            <span class="section-number">04</span>
+            <p class="section-en">COME SAY HELLO</p>
 
             <h2>
-              威肯門市
+              有問題，來找我們。
             </h2>
-
-            <p>
-              商品相關問題、尺寸選擇或使用需求，
-              歡迎透過 LINE 或至門市洽詢。
-            </p>
-
           </div>
 
 
-          <div class="store-info">
+          <a href="#" class="big-line-button">
 
-            <div class="store-info-item">
-              <span class="store-info-label">
-                ADDRESS
+            <div>
+              <span class="line-small">
+                QUICK CONTACT
               </span>
-              <p>門市地址之後填入</p>
+
+              <strong>
+                LINE 詢問我們
+              </strong>
             </div>
 
-            <div class="store-info-item">
-              <span class="store-info-label">
-                TEL
-              </span>
-              <p>門市電話之後填入</p>
-            </div>
+            <span class="line-big-arrow">
+              ↗
+            </span>
 
-            <div class="store-info-item">
-              <span class="store-info-label">
-                OPEN
-              </span>
-              <p>營業時間之後填入</p>
-            </div>
+          </a>
 
+        </div>
+
+
+        <div class="store-details">
+
+          <div class="store-detail">
+            <span>ADDRESS</span>
+            <p>門市地址之後填入</p>
+          </div>
+
+          <div class="store-detail">
+            <span>PHONE</span>
+            <p>門市電話之後填入</p>
+          </div>
+
+          <div class="store-detail">
+            <span>OPEN</span>
+            <p>營業時間之後填入</p>
           </div>
 
         </div>
@@ -562,12 +587,13 @@
   </main>
 
 
+
   <!-- =========================
        FOOTER
   ========================== -->
   <footer class="site-footer">
 
-    <div class="footer-container">
+    <div class="footer-main">
 
       <div class="footer-brand">
 
@@ -577,18 +603,48 @@
         >
 
         <p>
-          威肯健康生活用品館
+          讓健康生活，
+          從安心選擇開始。
         </p>
 
       </div>
 
 
-      <div class="footer-links">
-        <a href="index.html">首頁</a>
-        <a href="products.html">商品專區</a>
-        <a href="#categories">商品分類</a>
-        <a href="#about">關於威肯</a>
-        <a href="#store">門市資訊</a>
+      <div class="footer-nav">
+
+        <div>
+          <span>SHOP</span>
+
+          <a href="products.html">
+            商品專區
+          </a>
+
+          <a href="#category">
+            商品分類
+          </a>
+
+          <a href="#popular">
+            熱門商品
+          </a>
+        </div>
+
+
+        <div>
+          <span>WEIKEN</span>
+
+          <a href="#life">
+            威肯生活
+          </a>
+
+          <a href="#store">
+            門市資訊
+          </a>
+
+          <a href="#">
+            關於威肯
+          </a>
+        </div>
+
       </div>
 
     </div>
@@ -596,35 +652,40 @@
 
     <div class="footer-bottom">
 
-      <p>
-        © 2026 威肯健康生活用品館 All Rights Reserved.
-      </p>
+      <span>
+        © 2026 WEIKEN HEALTHY LIFE
+      </span>
+
+      <span>
+        威肯健康生活用品館
+      </span>
 
     </div>
 
   </footer>
 
 
+
   <!-- =========================
-       固定 LINE 按鈕
+       浮動 LINE
   ========================== -->
   <a
     href="#"
-    class="floating-line"
+    class="floating-contact"
     id="floatingLine"
-    aria-label="LINE 諮詢"
   >
-    <span class="line-text">
-      LINE
+    <span class="floating-dot"></span>
+
+    <span class="floating-text">
+      LINE 諮詢
     </span>
 
-    <span class="line-tooltip">
-      LINE 諮詢
+    <span class="floating-arrow">
+      ↗
     </span>
   </a>
 
 
-  <!-- 網站 JS -->
   <script src="js/main.js"></script>
 
 </body>
