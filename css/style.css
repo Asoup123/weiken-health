@@ -369,6 +369,25 @@ img {
   height: 590px;
 }
 
+/* Decorative offset arch behind the Hero photo */
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  width: 72%;
+  height: 90%;
+  right: calc(7% + 16px);
+  top: calc(3% - 16px);
+  border: 1.5px solid rgba(84, 116, 90, .42);
+  border-radius: 240px 240px 35px 35px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hide the previous HEALTHY LIFE background typography if it remains in HTML */
+.hero-big-type {
+  display: none;
+}
+
 .hero-image-main {
   position: absolute;
 
@@ -391,40 +410,6 @@ img {
   z-index: 1;
 }
 
-
-.hero-big-type {
-  position: absolute;
-  top: -35px;
-  left: -55px;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  color: rgba(36, 75, 54, .07);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(100px, 10vw, 165px);
-  font-weight: 500;
-  line-height: .82;
-  letter-spacing: -.055em;
-  white-space: nowrap;
-  pointer-events: none;
-  user-select: none;
-}
-
-.hero-big-type span:last-child {
-  margin-top: 300px;
-  margin-left: 150px;
-}
-
-.hero-leaf {
-  position: absolute;
-  right: -5px;
-  top: 40px;
-  z-index: 2;
-  color: rgba(36, 75, 54, .28);
-  font-size: 58px;
-  transform: rotate(20deg);
-  pointer-events: none;
-}
 
 .hero-decoration {
   position: absolute;
@@ -1459,6 +1444,10 @@ img {
     width: 82%;
   }
 
+  .hero-visual::before {
+    width: 82%;
+  }
+
 
   .category-list {
     grid-template-columns:
@@ -1581,11 +1570,15 @@ img {
     border-radius:
       180px 180px 20px 20px;
   }
-.hero-leaf {
-    display: none;
-  }
 
-  .hero-bottom-text {
+  .hero-visual::before {
+    width: 85%;
+    height: 95%;
+    right: 12px;
+    top: calc(3% - 12px);
+    border-radius: 180px 180px 20px 20px;
+  }
+.hero-bottom-text {
     display: none;
   }
 
