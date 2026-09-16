@@ -1,196 +1,118 @@
-/* =========================================================
-   威肯健康生活用品館
-   Main JavaScript
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* =====================================================
-     手機版選單
-  ===================================================== */
-
   const mobileMenuButton = document.getElementById("mobileMenuButton");
   const mobileNav = document.getElementById("mobileNav");
 
   if (mobileMenuButton && mobileNav) {
-
     mobileMenuButton.addEventListener("click", () => {
-
       mobileNav.classList.toggle("open");
-
       const isOpen = mobileNav.classList.contains("open");
-
-      mobileMenuButton.setAttribute(
-        "aria-expanded",
-        isOpen ? "true" : "false"
-      );
-
+      mobileMenuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-
-    /* 點擊手機選單連結後，自動收起選單 */
-
-    const mobileLinks = mobileNav.querySelectorAll("a");
-
-    mobileLinks.forEach((link) => {
-
+    mobileNav.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
-
         mobileNav.classList.remove("open");
-
-        mobileMenuButton.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-
+        mobileMenuButton.setAttribute("aria-expanded", "false");
       });
-
     });
-
   }
-
-
-
-  /* =====================================================
-     商品搜尋
-  ===================================================== */
 
   const headerSearch = document.getElementById("headerSearch");
   const searchInput = document.getElementById("searchInput");
 
   if (headerSearch && searchInput) {
-
     headerSearch.addEventListener("submit", (event) => {
-
       event.preventDefault();
-
       const keyword = searchInput.value.trim();
-
-      /* 沒輸入內容就不搜尋 */
-
       if (!keyword) {
-
         searchInput.focus();
-
         return;
-
       }
-
-
-      /*
-        之後商品專區 products.html 建立完成後，
-        搜尋關鍵字會傳到商品頁。
-
-        例如搜尋：
-        輪椅
-
-        網址會變成：
-        products.html?search=輪椅
-      */
-
-      window.location.href =
-        "products.html?search=" +
-        encodeURIComponent(keyword);
-
+      window.location.href = "products.html?search=" + encodeURIComponent(keyword);
     });
-
   }
-
-
-
-  /* =====================================================
-     LINE
-  ===================================================== */
 
   const floatingLine = document.getElementById("floatingLine");
-
   if (floatingLine) {
-
     floatingLine.addEventListener("click", (event) => {
-
-      /*
-        LINE 官方帳號網址還沒設定。
-
-        等你之後提供威肯的 LINE 連結，
-        我們會直接放進 index.html。
-
-        現階段避免按下去跳回頁面頂端。
-      */
-
       const href = floatingLine.getAttribute("href");
-
-      if (!href || href === "#") {
-
-        event.preventDefault();
-
-      }
-
+      if (!href || href === "#") event.preventDefault();
     });
-
   }
 
-
-
-  /* =====================================================
-     點擊頁面其他地方時關閉手機選單
-  ===================================================== */
-
   document.addEventListener("click", (event) => {
+    if (!mobileNav || !mobileMenuButton) return;
+    if (!mobileNav.classList.contains("open")) return;
 
-    if (!mobileNav || !mobileMenuButton) {
-      return;
-    }
-
-    if (!mobileNav.classList.contains("open")) {
-      return;
-    }
-
-    const clickedInsideNav =
-      mobileNav.contains(event.target);
-
-    const clickedMenuButton =
-      mobileMenuButton.contains(event.target);
+    const clickedInsideNav = mobileNav.contains(event.target);
+    const clickedMenuButton = mobileMenuButton.contains(event.target);
 
     if (!clickedInsideNav && !clickedMenuButton) {
-
       mobileNav.classList.remove("open");
-
-      mobileMenuButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
+      mobileMenuButton.setAttribute("aria-expanded", "false");
     }
-
   });
-
-
-
-  /* =====================================================
-     ESC 關閉手機選單
-  ===================================================== */
 
   document.addEventListener("keydown", (event) => {
-
-    if (event.key !== "Escape") {
-      return;
-    }
-
-    if (mobileNav) {
-
-      mobileNav.classList.remove("open");
-
-    }
-
-    if (mobileMenuButton) {
-
-      mobileMenuButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
-    }
-
+    if (event.key !== "Escape") return;
+    if (mobileNav) mobileNav.classList.remove("open");
+    if (mobileMenuButton) mobileMenuButton.setAttribute("aria-expanded", "false");
   });
 
+  // =========================================================
+  // 熱門商品：一次顯示一個，可左右切換、圓點切換、手機滑動
+  // =========================================================
+  const carousel = document.getElementById("popularCarousel");
+
+  if (carousel) {
+    const track = carousel.querySelector(".popular-track");
+    const slides = Array.from(carousel.querySelectorAll(".popular-slide"));
+    const prevButton = carousel.querySelector(".popular-prev");
+    const nextButton = carousel.querySelector(".popular-next");
+    const dots = Array.from(carousel.querySelectorAll(".popular-dot"));
+
+    let currentIndex = 0;
+    let startX = 0;
+    let endX = 0;
+
+    const goToSlide = (index) => {
+      if (!slides.length) return;
+      currentIndex = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("is-active", i === currentIndex);
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("is-active", i === currentIndex);
+        dot.setAttribute("aria-current", i === currentIndex ? "true" : "false");
+      });
+    };
+
+    if (prevButton) {
+      prevButton.addEventListener("click", () => goToSlide(currentIndex - 1));
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener("click", () => goToSlide(currentIndex + 1));
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => goToSlide(index));
+    });
+
+    carousel.addEventListener("touchstart", (event) => {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+
+    carousel.addEventListener("touchend", (event) => {
+      endX = event.changedTouches[0].clientX;
+      const distance = startX - endX;
+      if (Math.abs(distance) < 45) return;
+      goToSlide(distance > 0 ? currentIndex + 1 : currentIndex - 1);
+    }, { passive: true });
+
+    goToSlide(0);
+  }
 });
