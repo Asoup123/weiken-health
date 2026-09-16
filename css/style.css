@@ -1101,96 +1101,84 @@ img {
 ========================================================= */
 
 .site-footer {
-  padding:
-    80px 5% 25px;
-
+  padding: 46px 5% 22px;
   background: var(--forest-deep);
-
   color: white;
 }
 
 .footer-main {
   max-width: 1400px;
-
   margin: auto;
-
-  display: flex;
-  justify-content: space-between;
-
-  padding-bottom: 80px;
+  display: grid;
+  grid-template-columns: .8fr .8fr 1.8fr;
+  gap: 70px;
+  padding-bottom: 42px;
 }
 
-.footer-brand img {
-  width: 110px;
-
-  margin-bottom: 25px;
-}
-
-.footer-brand p {
-  color:
-    rgba(255,255,255,.55);
-
-  font-size: 13px;
-}
-
-.footer-nav {
-  display: flex;
-
-  gap: 100px;
-}
-
-.footer-nav > div {
-  min-width: 120px;
-
+.footer-column {
   display: flex;
   flex-direction: column;
-
-  gap: 12px;
+  align-items: flex-start;
+  gap: 11px;
 }
 
-.footer-nav span {
-  margin-bottom: 10px;
-
-  color:
-    rgba(255,255,255,.4);
-
+.footer-label {
+  margin-bottom: 8px;
+  color: rgba(255,255,255,.42);
   font-size: 9px;
-
+  font-weight: 700;
   letter-spacing: .2em;
 }
 
-.footer-nav a {
-  color:
-    rgba(255,255,255,.75);
-
+.footer-column a {
+  color: rgba(255,255,255,.76);
   font-size: 13px;
 }
 
-.footer-nav a:hover {
+.footer-column a:hover {
   color: white;
+}
+
+.footer-stores {
+  padding-left: 28px;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+.footer-phone {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.footer-store + .footer-store {
+  margin-top: 8px;
+}
+
+.footer-store strong {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(255,255,255,.9);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.footer-store p {
+  margin: 2px 0;
+  color: rgba(255,255,255,.55);
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 .footer-bottom {
   max-width: 1400px;
-
   margin: auto;
-
-  padding-top: 22px;
-
+  padding-top: 18px;
   display: flex;
   justify-content: space-between;
-
-  border-top:
-    1px solid rgba(255,255,255,.12);
-
-  color:
-    rgba(255,255,255,.35);
-
+  border-top: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.35);
   font-size: 9px;
-
   letter-spacing: .08em;
 }
-
 
 /* =========================================================
    FLOATING LINE
@@ -1634,29 +1622,26 @@ img {
   /* FOOTER */
 
   .site-footer {
-    padding:
-      65px 25px 20px;
+    padding: 42px 25px 20px;
   }
 
   .footer-main {
-    align-items: flex-start;
-    flex-direction: column;
-
-    gap: 55px;
-
-    padding-bottom: 55px;
+    grid-template-columns: 1fr 1fr;
+    gap: 38px 28px;
+    padding-bottom: 38px;
   }
 
-  .footer-nav {
-    width: 100%;
-
-    gap: 40px;
+  .footer-stores {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    padding-top: 28px;
+    border-left: 0;
+    border-top: 1px solid rgba(255,255,255,.12);
   }
 
   .footer-bottom {
     align-items: flex-start;
     flex-direction: column;
-
     gap: 8px;
   }
 
@@ -1681,75 +1666,3 @@ img {
 /* Popular carousel responsive */
 @media (max-width:1050px){ .popular-slide-visual{height:500px;} .popular-nav{top:230px;} }
 @media (max-width:700px){ .popular-section{padding:90px 0;} .popular-heading{align-items:flex-start;flex-direction:column;gap:30px;margin-bottom:42px;} .popular-viewport{border-radius:4px 70px 4px 4px;} .popular-slide-visual{height:390px;} .popular-nav{top:174px;width:44px;height:44px;font-size:17px;} .popular-prev{left:12px;} .popular-next{right:12px;} .popular-slide-info h3{font-size:18px;} .popular-slide-arrow{width:42px;height:42px;} }
-
-
-/* =========================================================
-   AD BANNER CAROUSEL — 純廣告輪播
-========================================================= */
-.ad-banner-section {
-  padding: 72px 0;
-  background: #e7e1d4;
-}
-
-.ad-banner-carousel {
-  position: relative;
-}
-
-.ad-banner-viewport {
-  overflow: hidden;
-  border-radius: 5px 120px 5px 5px;
-}
-
-.ad-banner-slide {
-  min-width: 100%;
-  display: block;
-}
-
-.ad-banner-slide .popular-slide-visual {
-  height: clamp(420px, 40vw, 620px);
-}
-
-.ad-banner-carousel .popular-nav {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.ad-banner-carousel .popular-prev { left: 24px; }
-.ad-banner-carousel .popular-next { right: 24px; }
-
-/* 圓點放在廣告框內 */
-.ad-banner-carousel .popular-dots {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 9px 13px;
-  display: flex;
-  gap: 9px;
-  border-radius: 999px;
-  background: rgba(250, 248, 241, .78);
-  backdrop-filter: blur(8px);
-}
-
-.ad-banner-carousel .popular-dot {
-  width: 7px;
-  height: 7px;
-  background: rgba(36, 75, 54, .28);
-}
-
-.ad-banner-carousel .popular-dot.is-active {
-  width: 26px;
-  background: var(--forest);
-}
-
-@media (max-width: 700px) {
-  .ad-banner-section { padding: 42px 0; }
-  .ad-banner-viewport { border-radius: 4px 70px 4px 4px; }
-  .ad-banner-slide .popular-slide-visual { height: 58vw; min-height: 250px; }
-  .ad-banner-carousel .popular-nav { width: 44px; height: 44px; font-size: 17px; }
-  .ad-banner-carousel .popular-prev { left: 12px; }
-  .ad-banner-carousel .popular-next { right: 12px; }
-  .ad-banner-carousel .popular-dots { bottom: 14px; }
-}
