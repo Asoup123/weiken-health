@@ -1681,3 +1681,75 @@ img {
 /* Popular carousel responsive */
 @media (max-width:1050px){ .popular-slide-visual{height:500px;} .popular-nav{top:230px;} }
 @media (max-width:700px){ .popular-section{padding:90px 0;} .popular-heading{align-items:flex-start;flex-direction:column;gap:30px;margin-bottom:42px;} .popular-viewport{border-radius:4px 70px 4px 4px;} .popular-slide-visual{height:390px;} .popular-nav{top:174px;width:44px;height:44px;font-size:17px;} .popular-prev{left:12px;} .popular-next{right:12px;} .popular-slide-info h3{font-size:18px;} .popular-slide-arrow{width:42px;height:42px;} }
+
+
+/* =========================================================
+   AD BANNER CAROUSEL — 純廣告輪播
+========================================================= */
+.ad-banner-section {
+  padding: 72px 0;
+  background: #e7e1d4;
+}
+
+.ad-banner-carousel {
+  position: relative;
+}
+
+.ad-banner-viewport {
+  overflow: hidden;
+  border-radius: 5px 120px 5px 5px;
+}
+
+.ad-banner-slide {
+  min-width: 100%;
+  display: block;
+}
+
+.ad-banner-slide .popular-slide-visual {
+  height: clamp(420px, 40vw, 620px);
+}
+
+.ad-banner-carousel .popular-nav {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ad-banner-carousel .popular-prev { left: 24px; }
+.ad-banner-carousel .popular-next { right: 24px; }
+
+/* 圓點放在廣告框內 */
+.ad-banner-carousel .popular-dots {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 9px 13px;
+  display: flex;
+  gap: 9px;
+  border-radius: 999px;
+  background: rgba(250, 248, 241, .78);
+  backdrop-filter: blur(8px);
+}
+
+.ad-banner-carousel .popular-dot {
+  width: 7px;
+  height: 7px;
+  background: rgba(36, 75, 54, .28);
+}
+
+.ad-banner-carousel .popular-dot.is-active {
+  width: 26px;
+  background: var(--forest);
+}
+
+@media (max-width: 700px) {
+  .ad-banner-section { padding: 42px 0; }
+  .ad-banner-viewport { border-radius: 4px 70px 4px 4px; }
+  .ad-banner-slide .popular-slide-visual { height: 58vw; min-height: 250px; }
+  .ad-banner-carousel .popular-nav { width: 44px; height: 44px; font-size: 17px; }
+  .ad-banner-carousel .popular-prev { left: 12px; }
+  .ad-banner-carousel .popular-next { right: 12px; }
+  .ad-banner-carousel .popular-dots { bottom: 14px; }
+}
