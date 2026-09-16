@@ -421,6 +421,22 @@ img {
   border-radius: 50%;
 }
 
+.decoration-one {
+  width: 500px;
+  height: 500px;
+
+  left: -300px;
+  top: 60px;
+}
+
+.decoration-two {
+  width: 220px;
+  height: 220px;
+
+  right: -80px;
+  bottom: -90px;
+}
+
 .hero-bottom-text {
   position: absolute;
 
@@ -632,157 +648,32 @@ img {
 /* =========================================================
    POPULAR
 ========================================================= */
-
-.popular-section {
-  padding: 140px 0;
-
-  background: #e7e1d4;
-}
-
-.popular-heading {
-  margin-bottom: 65px;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.view-all {
-  padding-bottom: 8px;
-
-  display: flex;
-
-  gap: 25px;
-
-  border-bottom:
-    1px solid rgba(36, 75, 54, .3);
-
-  color: var(--forest);
-
-  font-size: 13px;
-}
-
-
-/* PRODUCT EDITORIAL */
-
-.editorial-products {
-  display: grid;
-
-  grid-template-columns:
-    1.25fr .75fr .75fr;
-
-  align-items: end;
-
-  gap: 24px;
-}
-
-.product-photo {
-  position: relative;
-
-  height: 500px;
-
-  display: grid;
-  place-items: center;
-
-  overflow: hidden;
-
-  background:
-    linear-gradient(
-      145deg,
-      #d0d9c9,
-      #f0ecdf
-    );
-
-  border-radius:
-    4px 90px 4px 4px;
-}
-
-.product-small .product-photo {
-  height: 390px;
-}
-
-.product-photo-alt {
-  background:
-    linear-gradient(
-      145deg,
-      #eee6d6,
-      #d9ddcf
-    );
-}
-
-.product-photo-third {
-  background:
-    linear-gradient(
-      145deg,
-      #d7dfd2,
-      #e9e1d2
-    );
-}
-
-.product-photo > span {
-  color:
-    rgba(36, 75, 54, .28);
-
-  font-size: 14px;
-
-  letter-spacing: .1em;
-}
-
-.product-index {
-  position: absolute;
-
-  left: 20px;
-  top: 18px;
-
-  font-size: 10px;
-
-  letter-spacing: .1em;
-}
-
-.product-copy {
-  padding: 20px 2px 0;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.product-copy > div > span {
-  color: var(--green);
-
-  font-size: 10px;
-}
-
-.product-copy h3 {
-  margin-top: 3px;
-
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.round-arrow {
-  width: 42px;
-  height: 42px;
-
-  display: grid;
-  place-items: center;
-
-  border:
-    1px solid rgba(36, 75, 54, .3);
-
-  border-radius: 50%;
-
-  transition: .3s;
-}
-
-.editorial-product:hover .round-arrow {
-  background: var(--forest);
-
-  color: white;
-
-  transform: rotate(45deg);
-}
-
+.popular-section { padding: 140px 0; background: #e7e1d4; }
+.popular-heading { margin-bottom: 58px; display:flex; align-items:flex-end; justify-content:space-between; }
+.view-all { padding-bottom:8px; display:flex; gap:25px; border-bottom:1px solid rgba(36,75,54,.3); color:var(--forest); font-size:13px; }
+.popular-carousel { position:relative; }
+.popular-viewport { overflow:hidden; border-radius:5px 120px 5px 5px; }
+.popular-track { display:flex; transition:transform .65s cubic-bezier(.22,.61,.36,1); will-change:transform; }
+.popular-slide { min-width:100%; color:var(--forest); }
+.popular-slide-visual { position:relative; height:560px; display:grid; place-items:center; overflow:hidden; background-size:cover; background-position:center; }
+.popular-visual-1 { background:linear-gradient(135deg,#cbd6c4 0%,#eef0e7 55%,#e2d8c6 100%); }
+.popular-visual-2 { background:linear-gradient(135deg,#e7dfcf 0%,#d7dfd1 55%,#c7d2bf 100%); }
+.popular-visual-3 { background:linear-gradient(135deg,#d3ddd0 0%,#ece6d9 55%,#c8d4c1 100%); }
+.popular-visual-4 { background:linear-gradient(135deg,#e9e0d0 0%,#d9e0d3 55%,#e8e4d9 100%); }
+.popular-index { position:absolute; left:28px; top:25px; font-size:11px; letter-spacing:.12em; }
+.popular-image-placeholder { color:rgba(36,75,54,.28); font-size:16px; letter-spacing:.12em; }
+.popular-slide-info { padding:22px 4px 0; display:flex; align-items:center; justify-content:space-between; }
+.popular-category { color:var(--green); font-size:11px; letter-spacing:.05em; }
+.popular-slide-info h3 { margin-top:4px; font-size:20px; font-weight:500; }
+.popular-slide-arrow { width:48px; height:48px; display:grid; place-items:center; border:1px solid rgba(36,75,54,.3); border-radius:50%; transition:.25s ease; }
+.popular-slide:hover .popular-slide-arrow { background:var(--forest); color:var(--white); transform:rotate(45deg); }
+.popular-nav { position:absolute; top:260px; z-index:5; width:54px; height:54px; display:grid; place-items:center; border:0; border-radius:50%; background:rgba(250,248,241,.94); color:var(--forest); font-size:20px; box-shadow:0 10px 30px rgba(24,53,38,.10); cursor:pointer; transition:.25s ease; }
+.popular-nav:hover { background:var(--forest); color:var(--white); }
+.popular-prev { left:24px; }
+.popular-next { right:24px; }
+.popular-dots { margin-top:32px; display:flex; justify-content:center; gap:10px; }
+.popular-dot { width:7px; height:7px; padding:0; border:0; border-radius:50%; background:rgba(36,75,54,.25); cursor:pointer; transition:.25s ease; }
+.popular-dot.is-active { width:28px; border-radius:999px; background:var(--forest); }
 
 /* =========================================================
    WEIKEN LIFE
@@ -827,7 +718,7 @@ img {
 }
 
 .life-title-light {
-  font-weight: 700;
+  font-weight: 200;
 }
 
 .life-grid {
@@ -1783,3 +1674,10 @@ img {
   }
 
 }
+/* Current refinements */
+.hero-decoration { display:none; }
+.life-title-light { font-weight:700; }
+
+/* Popular carousel responsive */
+@media (max-width:1050px){ .popular-slide-visual{height:500px;} .popular-nav{top:230px;} }
+@media (max-width:700px){ .popular-section{padding:90px 0;} .popular-heading{align-items:flex-start;flex-direction:column;gap:30px;margin-bottom:42px;} .popular-viewport{border-radius:4px 70px 4px 4px;} .popular-slide-visual{height:390px;} .popular-nav{top:174px;width:44px;height:44px;font-size:17px;} .popular-prev{left:12px;} .popular-next{right:12px;} .popular-slide-info h3{font-size:18px;} .popular-slide-arrow{width:42px;height:42px;} }
