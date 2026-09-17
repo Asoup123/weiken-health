@@ -6,6 +6,20 @@
   <title>商品專區｜威肯健康生活用品館</title>
   <meta name="description" content="威肯健康生活用品館商品專區，提供輪椅、助行輔具、如廁用品、沐浴用品與居家照護用品。">
   <link rel="stylesheet" href="css/style.css">
+<style>
+.products-grid .products-loading{
+  grid-column:1 / -1;
+  padding:48px 0;
+  text-align:center;
+  color:#888;
+}
+.product-card-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+</style>
 </head>
 <body class="products-page">
 
@@ -177,58 +191,11 @@
       </nav>
 
       <div class="products-toolbar">
-        <p class="products-count">目前顯示 <strong id="visibleProductCount">12</strong> 項商品</p>
+        <p class="products-count">目前顯示 <strong id="visibleProductCount">0</strong> 項商品</p>
       </div>
 
       <div class="products-grid" id="productsGrid">
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="toilet">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="toilet">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="bath">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="bath">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="homecare">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="homecare">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
+        <div class="products-loading">正在讀取商品...</div>
       </div>
 
       <div class="products-empty" id="productsEmpty" hidden>
@@ -307,7 +274,9 @@
   const ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
   const PROJECT_ID = "6aab96e3000fa724b62d";
   const DATABASE_ID = "6aab978f00363c84475b";
-  const TABLE_ID = "categories";
+  const CATEGORY_TABLE_ID = "categories";
+  const PRODUCT_TABLE_ID = "products";
+  const BUCKET_ID = "weiken-images";
 
   const client = new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
   const db = new Appwrite.Databases(client);
@@ -315,65 +284,163 @@
   const desktopLinks = document.getElementById('desktopCategoryLinks');
   const mobileLinks = document.getElementById('mobileCategoryLinks');
   const filterNav = document.getElementById('productFilter');
-  const cards = Array.from(document.querySelectorAll('.product-card'));
+  const grid = document.getElementById('productsGrid');
   const count = document.getElementById('visibleProductCount');
   const empty = document.getElementById('productsEmpty');
 
+  let categories = [];
+  let products = [];
+  let currentFilter = 'all';
+  let currentSearch = '';
+
   function esc(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+
+  function fileUrl(id) {
+    if (!id) return '';
+    return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
+  }
+
+  function renderProducts() {
+    const keyword = currentSearch.trim().toLowerCase();
+
+    const visible = products.filter(product => {
+      const categoryMatch =
+        currentFilter === 'all' || product.category_id === currentFilter;
+      const searchMatch =
+        !keyword || String(product.name || '').toLowerCase().includes(keyword);
+      return categoryMatch && searchMatch;
+    });
+
+    count.textContent = visible.length;
+    empty.hidden = visible.length !== 0;
+
+    if (!visible.length) {
+      grid.innerHTML = '';
+      return;
+    }
+
+    grid.innerHTML = visible.map(product => `
+      <a
+        href="product.html?id=${encodeURIComponent(product.$id)}"
+        class="product-card"
+        data-category="${esc(product.category_id)}"
+      >
+        <div class="product-card-image">
+          ${
+            product.image_id
+              ? `<img src="${fileUrl(product.image_id)}" alt="${esc(product.name)}" loading="lazy">`
+              : '<span>商品圖片</span>'
+          }
+        </div>
+        <h2>${esc(product.name)}</h2>
+      </a>
+    `).join('');
   }
 
   function applyFilter(filter) {
-    let visible = 0;
+    currentFilter = filter;
+
     document.querySelectorAll('.product-filter-btn').forEach(btn => {
       btn.classList.toggle('is-active', btn.dataset.filter === filter);
     });
-    cards.forEach(card => {
-      const show = filter === 'all' || card.dataset.category === filter;
-      card.hidden = !show;
-      if (show) visible++;
-    });
-    count.textContent = visible;
-    empty.hidden = visible !== 0;
+
+    renderProducts();
   }
 
   async function loadCategories() {
+    const result = await db.listDocuments(DATABASE_ID, CATEGORY_TABLE_ID, [
+      Appwrite.Query.orderAsc('sort_order'),
+      Appwrite.Query.limit(100)
+    ]);
+
+    categories = result.documents;
+
+    categories.forEach(category => {
+      const id = category.$id;
+      const name = esc(category.name);
+      const url = `products.html?category=${encodeURIComponent(id)}`;
+
+      desktopLinks.insertAdjacentHTML(
+        'beforeend',
+        `<a href="${url}">${name}</a>`
+      );
+
+      mobileLinks.insertAdjacentHTML(
+        'beforeend',
+        `<a href="${url}">${name}</a>`
+      );
+
+      filterNav.insertAdjacentHTML(
+        'beforeend',
+        `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">${name}</button>`
+      );
+    });
+
+    filterNav.addEventListener('click', e => {
+      const button = e.target.closest('.product-filter-btn');
+      if (!button) return;
+
+      const filter = button.dataset.filter;
+      const url = new URL(location.href);
+
+      if (filter === 'all') url.searchParams.delete('category');
+      else url.searchParams.set('category', filter);
+
+      history.replaceState(null, '', url);
+      applyFilter(filter);
+    });
+  }
+
+  async function loadProducts() {
+    const result = await db.listDocuments(DATABASE_ID, PRODUCT_TABLE_ID, [
+      Appwrite.Query.orderAsc('sort_order'),
+      Appwrite.Query.limit(100)
+    ]);
+
+    products = result.documents;
+  }
+
+  async function start() {
     try {
-      const result = await db.listDocuments(DATABASE_ID, TABLE_ID, [
-        Appwrite.Query.orderAsc('sort_order'),
-        Appwrite.Query.limit(100)
-      ]);
+      await Promise.all([loadCategories(), loadProducts()]);
 
-      result.documents.forEach(category => {
-        const id = category.$id;
-        const name = esc(category.name);
-        const url = `products.html?category=${encodeURIComponent(id)}`;
-        desktopLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
-        mobileLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
-        filterNav.insertAdjacentHTML('beforeend', `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">${name}</button>`);
-      });
+      const requested =
+        new URLSearchParams(location.search).get('category') || 'all';
 
-      filterNav.addEventListener('click', e => {
-        const button = e.target.closest('.product-filter-btn');
-        if (!button) return;
-        const filter = button.dataset.filter;
-        const url = new URL(location.href);
-        if (filter === 'all') url.searchParams.delete('category');
-        else url.searchParams.set('category', filter);
-        history.replaceState(null, '', url);
-        applyFilter(filter);
-      });
+      const exists =
+        requested === 'all' ||
+        categories.some(category => category.$id === requested);
 
-      const requested = new URLSearchParams(location.search).get('category') || 'all';
-      const exists = requested === 'all' || result.documents.some(c => c.$id === requested);
       applyFilter(exists ? requested : 'all');
     } catch (error) {
-      console.error('分類讀取失敗：', error);
-      applyFilter('all');
+      console.error('商品專區讀取失敗：', error);
+      grid.innerHTML =
+        '<div class="products-loading">商品讀取失敗，請稍後再試。</div>';
+      count.textContent = '0';
     }
   }
 
-  loadCategories();
+  const searchForm = document.getElementById('headerSearch');
+  const searchInput = document.getElementById('searchInput');
+
+  if (searchForm && searchInput) {
+    searchForm.addEventListener('submit', e => {
+      e.preventDefault();
+      currentSearch = searchInput.value;
+      renderProducts();
+    });
+
+    searchInput.addEventListener('input', () => {
+      currentSearch = searchInput.value;
+      renderProducts();
+    });
+  }
+
+  start();
 })();
 </script>
 
