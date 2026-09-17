@@ -2710,3 +2710,18 @@ img {
     transform: translate(0, 0);
   }
 }
+
+/* Homepage anchor targets from header dropdown */
+#advertising,
+#popular,
+#weiken-life {
+  scroll-margin-top: 110px;
+}
+
+@media (max-width: 700px) {
+  #advertising,
+  #popular,
+  #weiken-life {
+    scroll-margin-top: 82px;
+  }
+}
