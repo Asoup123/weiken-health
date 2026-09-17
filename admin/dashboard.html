@@ -13,7 +13,7 @@ body{
     background:#f5f5f3;
     color:#222;
 }
-button,input,select{font:inherit}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .app{
     min-height:100vh;
@@ -198,7 +198,7 @@ button:disabled{
     font-size:14px;
     margin-bottom:8px;
 }
-.field input,.field select{
+.field input,.field select,.field textarea{
     width:100%;
     padding:12px;
     border:1px solid #ddd;
@@ -214,6 +214,11 @@ button:disabled{
     margin-top:12px;
 }
 .product-preview{border-radius:10px}
+.field textarea{min-height:130px;resize:vertical;line-height:1.7}
+.current-image-actions{display:none;margin-top:10px}
+.remove-image{padding:8px 11px;border:1px solid #e0c7c4;background:#fff;color:#b42318;border-radius:7px}
+.remove-image:hover{background:#fff4f3}
+.image-remove-note{display:none;margin-top:10px;color:#b42318;font-size:13px}
 .modal-actions{
     display:flex;
     justify-content:flex-end;
@@ -355,9 +360,21 @@ button:disabled{
             <input id="productSort" required type="number" min="0" value="1">
         </div>
         <div class="field">
+            <label>商品特色</label>
+            <textarea id="productFeatures" placeholder="例如：&#10;輕量鋁合金車架&#10;扶手可掀&#10;方便收折與攜帶"></textarea>
+        </div>
+        <div class="field">
+            <label>商品規格</label>
+            <textarea id="productSpecifications" placeholder="例如：&#10;座寬：45 cm&#10;座深：40 cm&#10;最大承重：100 kg"></textarea>
+        </div>
+        <div class="field">
             <label>商品主圖</label>
             <input id="productImage" type="file" accept="image/*">
             <img id="productPreview" class="preview product-preview" alt="">
+            <div id="currentImageActions" class="current-image-actions">
+                <button id="removeCurrentImage" type="button" class="remove-image">刪除目前圖片</button>
+            </div>
+            <div id="imageRemoveNote" class="image-remove-note">目前圖片將在「儲存商品」後從 Storage 一併刪除。</div>
         </div>
         <div class="modal-actions">
             <button id="productCancel" type="button" class="cancel">取消</button>
@@ -385,6 +402,7 @@ const storage=new Appwrite.Storage(client);
 let categories=[];
 let editingCategory=null;
 let editingProduct=null;
+let removeProductImage=false;
 
 const $=s=>document.querySelector(s);
 
@@ -638,15 +656,21 @@ async function openProductModal(d=null){
     $("#productTitle").textContent=d?"修改商品":"新增商品";
     $("#productName").value=d?.name || "";
     $("#productSort").value=d?.sort_order ?? 1;
+    $("#productFeatures").value=d?.features || "";
+    $("#productSpecifications").value=d?.specifications || "";
     $("#productImage").value="";
+    removeProductImage=false;
+    $("#imageRemoveNote").style.display="none";
     fillCategorySelect(d?.category_id || "");
 
     if(d?.image_id){
         $("#productPreview").src=fileUrl(d.image_id);
         $("#productPreview").style.display="block";
+        $("#currentImageActions").style.display="block";
     }else{
         $("#productPreview").removeAttribute("src");
         $("#productPreview").style.display="none";
+        $("#currentImageActions").style.display="none";
     }
     $("#productModal").classList.add("open");
 }
@@ -656,8 +680,11 @@ function closeProductModal(){
     editingProduct=null;
     $("#productForm").reset();
     $("#productSort").value=1;
+    removeProductImage=false;
     $("#productPreview").removeAttribute("src");
     $("#productPreview").style.display="none";
+    $("#currentImageActions").style.display="none";
+    $("#imageRemoveNote").style.display="none";
 }
 
 window.editProduct=async id=>{
@@ -682,8 +709,21 @@ window.removeProduct=async id=>{
 $("#productImage").onchange=()=>{
     const file=$("#productImage").files[0];
     if(!file) return;
+    removeProductImage=false;
+    $("#imageRemoveNote").style.display="none";
     $("#productPreview").src=URL.createObjectURL(file);
     $("#productPreview").style.display="block";
+    $("#currentImageActions").style.display=editingProduct?.image_id ? "block" : "none";
+};
+
+$("#removeCurrentImage").onclick=()=>{
+    if(!editingProduct?.image_id) return;
+    removeProductImage=true;
+    $("#productImage").value="";
+    $("#productPreview").removeAttribute("src");
+    $("#productPreview").style.display="none";
+    $("#currentImageActions").style.display="none";
+    $("#imageRemoveNote").style.display="block";
 };
 
 $("#productForm").onsubmit=async e=>{
@@ -692,6 +732,8 @@ $("#productForm").onsubmit=async e=>{
     const name=$("#productName").value.trim();
     const categoryId=$("#productCategory").value;
     const sort=Number($("#productSort").value);
+    const features=$("#productFeatures").value.trim();
+    const specifications=$("#productSpecifications").value.trim();
 
     if(!name) return say($("#productNotice"),"請輸入商品名稱","err");
     if(!categoryId) return say($("#productNotice"),"請選擇商品分類","err");
@@ -702,7 +744,8 @@ $("#productForm").onsubmit=async e=>{
     let uploaded="";
 
     try{
-        let imageId=editingProduct?.image_id || "";
+        const oldImageId=editingProduct?.image_id || "";
+        let imageId=removeProductImage ? "" : oldImageId;
         const file=$("#productImage").files[0];
 
         if(file){
@@ -714,16 +757,19 @@ $("#productForm").onsubmit=async e=>{
             name:name,
             category_id:categoryId,
             image_id:imageId,
-            sort_order:sort
+            sort_order:sort,
+            features:features,
+            specifications:specifications
         };
 
         if(editingProduct){
-            const old=editingProduct.image_id;
             await db.updateDocument(
                 DATABASE_ID,PRODUCT_TABLE_ID,editingProduct.$id,data
             );
-            if(file && old && old!==imageId) await deleteImage(old);
-            say($("#productNotice"),"商品已更新");
+            if(oldImageId && oldImageId!==imageId){
+                await deleteImage(oldImageId);
+            }
+            say($("#productNotice"),removeProductImage ? "商品已更新，原圖片已刪除" : "商品已更新");
         }else{
             await db.createDocument(
                 DATABASE_ID,
