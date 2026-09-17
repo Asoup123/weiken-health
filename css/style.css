@@ -1797,3 +1797,107 @@ img {
     border-radius: 4px 48px 4px 4px;
   }
 }
+
+/* =========================================================
+   HOT PRODUCTS — 5 cards / tablet & mobile horizontal drag
+========================================================= */
+
+.hot-products-scroller {
+  width: 100%;
+  overflow: visible;
+}
+
+.hot-products-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.hot-product-card {
+  display: block;
+  min-width: 0;
+  color: var(--forest);
+}
+
+.hot-product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1.08;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(36, 75, 54, .12);
+  border-radius: 0;
+  background: rgba(168, 183, 155, .13);
+  color: rgba(36, 75, 54, .32);
+  font-size: 13px;
+  letter-spacing: .08em;
+  transition: transform .35s ease, background .35s ease;
+}
+
+.hot-product-card h3 {
+  margin-top: 15px;
+  color: var(--forest-deep);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.hot-product-card:hover .hot-product-image {
+  transform: translateY(-4px);
+  background: rgba(168, 183, 155, .20);
+}
+
+/* 平板開始改成可左右拖移 */
+@media (max-width: 1050px) {
+  .hot-products-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-inline: contain;
+  }
+
+  .hot-products-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hot-products-grid {
+    display: flex;
+    gap: 18px;
+    width: max-content;
+  }
+
+  .hot-product-card {
+    flex: 0 0 clamp(220px, 30vw, 300px);
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}
+
+/* 手機：一次看到約 1.5 張，提示右邊還能繼續拖 */
+@media (max-width: 700px) {
+  .hot-products-section {
+    overflow: hidden;
+  }
+
+  .hot-products-scroller {
+    width: calc(100vw - 18px);
+    padding-right: 18px;
+  }
+
+  .hot-products-grid {
+    gap: 14px;
+  }
+
+  .hot-product-card {
+    flex-basis: min(72vw, 285px);
+  }
+
+  .hot-product-card h3 {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+}
+
