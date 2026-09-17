@@ -2024,245 +2024,194 @@ img {
   }
 }
 
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>商品專區｜威肯健康生活用品館</title>
-  <meta name="description" content="威肯健康生活用品館商品專區，提供輪椅、助行輔具、如廁用品、沐浴用品與居家照護用品。">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="products-page">
+/* =========================================================
+   PRODUCTS PAGE
+========================================================= */
+.products-page {
+  background: #fff;
+}
 
-<header class="site-header">
+.products-hero {
+  padding: 92px 0 58px;
+  border-bottom: 1px solid rgba(20, 20, 20, .10);
+}
 
-    <div class="header-inner">
+.products-eyebrow {
+  margin: 0 0 14px;
+  font-size: 12px;
+  letter-spacing: .22em;
+  font-weight: 700;
+  opacity: .55;
+}
 
-      <a href="index.html" class="brand">
-        <img src="images/logo.png" alt="威肯健康生活用品館">
-      </a>
+.products-hero h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
 
-      <nav class="desktop-nav">
-        <a href="products.html" aria-current="page">商品專區</a>
-        <a href="#popular">熱門商品</a>
-        <a href="#category">商品分類</a>
-        <a href="#store">門市資訊</a>
-      </nav>
+.products-intro {
+  margin: 22px 0 0;
+  font-size: 15px;
+  line-height: 1.8;
+  opacity: .62;
+}
 
-      <div class="header-right">
+.products-catalog {
+  padding: 42px 0 110px;
+}
 
-        <form class="search-box" id="headerSearch">
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="搜尋商品"
-            aria-label="搜尋商品"
-          >
+.product-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(20, 20, 20, .10);
+}
 
-          <button type="submit" aria-label="搜尋">
-            <svg viewBox="0 0 24 24">
-              <circle cx="10.8" cy="10.8" r="6.8"></circle>
-              <path d="M16 16L21 21"></path>
-            </svg>
-          </button>
-        </form>
+.product-filter-btn {
+  appearance: none;
+  border: 1px solid rgba(20, 20, 20, .16);
+  background: transparent;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font: inherit;
+  font-size: 14px;
+  color: inherit;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
 
-        <button
-          class="mobile-menu-button"
-          id="mobileMenuButton"
-          type="button"
-          aria-label="開啟選單"
-        >
-          <span></span>
-          <span></span>
-        </button>
+.product-filter-btn:hover,
+.product-filter-btn.is-active {
+  background: #151515;
+  border-color: #151515;
+  color: #fff;
+}
 
-      </div>
+.products-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 78px;
+}
 
-    </div>
+.products-count {
+  margin: 0;
+  font-size: 13px;
+  opacity: .58;
+}
 
-    <nav class="mobile-nav" id="mobileNav">
-      <a href="products.html" aria-current="page">商品專區</a>
-      <a href="#popular">熱門商品</a>
-      <a href="#category">商品分類</a>
-      <a href="#store">門市資訊</a>
-    </nav>
+.products-count strong {
+  font-weight: 700;
+}
 
-  </header>
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 48px 20px;
+}
 
-<main>
-  <section class="products-hero">
-    <div class="section-container">
-      <p class="products-eyebrow">PRODUCTS</p>
-      <h1>商品專區</h1>
-      <p class="products-intro">依照分類快速找到適合的照護與生活輔具。</p>
-    </div>
-  </section>
+.product-card {
+  display: block;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
 
-  <section class="products-catalog">
-    <div class="section-container">
+.product-card[hidden] {
+  display: none !important;
+}
 
-      <nav class="product-filter" aria-label="商品分類">
-        <button class="product-filter-btn is-active" type="button" data-filter="all">全部商品</button>
-        <button class="product-filter-btn" type="button" data-filter="wheelchair">輪椅</button>
-        <button class="product-filter-btn" type="button" data-filter="walker">助行輔具</button>
-        <button class="product-filter-btn" type="button" data-filter="toilet">如廁用品</button>
-        <button class="product-filter-btn" type="button" data-filter="bath">沐浴用品</button>
-        <button class="product-filter-btn" type="button" data-filter="homecare">居家照護</button>
-      </nav>
+.product-card-image {
+  aspect-ratio: 1 / 1.08;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #f3f3f1;
+}
 
-      <div class="products-toolbar">
-        <p class="products-count">目前顯示 <strong id="visibleProductCount">12</strong> 項商品</p>
-      </div>
+.product-card-image span {
+  font-size: 12px;
+  letter-spacing: .08em;
+  opacity: .38;
+}
 
-      <div class="products-grid" id="productsGrid">
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="toilet">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="toilet">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="bath">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="bath">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="homecare">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="homecare">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="wheelchair">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-        <a href="#" class="product-card" data-category="walker">
-          <div class="product-card-image"><span>商品圖片</span></div>
-          <h2>商品名稱</h2>
-        </a>
-      </div>
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform .45s cubic-bezier(.2,.7,.2,1);
+}
 
-      <div class="products-empty" id="productsEmpty" hidden>
-        此分類目前尚無商品。
-      </div>
-    </div>
-  </section>
-</main>
+.product-card:hover .product-card-image img {
+  transform: scale(1.035);
+}
 
-<footer class="site-footer" id="store">
+.product-card h2 {
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 600;
+}
 
-    <div class="footer-main">
+.products-empty {
+  padding: 80px 0;
+  text-align: center;
+  font-size: 14px;
+  opacity: .5;
+}
 
-      <div class="footer-column">
-        <span class="footer-label">SHOP</span>
-        <a href="products.html">商品專區</a>
-        <a href="#category">商品分類</a>
-        <a href="#popular">熱門商品</a>
-      </div>
+@media (max-width: 1050px) {
+  .products-hero {
+    padding: 72px 0 48px;
+  }
 
-      <div class="footer-column">
-        <span class="footer-label">FOLLOW US</span>
-        <a href="https://youtube.com/channel/UCg6cBY5bsmc-gfUVxEx6_1w" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
-        <a href="https://oashop.line.me/shops/882fnibo" target="_blank" rel="noopener noreferrer">LINE ↗</a>
-      </div>
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px 18px;
+  }
+}
 
-      <div class="footer-column footer-stores">
-        <span class="footer-label">門市資訊</span>
+@media (max-width: 700px) {
+  .products-hero {
+    padding: 54px 0 38px;
+  }
 
-        <div class="footer-store-layout">
+  .products-catalog {
+    padding: 26px 0 76px;
+  }
 
-          <div class="footer-store-info">
-            <a class="footer-phone" href="tel:034585251">
-              服務專線｜03-4585251
-            </a>
+  .product-filter {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+  }
 
-            <div class="footer-store">
-              <strong>威肯健康生活用品館</strong>
-              <p>桃園市八德區建德路478號1樓</p>
-              <p>營業時間｜09:00–15:00</p>
-            </div>
+  .product-filter::-webkit-scrollbar {
+    display: none;
+  }
 
-            <div class="footer-store">
-              <strong>歐克（威肯）健康醫療器材</strong>
-              <p>苗栗縣頭份市自強路180號</p>
-              <p>營業時間｜09:00–19:00</p>
-            </div>
-          </div>
+  .product-filter-btn {
+    flex: 0 0 auto;
+    padding: 10px 15px;
+  }
 
-          <div class="footer-map">
-            <iframe
-              src="https://www.google.com/maps?q=%E6%A1%83%E5%9C%92%E5%B8%82%E5%85%AB%E5%BE%B7%E5%8D%80%E5%BB%BA%E5%BE%B7%E8%B7%AF478%E8%99%9F1%E6%A8%93&output=embed"
-              title="威肯健康生活用品館八德門市地圖"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen>
-            </iframe>
-          </div>
+  .products-toolbar {
+    min-height: 64px;
+  }
 
-        </div>
-      </div>
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 12px;
+  }
 
-    </div>
-
-    <div class="footer-bottom">
-      <span>© 2026 WEIKEN HEALTHY LIFE</span>
-      <span>威肯健康生活用品館</span>
-    </div>
-
-  </footer>
-
-<script src="js/main.js"></script>
-<script>
-(() => {
-  const buttons = document.querySelectorAll('.product-filter-btn');
-  const cards = document.querySelectorAll('.product-card');
-  const count = document.getElementById('visibleProductCount');
-  const empty = document.getElementById('productsEmpty');
-
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      let visible = 0;
-
-      buttons.forEach(btn => btn.classList.remove('is-active'));
-      button.classList.add('is-active');
-
-      cards.forEach(card => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.hidden = !show;
-        if (show) visible++;
-      });
-
-      count.textContent = visible;
-      empty.hidden = visible !== 0;
-    });
-  });
-})();
-</script>
-</body>
-</html>
+  .product-card h2 {
+    margin-top: 11px;
+    font-size: 14px;
+  }
+}
