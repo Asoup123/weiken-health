@@ -2563,3 +2563,150 @@ img {
     display: none !important;
   }
 }
+
+/* =========================================================
+   DESKTOP NAV — compact floating dropdowns
+========================================================= */
+@media (min-width: 701px) {
+  .mega-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .mega-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: -14px;
+  }
+
+  .mega-main-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: auto;
+    white-space: nowrap;
+  }
+
+  .menu-plus {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1;
+    opacity: .48;
+    transform: none !important;
+    transition: opacity .18s ease;
+  }
+
+  .mega-item:hover .menu-plus,
+  .mega-item:focus-within .menu-plus {
+    opacity: 1;
+  }
+
+  .mega-panel {
+    position: absolute;
+    z-index: 1500;
+    top: calc(100% + 0px);
+    left: 50%;
+    right: auto;
+    width: max-content;
+    min-width: 190px;
+    max-width: 330px;
+    background: #fff;
+    border: 1px solid rgba(20,20,20,.09);
+    box-shadow: 0 14px 34px rgba(20,20,20,.10);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, 7px);
+    transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+  }
+
+  /* Invisible bridge between the nav label and dropdown.
+     This keeps the menu open while the cursor moves downward. */
+  .mega-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+  }
+
+  .mega-item:hover .mega-panel,
+  .mega-item:focus-within .mega-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+
+  .mega-panel-inner {
+    width: auto;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .mega-panel-label {
+    display: none;
+  }
+
+  .mega-links {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .mega-links a {
+    display: block;
+    min-width: 168px;
+    padding: 11px 13px;
+    font-size: 14px;
+    line-height: 1.35;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #151515;
+  }
+
+  .mega-links a::after {
+    display: none;
+  }
+
+  .mega-links a:hover,
+  .mega-links a:focus-visible {
+    background: rgba(20,20,20,.045);
+  }
+
+  /* Product categories can use two columns when there are several items. */
+  .mega-category-links {
+    grid-template-columns: repeat(2, minmax(132px, 1fr));
+    max-width: none;
+  }
+
+  .mega-category-links a {
+    min-width: 132px;
+  }
+
+  /* Keep edge menus inside the viewport. */
+  .mega-item:first-child .mega-panel {
+    left: 0;
+    transform: translate(0, 7px);
+  }
+
+  .mega-item:first-child:hover .mega-panel,
+  .mega-item:first-child:focus-within .mega-panel {
+    transform: translate(0, 0);
+  }
+
+  .mega-item:last-child .mega-panel {
+    left: auto;
+    right: 0;
+    transform: translate(0, 7px);
+  }
+
+  .mega-item:last-child:hover .mega-panel,
+  .mega-item:last-child:focus-within .mega-panel {
+    transform: translate(0, 0);
+  }
+}
