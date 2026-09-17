@@ -3,35 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>威肯管理後台｜商品分類</title>
+<title>威肯管理後台</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
     margin:0;
     font-family:"Microsoft JhengHei",Arial,sans-serif;
     background:#f5f5f3;
     color:#222;
 }
-
-button,input{
-    font:inherit;
-}
-
+button,input,select{font:inherit}
+button{cursor:pointer}
 .app{
     min-height:100vh;
     display:grid;
     grid-template-columns:230px 1fr;
 }
-
-/* =========================
-   左側選單
-========================= */
-
 aside{
     background:#20211f;
     color:white;
@@ -39,26 +27,35 @@ aside{
     display:flex;
     flex-direction:column;
 }
-
 .logo{
     font-size:12px;
     letter-spacing:4px;
     color:#aaa;
 }
-
 aside h1{
     font-size:20px;
-    margin:8px 0 42px;
+    margin:8px 0 34px;
 }
-
+.nav-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
 .nav{
+    width:100%;
+    border:0;
+    text-align:left;
     padding:13px 14px;
     border-radius:9px;
-    background:white;
-    color:#222;
+    background:transparent;
+    color:#ddd;
     font-weight:700;
 }
-
+.nav:hover{background:#2d2e2b}
+.nav.active{
+    background:white;
+    color:#222;
+}
 .logout{
     margin-top:auto;
     padding:12px;
@@ -66,20 +63,15 @@ aside h1{
     border-radius:9px;
     background:none;
     color:#ddd;
-    cursor:pointer;
 }
-
-/* =========================
-   主畫面
-========================= */
-
 main{
     padding:42px;
     max-width:1300px;
     width:100%;
     margin:auto;
 }
-
+.page{display:none}
+.page.active{display:block}
 .top{
     display:flex;
     align-items:center;
@@ -87,49 +79,48 @@ main{
     margin-bottom:28px;
     gap:20px;
 }
-
 h2{
     margin:0 0 7px;
     font-size:28px;
 }
-
 .top p{
     margin:0;
     color:#888;
 }
-
-.add,
-.save{
+.add,.save{
     border:0;
     border-radius:9px;
     background:#222;
     color:white;
     padding:13px 20px;
     font-weight:700;
-    cursor:pointer;
 }
-
-.add:hover,
-.save:hover{
-    background:#000;
-}
-
+.add:hover,.save:hover{background:#000}
 button:disabled{
     opacity:.55;
     cursor:not-allowed;
 }
-
-/* =========================
-   分類列表
-========================= */
-
+.notice{
+    display:none;
+    margin-bottom:16px;
+    padding:12px 14px;
+    border-radius:8px;
+}
+.notice.show{display:block}
+.notice.ok{
+    background:#edf8ef;
+    color:#16733c;
+}
+.notice.err{
+    background:#fff1f1;
+    color:#b42318;
+}
 .card{
     background:white;
     border:1px solid #e5e5e1;
     border-radius:14px;
     overflow:hidden;
 }
-
 .row{
     display:grid;
     grid-template-columns:90px 90px 1fr 170px;
@@ -138,18 +129,16 @@ button:disabled{
     padding:15px 20px;
     border-bottom:1px solid #eee;
 }
-
-.row:last-child{
-    border-bottom:0;
+.row:last-child{border-bottom:0}
+.product-row{
+    grid-template-columns:90px 80px 1.25fr 1fr 170px;
 }
-
 .head{
     background:#fafafa;
     color:#888;
     font-size:13px;
     font-weight:700;
 }
-
 .thumb{
     width:64px;
     height:64px;
@@ -157,74 +146,31 @@ button:disabled{
     object-fit:cover;
     background:#eee;
 }
-
+.product-thumb{border-radius:9px}
 .noimg{
     display:grid;
     place-items:center;
     font-size:11px;
     color:#aaa;
 }
-
 .actions{
     display:flex;
     gap:8px;
 }
-
 .actions button{
     padding:8px 11px;
     border:1px solid #ddd;
     background:white;
     border-radius:7px;
-    cursor:pointer;
 }
-
-.actions button:hover{
-    background:#f5f5f5;
-}
-
-.danger{
-    color:#b42318;
-}
-
+.actions button:hover{background:#f5f5f5}
+.danger{color:#b42318}
 .state{
     padding:45px;
     text-align:center;
     color:#888;
 }
-
-.bad{
-    color:#b42318;
-}
-
-/* =========================
-   提示訊息
-========================= */
-
-.notice{
-    display:none;
-    margin-bottom:16px;
-    padding:12px 14px;
-    border-radius:8px;
-}
-
-.notice.show{
-    display:block;
-}
-
-.notice.ok{
-    background:#edf8ef;
-    color:#16733c;
-}
-
-.notice.err{
-    background:#fff1f1;
-    color:#b42318;
-}
-
-/* =========================
-   新增 / 修改視窗
-========================= */
-
+.bad{color:#b42318}
 .modal{
     position:fixed;
     inset:0;
@@ -235,40 +181,30 @@ button:disabled{
     padding:20px;
     z-index:999;
 }
-
-.modal.open{
-    display:flex;
-}
-
+.modal.open{display:flex}
 .panel{
     width:min(500px,100%);
     background:white;
     border-radius:16px;
     padding:28px;
+    max-height:90vh;
+    overflow:auto;
 }
-
-.panel h3{
-    margin-top:0;
-}
-
-.field{
-    margin:18px 0;
-}
-
+.panel h3{margin-top:0}
+.field{margin:18px 0}
 .field label{
     display:block;
     font-weight:700;
     font-size:14px;
     margin-bottom:8px;
 }
-
-.field input{
+.field input,.field select{
     width:100%;
     padding:12px;
     border:1px solid #ddd;
     border-radius:8px;
+    background:white;
 }
-
 .preview{
     display:none;
     width:90px;
@@ -277,1086 +213,576 @@ button:disabled{
     border-radius:50%;
     margin-top:12px;
 }
-
+.product-preview{border-radius:10px}
 .modal-actions{
     display:flex;
     justify-content:flex-end;
     gap:10px;
     margin-top:25px;
 }
-
 .cancel{
     padding:11px 16px;
     border:1px solid #ddd;
     background:white;
     border-radius:8px;
-    cursor:pointer;
 }
-
-/* =========================
-   手機版
-========================= */
-
 @media(max-width:760px){
-
-    .app{
-        display:block;
-    }
-
-    aside{
-        padding:18px;
-    }
-
-    aside h1{
-        margin-bottom:15px;
-    }
-
-    .logout{
-        margin-top:15px;
-    }
-
-    main{
-        padding:24px 15px;
-    }
-
-    .top{
-        align-items:flex-start;
-        flex-direction:column;
-    }
-
-    .row{
-        grid-template-columns:70px 65px 1fr;
-    }
-
-    .row .actions{
-        grid-column:2/4;
-    }
-
-    .head{
-        display:none;
-    }
+    .app{display:block}
+    aside{padding:18px}
+    aside h1{margin-bottom:15px}
+    .nav-list{flex-direction:row}
+    .nav{text-align:center}
+    .logout{margin-top:15px;width:100%}
+    main{padding:24px 15px}
+    .top{align-items:flex-start;flex-direction:column}
+    .row,.product-row{grid-template-columns:70px 65px 1fr}
+    .row .actions,.product-row .actions{grid-column:2/4}
+    .product-row .category-cell{grid-column:2/4}
+    .head{display:none}
 }
 </style>
 </head>
 
 <body>
-
 <div class="app">
-
 <aside>
+    <div class="logo">WEIKEN</div>
+    <h1>威肯管理後台</h1>
 
-    <div class="logo">
-        WEIKEN
+    <div class="nav-list">
+        <button class="nav active" data-page="categoriesPage">商品分類</button>
+        <button class="nav" data-page="productsPage">商品管理</button>
     </div>
 
-    <h1>
-        威肯管理後台
-    </h1>
-
-    <div class="nav">
-        商品分類
-    </div>
-
-    <button
-        id="logout"
-        class="logout"
-    >
-        登出
-    </button>
-
+    <button id="logout" class="logout">登出</button>
 </aside>
 
-
 <main>
-
-<div class="top">
-
-    <div>
-
-        <h2>
-            商品分類管理
-        </h2>
-
-        <p>
-            新增、修改、刪除官網的商品分類。
-        </p>
-
-    </div>
-
-    <button
-        id="add"
-        class="add"
-    >
-        ＋ 新增分類
-    </button>
-
-</div>
-
-
-<div
-    id="notice"
-    class="notice"
-></div>
-
-
-<div class="card">
-
-    <div class="row head">
-
-        <div>圖片</div>
-
-        <div>順序</div>
-
-        <div>分類名稱</div>
-
-        <div>操作</div>
-
-    </div>
-
-
-    <div id="list">
-
-        <div class="state">
-            正在讀取分類...
+    <section id="categoriesPage" class="page active">
+        <div class="top">
+            <div>
+                <h2>商品分類管理</h2>
+                <p>新增、修改、刪除官網的商品分類。</p>
+            </div>
+            <button id="addCategory" class="add">＋ 新增分類</button>
         </div>
 
-    </div>
+        <div id="categoryNotice" class="notice"></div>
 
-</div>
+        <div class="card">
+            <div class="row head">
+                <div>圖片</div>
+                <div>順序</div>
+                <div>分類名稱</div>
+                <div>操作</div>
+            </div>
+            <div id="categoryList">
+                <div class="state">正在讀取分類...</div>
+            </div>
+        </div>
+    </section>
 
+    <section id="productsPage" class="page">
+        <div class="top">
+            <div>
+                <h2>商品管理</h2>
+                <p>新增商品、選擇分類、上傳商品主圖與調整排序。</p>
+            </div>
+            <button id="addProduct" class="add">＋ 新增商品</button>
+        </div>
+
+        <div id="productNotice" class="notice"></div>
+
+        <div class="card">
+            <div class="row product-row head">
+                <div>圖片</div>
+                <div>順序</div>
+                <div>商品名稱</div>
+                <div>所屬分類</div>
+                <div>操作</div>
+            </div>
+            <div id="productList">
+                <div class="state">正在讀取商品...</div>
+            </div>
+        </div>
+    </section>
 </main>
-
 </div>
 
-
-
-<!-- =========================
-     新增 / 修改分類
-========================= -->
-
-<div
-    id="modal"
-    class="modal"
->
-
+<!-- 分類視窗 -->
+<div id="categoryModal" class="modal">
 <div class="panel">
-
-<h3 id="title">
-    新增分類
-</h3>
-
-
-<form id="form">
-
-<div class="field">
-
-<label>
-    分類名稱
-</label>
-
-<input
-    id="name"
-    required
-    placeholder="例如：輪椅"
->
-
+    <h3 id="categoryTitle">新增分類</h3>
+    <form id="categoryForm">
+        <div class="field">
+            <label>分類名稱</label>
+            <input id="categoryName" required placeholder="例如：輪椅">
+        </div>
+        <div class="field">
+            <label>排序</label>
+            <input id="categorySort" required type="number" min="0" value="1">
+        </div>
+        <div class="field">
+            <label>分類圖片</label>
+            <input id="categoryImage" type="file" accept="image/*">
+            <img id="categoryPreview" class="preview" alt="">
+        </div>
+        <div class="modal-actions">
+            <button id="categoryCancel" type="button" class="cancel">取消</button>
+            <button id="categorySave" class="save">儲存分類</button>
+        </div>
+    </form>
+</div>
 </div>
 
-
-<div class="field">
-
-<label>
-    排序
-</label>
-
-<input
-    id="sort"
-    required
-    type="number"
-    min="0"
-    value="1"
->
-
+<!-- 商品視窗 -->
+<div id="productModal" class="modal">
+<div class="panel">
+    <h3 id="productTitle">新增商品</h3>
+    <form id="productForm">
+        <div class="field">
+            <label>商品名稱</label>
+            <input id="productName" required placeholder="例如：鋁合金輪椅">
+        </div>
+        <div class="field">
+            <label>所屬分類</label>
+            <select id="productCategory" required>
+                <option value="">正在讀取分類...</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>排序</label>
+            <input id="productSort" required type="number" min="0" value="1">
+        </div>
+        <div class="field">
+            <label>商品主圖</label>
+            <input id="productImage" type="file" accept="image/*">
+            <img id="productPreview" class="preview product-preview" alt="">
+        </div>
+        <div class="modal-actions">
+            <button id="productCancel" type="button" class="cancel">取消</button>
+            <button id="productSave" class="save">儲存商品</button>
+        </div>
+    </form>
 </div>
-
-
-<div class="field">
-
-<label>
-    分類圖片
-</label>
-
-<input
-    id="image"
-    type="file"
-    accept="image/*"
->
-
-<img
-    id="preview"
-    class="preview"
->
-
 </div>
-
-
-<div class="modal-actions">
-
-<button
-    id="cancel"
-    type="button"
-    class="cancel"
->
-    取消
-</button>
-
-<button
-    id="save"
-    class="save"
->
-    儲存分類
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
-
 <script>
+const ENDPOINT="https://sgp.cloud.appwrite.io/v1";
+const PROJECT_ID="6aab96e3000fa724b62d";
+const DATABASE_ID="6aab978f00363c84475b";
+const CATEGORY_TABLE_ID="categories";
+const PRODUCT_TABLE_ID="products";
+const BUCKET_ID="weiken-images";
+const ADMIN_TEAM_ID="6aaba9fa001fa283e8a7";
 
-/* =====================================================
-   APPWRITE 設定
-===================================================== */
+const client=new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
+const account=new Appwrite.Account(client);
+const db=new Appwrite.Databases(client);
+const storage=new Appwrite.Storage(client);
 
-const ENDPOINT =
-"https://sgp.cloud.appwrite.io/v1";
+let categories=[];
+let editingCategory=null;
+let editingProduct=null;
 
-const PROJECT_ID =
-"6aab96e3000fa724b62d";
-
-const DATABASE_ID =
-"6aab978f00363c84475b";
-
-const TABLE_ID =
-"categories";
-
-const BUCKET_ID =
-"weiken-images";
-
-/* WEIKEN Admin Team */
-
-const ADMIN_TEAM_ID =
-"6aaba9fa001fa283e8a7";
-
-
-/* =====================================================
-   APPWRITE
-===================================================== */
-
-const client =
-new Appwrite.Client()
-.setEndpoint(ENDPOINT)
-.setProject(PROJECT_ID);
-
-const account =
-new Appwrite.Account(client);
-
-const db =
-new Appwrite.Databases(client);
-
-const storage =
-new Appwrite.Storage(client);
-
-
-/* =====================================================
-   DOM
-===================================================== */
-
-const list =
-document.querySelector("#list");
-
-const modal =
-document.querySelector("#modal");
-
-const form =
-document.querySelector("#form");
-
-const nameEl =
-document.querySelector("#name");
-
-const sortEl =
-document.querySelector("#sort");
-
-const imageEl =
-document.querySelector("#image");
-
-const preview =
-document.querySelector("#preview");
-
-const notice =
-document.querySelector("#notice");
-
-const saveBtn =
-document.querySelector("#save");
-
-let editing = null;
-
-
-/* =====================================================
-   安全輸出
-===================================================== */
+const $=s=>document.querySelector(s);
 
 function esc(v){
-
-return String(v ?? "")
-.replace(
-    /[&<>"']/g,
-    x => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-    }[x])
-);
-
+    return String(v ?? "").replace(/[&<>"']/g,x=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[x]));
 }
-
-
-/* =====================================================
-   圖片網址
-===================================================== */
 
 function fileUrl(id){
-
-if(!id) return "";
-
-return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
-
+    if(!id) return "";
+    return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
 }
 
-
-/* =====================================================
-   訊息
-===================================================== */
-
-function say(text,type="ok"){
-
-notice.textContent=text;
-
-notice.className=
-"notice show "+type;
-
-setTimeout(()=>{
-
-    notice.className="notice";
-
-},3500);
-
+function say(el,text,type="ok"){
+    el.textContent=text;
+    el.className="notice show "+type;
+    setTimeout(()=>el.className="notice",3500);
 }
-
-
-/* =====================================================
-   登入檢查
-===================================================== */
 
 async function guard(){
-
-try{
-
-    await account.get();
-
-}catch(e){
-
-    location.replace("index.html");
-
+    try{ await account.get(); }
+    catch(e){ location.replace("index.html"); }
 }
 
+async function uploadImage(file){
+    if(!file) return "";
+    const upload=await storage.createFile(
+        BUCKET_ID,
+        Appwrite.ID.unique(),
+        file,
+        [
+            Appwrite.Permission.read(Appwrite.Role.any()),
+            Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+            Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+        ]
+    );
+    return upload.$id;
 }
 
-
-/* =====================================================
-   讀取分類
-===================================================== */
-
-async function load(){
-
-list.innerHTML =
-'<div class="state">正在讀取分類...</div>';
-
-try{
-
-const result =
-await db.listDocuments(
-
-    DATABASE_ID,
-
-    TABLE_ID,
-
-    [
-        Appwrite.Query.orderAsc("sort_order"),
-        Appwrite.Query.limit(100)
-    ]
-
-);
-
-
-if(!result.documents.length){
-
-list.innerHTML =
-'<div class="state">目前沒有分類，請按「新增分類」。</div>';
-
-return;
-
+async function deleteImage(id){
+    if(!id) return;
+    try{ await storage.deleteFile(BUCKET_ID,id); }
+    catch(e){ console.warn("圖片刪除失敗",e); }
 }
 
+/* 頁面切換 */
+document.querySelectorAll(".nav").forEach(btn=>{
+    btn.onclick=async()=>{
+        document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+        document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        $("#"+btn.dataset.page).classList.add("active");
 
-list.innerHTML =
-result.documents.map(d=>`
+        if(btn.dataset.page==="productsPage"){
+            await loadCategories();
+            await loadProducts();
+        }
+    };
+});
 
-<div class="row">
+/* ================= 分類 ================= */
+async function loadCategories(){
+    const categoryList=$("#categoryList");
+    if(categoryList) categoryList.innerHTML='<div class="state">正在讀取分類...</div>';
 
-<div>
+    try{
+        const result=await db.listDocuments(
+            DATABASE_ID,
+            CATEGORY_TABLE_ID,
+            [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]
+        );
+        categories=result.documents;
 
-${
-
-d.image_id
-
-?
-
-`<img
-class="thumb"
-src="${fileUrl(d.image_id)}"
-alt="${esc(d.name)}"
->`
-
-:
-
-'<div class="thumb noimg">無圖片</div>'
-
+        if(categoryList){
+            if(!categories.length){
+                categoryList.innerHTML='<div class="state">目前沒有分類，請按「新增分類」。</div>';
+            }else{
+                categoryList.innerHTML=categories.map(d=>`
+                    <div class="row">
+                        <div>${d.image_id
+                            ? `<img class="thumb" src="${fileUrl(d.image_id)}" alt="${esc(d.name)}">`
+                            : '<div class="thumb noimg">無圖片</div>'}</div>
+                        <div>${esc(d.sort_order)}</div>
+                        <div><strong>${esc(d.name)}</strong></div>
+                        <div class="actions">
+                            <button onclick="editCategory('${d.$id}')">修改</button>
+                            <button class="danger" onclick="removeCategory('${d.$id}')">刪除</button>
+                        </div>
+                    </div>
+                `).join("");
+            }
+        }
+        fillCategorySelect();
+    }catch(e){
+        console.error(e);
+        if(categoryList) categoryList.innerHTML=`<div class="state bad">讀取失敗：${esc(e.message)}</div>`;
+        throw e;
+    }
 }
 
-</div>
-
-
-<div>
-${esc(d.sort_order)}
-</div>
-
-
-<div>
-
-<strong>
-${esc(d.name)}
-</strong>
-
-</div>
-
-
-<div class="actions">
-
-<button
-onclick="editItem('${d.$id}')"
->
-修改
-</button>
-
-<button
-class="danger"
-onclick="removeItem('${d.$id}')"
->
-刪除
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-
-
-}catch(e){
-
-console.error(e);
-
-list.innerHTML =
-
-`<div class="state bad">
-讀取失敗：${esc(e.message)}
-</div>`;
-
+function fillCategorySelect(selected=""){
+    const select=$("#productCategory");
+    if(!categories.length){
+        select.innerHTML='<option value="">目前沒有商品分類</option>';
+        return;
+    }
+    select.innerHTML='<option value="">請選擇分類</option>'+
+        categories.map(c=>`<option value="${esc(c.$id)}" ${c.$id===selected?"selected":""}>${esc(c.name)}</option>`).join("");
 }
 
+function openCategoryModal(d=null){
+    editingCategory=d;
+    $("#categoryTitle").textContent=d?"修改分類":"新增分類";
+    $("#categoryName").value=d?.name || "";
+    $("#categorySort").value=d?.sort_order ?? 1;
+    $("#categoryImage").value="";
+    if(d?.image_id){
+        $("#categoryPreview").src=fileUrl(d.image_id);
+        $("#categoryPreview").style.display="block";
+    }else{
+        $("#categoryPreview").removeAttribute("src");
+        $("#categoryPreview").style.display="none";
+    }
+    $("#categoryModal").classList.add("open");
 }
 
-
-/* =====================================================
-   開啟視窗
-===================================================== */
-
-function openModal(d=null){
-
-editing=d;
-
-document.querySelector("#title").textContent =
-d ? "修改分類" : "新增分類";
-
-nameEl.value =
-d?.name || "";
-
-sortEl.value =
-d?.sort_order ?? 1;
-
-imageEl.value="";
-
-
-if(d?.image_id){
-
-preview.src =
-fileUrl(d.image_id);
-
-preview.style.display =
-"block";
-
-}else{
-
-preview.removeAttribute("src");
-
-preview.style.display =
-"none";
-
+function closeCategoryModal(){
+    $("#categoryModal").classList.remove("open");
+    editingCategory=null;
+    $("#categoryForm").reset();
+    $("#categorySort").value=1;
+    $("#categoryPreview").removeAttribute("src");
+    $("#categoryPreview").style.display="none";
 }
 
-
-modal.classList.add("open");
-
-}
-
-
-/* =====================================================
-   關閉視窗
-===================================================== */
-
-function closeModal(){
-
-modal.classList.remove("open");
-
-editing=null;
-
-form.reset();
-
-sortEl.value=1;
-
-preview.removeAttribute("src");
-
-preview.style.display="none";
-
-}
-
-
-/* =====================================================
-   修改分類
-===================================================== */
-
-window.editItem =
-async function(id){
-
-try{
-
-const document =
-await db.getDocument(
-
-    DATABASE_ID,
-    TABLE_ID,
-    id
-
-);
-
-openModal(document);
-
-}catch(e){
-
-say(
-"讀取分類失敗："+e.message,
-"err"
-);
-
-}
-
+window.editCategory=async id=>{
+    try{
+        const d=await db.getDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
+        openCategoryModal(d);
+    }catch(e){ say($("#categoryNotice"),"讀取分類失敗："+e.message,"err"); }
 };
 
-
-/* =====================================================
-   刪除分類
-===================================================== */
-
-window.removeItem =
-async function(id){
-
-if(
-!confirm(
-"確定要刪除這個分類嗎？"
-)
-){
-
-return;
-
-}
-
-
-try{
-
-const document =
-await db.getDocument(
-
-    DATABASE_ID,
-    TABLE_ID,
-    id
-
-);
-
-
-/* 刪除資料 */
-
-await db.deleteDocument(
-
-    DATABASE_ID,
-    TABLE_ID,
-    id
-
-);
-
-
-/* 刪除圖片 */
-
-if(document.image_id){
-
-try{
-
-await storage.deleteFile(
-
-    BUCKET_ID,
-    document.image_id
-
-);
-
-}catch(error){
-
-console.warn(
-"圖片刪除失敗",
-error
-);
-
-}
-
-}
-
-
-say(
-"分類已刪除"
-);
-
-await load();
-
-
-}catch(e){
-
-say(
-"刪除失敗："+e.message,
-"err"
-);
-
-}
-
+window.removeCategory=async id=>{
+    if(!confirm("確定要刪除這個分類嗎？")) return;
+    try{
+        const d=await db.getDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
+        await db.deleteDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
+        await deleteImage(d.image_id);
+        say($("#categoryNotice"),"分類已刪除");
+        await loadCategories();
+    }catch(e){ say($("#categoryNotice"),"刪除失敗："+e.message,"err"); }
 };
 
-
-/* =====================================================
-   圖片預覽
-===================================================== */
-
-imageEl.onchange = ()=>{
-
-const file =
-imageEl.files[0];
-
-if(!file){
-
-return;
-
-}
-
-preview.src =
-URL.createObjectURL(file);
-
-preview.style.display =
-"block";
-
+$("#categoryImage").onchange=()=>{
+    const file=$("#categoryImage").files[0];
+    if(!file) return;
+    $("#categoryPreview").src=URL.createObjectURL(file);
+    $("#categoryPreview").style.display="block";
 };
 
+$("#categoryForm").onsubmit=async e=>{
+    e.preventDefault();
+    const name=$("#categoryName").value.trim();
+    const sort=Number($("#categorySort").value);
+    if(!name) return say($("#categoryNotice"),"請輸入分類名稱","err");
 
-/* =====================================================
-   儲存分類
-===================================================== */
+    const btn=$("#categorySave");
+    btn.disabled=true;
+    btn.textContent="儲存中...";
+    let uploaded="";
 
-form.onsubmit =
-async function(e){
+    try{
+        let imageId=editingCategory?.image_id || "";
+        const file=$("#categoryImage").files[0];
+        if(file){
+            uploaded=await uploadImage(file);
+            imageId=uploaded;
+        }
+        const data={name,sort_order:sort,image_id:imageId};
 
-e.preventDefault();
-
-
-const categoryName =
-nameEl.value.trim();
-
-const sortOrder =
-Number(sortEl.value);
-
-
-if(!categoryName){
-
-say(
-"請輸入分類名稱",
-"err"
-);
-
-return;
-
-}
-
-
-saveBtn.disabled=true;
-
-saveBtn.textContent=
-"儲存中...";
-
-
-let uploadedFileId="";
-
-
-try{
-
-
-/* =================================================
-   原本圖片
-================================================= */
-
-let imageId =
-editing?.image_id || "";
-
-
-/* =================================================
-   如果有選新圖片 → 上傳
-================================================= */
-
-const file =
-imageEl.files[0];
-
-
-if(file){
-
-const upload =
-await storage.createFile(
-
-    BUCKET_ID,
-
-    Appwrite.ID.unique(),
-
-    file,
-
-    [
-
-        /* 官網所有人可以看圖片 */
-
-        Appwrite.Permission.read(
-            Appwrite.Role.any()
-        ),
-
-        /* WEIKEN Admin 可以修改 */
-
-        Appwrite.Permission.update(
-            Appwrite.Role.team(
-                ADMIN_TEAM_ID
-            )
-        ),
-
-        /* WEIKEN Admin 可以刪除 */
-
-        Appwrite.Permission.delete(
-            Appwrite.Role.team(
-                ADMIN_TEAM_ID
-            )
-        )
-
-    ]
-
-);
-
-
-uploadedFileId =
-upload.$id;
-
-imageId =
-upload.$id;
-
-}
-
-
-/* =================================================
-   分類資料
-================================================= */
-
-const data = {
-
-    name:categoryName,
-
-    sort_order:sortOrder,
-
-    image_id:imageId
-
+        if(editingCategory){
+            const old=editingCategory.image_id;
+            await db.updateDocument(DATABASE_ID,CATEGORY_TABLE_ID,editingCategory.$id,data);
+            if(file && old && old!==imageId) await deleteImage(old);
+            say($("#categoryNotice"),"分類已更新");
+        }else{
+            await db.createDocument(
+                DATABASE_ID,CATEGORY_TABLE_ID,Appwrite.ID.unique(),data,
+                [
+                    Appwrite.Permission.read(Appwrite.Role.any()),
+                    Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+                    Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+                ]
+            );
+            say($("#categoryNotice"),"分類已新增");
+        }
+        closeCategoryModal();
+        await loadCategories();
+    }catch(e){
+        console.error(e);
+        if(uploaded) await deleteImage(uploaded);
+        say($("#categoryNotice"),"儲存失敗："+e.message,"err");
+    }finally{
+        btn.disabled=false;
+        btn.textContent="儲存分類";
+    }
 };
 
+/* ================= 商品 ================= */
+async function loadProducts(){
+    const list=$("#productList");
+    list.innerHTML='<div class="state">正在讀取商品...</div>';
 
-/* =================================================
-   修改分類
-================================================= */
+    try{
+        const result=await db.listDocuments(
+            DATABASE_ID,
+            PRODUCT_TABLE_ID,
+            [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]
+        );
 
-if(editing){
+        if(!result.documents.length){
+            list.innerHTML='<div class="state">目前沒有商品，請按「新增商品」。</div>';
+            return;
+        }
 
-const oldImageId =
-editing.image_id;
+        const categoryMap=Object.fromEntries(categories.map(c=>[c.$id,c.name]));
 
-
-await db.updateDocument(
-
-    DATABASE_ID,
-
-    TABLE_ID,
-
-    editing.$id,
-
-    data
-
-);
-
-
-/* 新圖片成功後刪除舊圖片 */
-
-if(
-file &&
-oldImageId &&
-oldImageId !== imageId
-){
-
-try{
-
-await storage.deleteFile(
-
-    BUCKET_ID,
-    oldImageId
-
-);
-
-}catch(error){
-
-console.warn(
-"舊圖片刪除失敗",
-error
-);
-
+        list.innerHTML=result.documents.map(d=>`
+            <div class="row product-row">
+                <div>${d.image_id
+                    ? `<img class="thumb product-thumb" src="${fileUrl(d.image_id)}" alt="${esc(d.name)}">`
+                    : '<div class="thumb product-thumb noimg">無圖片</div>'}</div>
+                <div>${esc(d.sort_order)}</div>
+                <div><strong>${esc(d.name)}</strong></div>
+                <div class="category-cell">${esc(categoryMap[d.category_id] || "分類已不存在")}</div>
+                <div class="actions">
+                    <button onclick="editProduct('${d.$id}')">修改</button>
+                    <button class="danger" onclick="removeProduct('${d.$id}')">刪除</button>
+                </div>
+            </div>
+        `).join("");
+    }catch(e){
+        console.error(e);
+        list.innerHTML=`<div class="state bad">讀取失敗：${esc(e.message)}</div>`;
+    }
 }
 
+async function openProductModal(d=null){
+    editingProduct=d;
+    $("#productTitle").textContent=d?"修改商品":"新增商品";
+    $("#productName").value=d?.name || "";
+    $("#productSort").value=d?.sort_order ?? 1;
+    $("#productImage").value="";
+    fillCategorySelect(d?.category_id || "");
+
+    if(d?.image_id){
+        $("#productPreview").src=fileUrl(d.image_id);
+        $("#productPreview").style.display="block";
+    }else{
+        $("#productPreview").removeAttribute("src");
+        $("#productPreview").style.display="none";
+    }
+    $("#productModal").classList.add("open");
 }
 
-
-say(
-"分類已更新"
-);
-
-
-/* =================================================
-   新增分類
-================================================= */
-
-}else{
-
-
-await db.createDocument(
-
-    DATABASE_ID,
-
-    TABLE_ID,
-
-    Appwrite.ID.unique(),
-
-    data,
-
-    [
-
-        /* 官網訪客可以讀 */
-
-        Appwrite.Permission.read(
-            Appwrite.Role.any()
-        ),
-
-        /* WEIKEN Admin 可以修改 */
-
-        Appwrite.Permission.update(
-            Appwrite.Role.team(
-                ADMIN_TEAM_ID
-            )
-        ),
-
-        /* WEIKEN Admin 可以刪除 */
-
-        Appwrite.Permission.delete(
-            Appwrite.Role.team(
-                ADMIN_TEAM_ID
-            )
-        )
-
-    ]
-
-);
-
-
-say(
-"分類已新增"
-);
-
+function closeProductModal(){
+    $("#productModal").classList.remove("open");
+    editingProduct=null;
+    $("#productForm").reset();
+    $("#productSort").value=1;
+    $("#productPreview").removeAttribute("src");
+    $("#productPreview").style.display="none";
 }
 
-
-closeModal();
-
-await load();
-
-
-}catch(e){
-
-console.error(e);
-
-
-/* 如果資料新增失敗
-   但圖片已經上傳
-   → 把圖片清掉
-*/
-
-if(uploadedFileId){
-
-try{
-
-await storage.deleteFile(
-
-    BUCKET_ID,
-    uploadedFileId
-
-);
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-}
-
-
-say(
-"儲存失敗："+e.message,
-"err"
-);
-
-
-}finally{
-
-saveBtn.disabled=false;
-
-saveBtn.textContent=
-"儲存分類";
-
-}
-
+window.editProduct=async id=>{
+    try{
+        await loadCategories();
+        const d=await db.getDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
+        openProductModal(d);
+    }catch(e){ say($("#productNotice"),"讀取商品失敗："+e.message,"err"); }
 };
 
-
-/* =====================================================
-   按鈕
-===================================================== */
-
-document
-.querySelector("#add")
-.onclick =
-()=>openModal();
-
-
-document
-.querySelector("#cancel")
-.onclick =
-closeModal;
-
-
-modal.onclick =
-e=>{
-
-if(e.target===modal){
-
-closeModal();
-
-}
-
+window.removeProduct=async id=>{
+    if(!confirm("確定要刪除這個商品嗎？")) return;
+    try{
+        const d=await db.getDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
+        await db.deleteDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
+        await deleteImage(d.image_id);
+        say($("#productNotice"),"商品已刪除");
+        await loadProducts();
+    }catch(e){ say($("#productNotice"),"刪除失敗："+e.message,"err"); }
 };
 
-
-/* =====================================================
-   登出
-===================================================== */
-
-document
-.querySelector("#logout")
-.onclick =
-async()=>{
-
-try{
-
-await account.deleteSession(
-"current"
-);
-
-}catch(e){
-
-console.warn(e);
-
-}finally{
-
-location.replace(
-"index.html"
-);
-
-}
-
+$("#productImage").onchange=()=>{
+    const file=$("#productImage").files[0];
+    if(!file) return;
+    $("#productPreview").src=URL.createObjectURL(file);
+    $("#productPreview").style.display="block";
 };
 
+$("#productForm").onsubmit=async e=>{
+    e.preventDefault();
 
-/* =====================================================
-   啟動
-===================================================== */
+    const name=$("#productName").value.trim();
+    const categoryId=$("#productCategory").value;
+    const sort=Number($("#productSort").value);
 
+    if(!name) return say($("#productNotice"),"請輸入商品名稱","err");
+    if(!categoryId) return say($("#productNotice"),"請選擇商品分類","err");
+
+    const btn=$("#productSave");
+    btn.disabled=true;
+    btn.textContent="儲存中...";
+    let uploaded="";
+
+    try{
+        let imageId=editingProduct?.image_id || "";
+        const file=$("#productImage").files[0];
+
+        if(file){
+            uploaded=await uploadImage(file);
+            imageId=uploaded;
+        }
+
+        const data={
+            name:name,
+            category_id:categoryId,
+            image_id:imageId,
+            sort_order:sort
+        };
+
+        if(editingProduct){
+            const old=editingProduct.image_id;
+            await db.updateDocument(
+                DATABASE_ID,PRODUCT_TABLE_ID,editingProduct.$id,data
+            );
+            if(file && old && old!==imageId) await deleteImage(old);
+            say($("#productNotice"),"商品已更新");
+        }else{
+            await db.createDocument(
+                DATABASE_ID,
+                PRODUCT_TABLE_ID,
+                Appwrite.ID.unique(),
+                data,
+                [
+                    Appwrite.Permission.read(Appwrite.Role.any()),
+                    Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+                    Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+                ]
+            );
+            say($("#productNotice"),"商品已新增");
+        }
+
+        closeProductModal();
+        await loadProducts();
+    }catch(e){
+        console.error(e);
+        if(uploaded) await deleteImage(uploaded);
+        say($("#productNotice"),"儲存失敗："+e.message,"err");
+    }finally{
+        btn.disabled=false;
+        btn.textContent="儲存商品";
+    }
+};
+
+/* 按鈕 */
+$("#addCategory").onclick=()=>openCategoryModal();
+$("#categoryCancel").onclick=closeCategoryModal;
+$("#categoryModal").onclick=e=>{if(e.target===$("#categoryModal")) closeCategoryModal()};
+
+$("#addProduct").onclick=async()=>{
+    try{
+        await loadCategories();
+        if(!categories.length){
+            say($("#productNotice"),"請先新增至少一個商品分類","err");
+            return;
+        }
+        openProductModal();
+    }catch(e){
+        say($("#productNotice"),"分類讀取失敗："+e.message,"err");
+    }
+};
+$("#productCancel").onclick=closeProductModal;
+$("#productModal").onclick=e=>{if(e.target===$("#productModal")) closeProductModal()};
+
+/* 登出 */
+$("#logout").onclick=async()=>{
+    try{ await account.deleteSession("current"); }
+    catch(e){ console.warn(e); }
+    finally{ location.replace("index.html"); }
+};
+
+/* 啟動 */
 (async()=>{
-
-await guard();
-
-await load();
-
+    await guard();
+    await loadCategories();
 })();
-
 </script>
-
 </body>
 </html>
