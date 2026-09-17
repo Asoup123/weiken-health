@@ -37,13 +37,8 @@
     <div class="mega-panel">
       <div class="mega-panel-inner">
         <span class="mega-panel-label">PRODUCTS</span>
-        <div class="mega-links mega-category-links">
+        <div class="mega-links mega-category-links" id="desktopCategoryLinks">
           <a href="products.html">全部商品</a>
-          <a href="products.html?category=wheelchair">輪椅</a>
-          <a href="products.html?category=walker">助行輔具</a>
-          <a href="products.html?category=toilet">如廁用品</a>
-          <a href="products.html?category=bath">沐浴用品</a>
-          <a href="products.html?category=homecare">居家照護</a>
         </div>
       </div>
     </div>
@@ -132,13 +127,8 @@
 
   <div class="mobile-mega-item">
     <button class="mobile-mega-toggle" type="button" aria-expanded="false">商品專區<span>＋</span></button>
-    <div class="mobile-mega-menu">
+    <div class="mobile-mega-menu" id="mobileCategoryLinks">
       <a href="products.html">全部商品</a>
-      <a href="products.html?category=wheelchair">輪椅</a>
-      <a href="products.html?category=walker">助行輔具</a>
-      <a href="products.html?category=toilet">如廁用品</a>
-      <a href="products.html?category=bath">沐浴用品</a>
-      <a href="products.html?category=homecare">居家照護</a>
     </div>
   </div>
 
@@ -182,13 +172,8 @@
   <section class="products-catalog">
     <div class="section-container">
 
-      <nav class="product-filter" aria-label="商品分類">
+      <nav class="product-filter" id="productFilter" aria-label="商品分類">
         <button class="product-filter-btn is-active" type="button" data-filter="all">全部商品</button>
-        <button class="product-filter-btn" type="button" data-filter="wheelchair">輪椅</button>
-        <button class="product-filter-btn" type="button" data-filter="walker">助行輔具</button>
-        <button class="product-filter-btn" type="button" data-filter="toilet">如廁用品</button>
-        <button class="product-filter-btn" type="button" data-filter="bath">沐浴用品</button>
-        <button class="product-filter-btn" type="button" data-filter="homecare">居家照護</button>
       </nav>
 
       <div class="products-toolbar">
@@ -316,31 +301,79 @@
   </footer>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
 <script>
 (() => {
-  const buttons = document.querySelectorAll('.product-filter-btn');
-  const cards = document.querySelectorAll('.product-card');
+  const ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
+  const PROJECT_ID = "6aab96e3000fa724b62d";
+  const DATABASE_ID = "6aab978f00363c84475b";
+  const TABLE_ID = "categories";
+
+  const client = new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
+  const db = new Appwrite.Databases(client);
+
+  const desktopLinks = document.getElementById('desktopCategoryLinks');
+  const mobileLinks = document.getElementById('mobileCategoryLinks');
+  const filterNav = document.getElementById('productFilter');
+  const cards = Array.from(document.querySelectorAll('.product-card'));
   const count = document.getElementById('visibleProductCount');
   const empty = document.getElementById('productsEmpty');
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      let visible = 0;
+  function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
 
-      buttons.forEach(btn => btn.classList.remove('is-active'));
-      button.classList.add('is-active');
+  function applyFilter(filter) {
+    let visible = 0;
+    document.querySelectorAll('.product-filter-btn').forEach(btn => {
+      btn.classList.toggle('is-active', btn.dataset.filter === filter);
+    });
+    cards.forEach(card => {
+      const show = filter === 'all' || card.dataset.category === filter;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    count.textContent = visible;
+    empty.hidden = visible !== 0;
+  }
 
-      cards.forEach(card => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.hidden = !show;
-        if (show) visible++;
+  async function loadCategories() {
+    try {
+      const result = await db.listDocuments(DATABASE_ID, TABLE_ID, [
+        Appwrite.Query.orderAsc('sort_order'),
+        Appwrite.Query.limit(100)
+      ]);
+
+      result.documents.forEach(category => {
+        const id = category.$id;
+        const name = esc(category.name);
+        const url = `products.html?category=${encodeURIComponent(id)}`;
+        desktopLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
+        mobileLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
+        filterNav.insertAdjacentHTML('beforeend', `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">${name}</button>`);
       });
 
-      count.textContent = visible;
-      empty.hidden = visible !== 0;
-    });
-  });
+      filterNav.addEventListener('click', e => {
+        const button = e.target.closest('.product-filter-btn');
+        if (!button) return;
+        const filter = button.dataset.filter;
+        const url = new URL(location.href);
+        if (filter === 'all') url.searchParams.delete('category');
+        else url.searchParams.set('category', filter);
+        history.replaceState(null, '', url);
+        applyFilter(filter);
+      });
+
+      const requested = new URLSearchParams(location.search).get('category') || 'all';
+      const exists = requested === 'all' || result.documents.some(c => c.$id === requested);
+      applyFilter(exists ? requested : 'all');
+    } catch (error) {
+      console.error('分類讀取失敗：', error);
+      applyFilter('all');
+    }
+  }
+
+  loadCategories();
 })();
 </script>
 
