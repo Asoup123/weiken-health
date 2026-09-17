@@ -2712,16 +2712,16 @@ img {
 }
 
 /* Homepage anchor targets from header dropdown */
-#advertising,
+#ad-banner,
 #popular,
-#weiken-life {
+#life {
   scroll-margin-top: 110px;
 }
 
 @media (max-width: 700px) {
-  #advertising,
+  #ad-banner,
   #popular,
-  #weiken-life {
+  #life {
     scroll-margin-top: 82px;
   }
 }
