@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品專區｜威肯健康生活用品館</title>
+  <meta name="description" content="威肯健康生活用品館商品專區，提供輪椅、助行輔具、如廁用品、沐浴用品與居家照護用品。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="products-page">
+
+<header class="site-header">
+
+    <div class="header-inner">
+
+      <a href="index.html" class="brand">
+        <img src="images/logo.png" alt="威肯健康生活用品館">
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="products.html" aria-current="page">商品專區</a>
+        <a href="#popular">熱門商品</a>
+        <a href="#category">商品分類</a>
+        <a href="#store">門市資訊</a>
+      </nav>
+
+      <div class="header-right">
+
+        <form class="search-box" id="headerSearch">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜尋商品"
+            aria-label="搜尋商品"
+          >
+
+          <button type="submit" aria-label="搜尋">
+            <svg viewBox="0 0 24 24">
+              <circle cx="10.8" cy="10.8" r="6.8"></circle>
+              <path d="M16 16L21 21"></path>
+            </svg>
+          </button>
+        </form>
+
+        <button
+          class="mobile-menu-button"
+          id="mobileMenuButton"
+          type="button"
+          aria-label="開啟選單"
+        >
+          <span></span>
+          <span></span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="products.html" aria-current="page">商品專區</a>
+      <a href="#popular">熱門商品</a>
+      <a href="#category">商品分類</a>
+      <a href="#store">門市資訊</a>
+    </nav>
+
+  </header>
+
+<main>
+  <section class="products-hero">
+    <div class="section-container">
+      <p class="products-eyebrow">PRODUCTS</p>
+      <h1>商品專區</h1>
+      <p class="products-intro">依照分類快速找到適合的照護與生活輔具。</p>
+    </div>
+  </section>
+
+  <section class="products-catalog">
+    <div class="section-container">
+
+      <nav class="product-filter" aria-label="商品分類">
+        <button class="product-filter-btn is-active" type="button" data-filter="all">全部商品</button>
+        <button class="product-filter-btn" type="button" data-filter="wheelchair">輪椅</button>
+        <button class="product-filter-btn" type="button" data-filter="walker">助行輔具</button>
+        <button class="product-filter-btn" type="button" data-filter="toilet">如廁用品</button>
+        <button class="product-filter-btn" type="button" data-filter="bath">沐浴用品</button>
+        <button class="product-filter-btn" type="button" data-filter="homecare">居家照護</button>
+      </nav>
+
+      <div class="products-toolbar">
+        <p class="products-count">目前顯示 <strong id="visibleProductCount">12</strong> 項商品</p>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+        <a href="#" class="product-card" data-category="wheelchair">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="wheelchair">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="walker">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="walker">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="toilet">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="toilet">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="bath">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="bath">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="homecare">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="homecare">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="wheelchair">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+        <a href="#" class="product-card" data-category="walker">
+          <div class="product-card-image"><span>商品圖片</span></div>
+          <h2>商品名稱</h2>
+        </a>
+      </div>
+
+      <div class="products-empty" id="productsEmpty" hidden>
+        此分類目前尚無商品。
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="store">
+
+    <div class="footer-main">
+
+      <div class="footer-column">
+        <span class="footer-label">SHOP</span>
+        <a href="products.html">商品專區</a>
+        <a href="#category">商品分類</a>
+        <a href="#popular">熱門商品</a>
+      </div>
+
+      <div class="footer-column">
+        <span class="footer-label">FOLLOW US</span>
+        <a href="https://youtube.com/channel/UCg6cBY5bsmc-gfUVxEx6_1w" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
+        <a href="https://oashop.line.me/shops/882fnibo" target="_blank" rel="noopener noreferrer">LINE ↗</a>
+      </div>
+
+      <div class="footer-column footer-stores">
+        <span class="footer-label">門市資訊</span>
+
+        <div class="footer-store-layout">
+
+          <div class="footer-store-info">
+            <a class="footer-phone" href="tel:034585251">
+              服務專線｜03-4585251
+            </a>
+
+            <div class="footer-store">
+              <strong>威肯健康生活用品館</strong>
+              <p>桃園市八德區建德路478號1樓</p>
+              <p>營業時間｜09:00–15:00</p>
+            </div>
+
+            <div class="footer-store">
+              <strong>歐克（威肯）健康醫療器材</strong>
+              <p>苗栗縣頭份市自強路180號</p>
+              <p>營業時間｜09:00–19:00</p>
+            </div>
+          </div>
+
+          <div class="footer-map">
+            <iframe
+              src="https://www.google.com/maps?q=%E6%A1%83%E5%9C%92%E5%B8%82%E5%85%AB%E5%BE%B7%E5%8D%80%E5%BB%BA%E5%BE%B7%E8%B7%AF478%E8%99%9F1%E6%A8%93&output=embed"
+              title="威肯健康生活用品館八德門市地圖"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 WEIKEN HEALTHY LIFE</span>
+      <span>威肯健康生活用品館</span>
+    </div>
+
+  </footer>
+
+<script src="js/main.js"></script>
+<script>
+(() => {
+  const buttons = document.querySelectorAll('.product-filter-btn');
+  const cards = document.querySelectorAll('.product-card');
+  const count = document.getElementById('visibleProductCount');
+  const empty = document.getElementById('productsEmpty');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      let visible = 0;
+
+      buttons.forEach(btn => btn.classList.remove('is-active'));
+      button.classList.add('is-active');
+
+      cards.forEach(card => {
+        const show = filter === 'all' || card.dataset.category === filter;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+
+      count.textContent = visible;
+      empty.hidden = visible !== 0;
+    });
+  });
+})();
+</script>
+</body>
+</html>
