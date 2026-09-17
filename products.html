@@ -17,11 +17,25 @@
         <img src="images/logo.png" alt="威肯健康生活用品館">
       </a>
 
-      <nav class="desktop-nav">
-        <a href="products.html" aria-current="page">商品專區</a>
-        <a href="#popular">熱門商品</a>
-        <a href="#category">商品分類</a>
-        <a href="#store">門市資訊</a>
+      <nav class="desktop-nav" aria-label="主要導覽">
+        <a href="index.html">首頁</a>
+        <a href="products.html">商品專區</a>
+
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-toggle" type="button" aria-expanded="false">
+            商品分類
+            <span class="nav-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="products.html?category=wheelchair">輪椅</a>
+            <a href="products.html?category=walker">助行輔具</a>
+            <a href="products.html?category=toilet">如廁用品</a>
+            <a href="products.html?category=bath">沐浴用品</a>
+            <a href="products.html?category=homecare">居家照護</a>
+          </div>
+        </div>
+
+        <a href="index.html#store">門市資訊</a>
       </nav>
 
       <div class="header-right">
@@ -56,12 +70,26 @@
 
     </div>
 
-    <nav class="mobile-nav" id="mobileNav">
-      <a href="products.html" aria-current="page">商品專區</a>
-      <a href="#popular">熱門商品</a>
-      <a href="#category">商品分類</a>
-      <a href="#store">門市資訊</a>
-    </nav>
+    <nav class="mobile-nav" aria-label="手機導覽">
+        <a href="index.html">首頁</a>
+        <a href="products.html">商品專區</a>
+
+        <div class="mobile-category-group">
+          <button class="mobile-category-toggle" type="button" aria-expanded="false">
+            商品分類
+            <span aria-hidden="true">＋</span>
+          </button>
+          <div class="mobile-category-menu">
+            <a href="products.html?category=wheelchair">輪椅</a>
+            <a href="products.html?category=walker">助行輔具</a>
+            <a href="products.html?category=toilet">如廁用品</a>
+            <a href="products.html?category=bath">沐浴用品</a>
+            <a href="products.html?category=homecare">居家照護</a>
+          </div>
+        </div>
+
+        <a href="index.html#store">門市資訊</a>
+      </nav>
 
   </header>
 
@@ -240,5 +268,40 @@
   });
 })();
 </script>
+
+<script>
+(() => {
+  const dropdown = document.querySelector('.nav-dropdown');
+  const desktopToggle = document.querySelector('.nav-dropdown-toggle');
+
+  if (dropdown && desktopToggle) {
+    desktopToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const open = dropdown.classList.toggle('is-open');
+      desktopToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('is-open');
+        desktopToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  const mobileToggle = document.querySelector('.mobile-category-toggle');
+  const mobileGroup = document.querySelector('.mobile-category-group');
+
+  if (mobileToggle && mobileGroup) {
+    mobileToggle.addEventListener('click', () => {
+      const open = mobileGroup.classList.toggle('is-open');
+      mobileToggle.setAttribute('aria-expanded', String(open));
+      const icon = mobileToggle.querySelector('span');
+      if (icon) icon.textContent = open ? '−' : '＋';
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
