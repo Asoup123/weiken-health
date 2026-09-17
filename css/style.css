@@ -2276,3 +2276,131 @@ img {
     padding-top: 22px;
   }
 }
+
+/* =========================================================
+   GLOBAL HEADER NAV — category dropdown
+========================================================= */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-chevron {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform .2s ease;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 20px);
+  left: 50%;
+  width: 180px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid rgba(20, 20, 20, .08);
+  box-shadow: 0 14px 34px rgba(20, 20, 20, .10);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+}
+
+.nav-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -22px;
+  height: 22px;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 11px 13px;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+  font-size: 14px;
+}
+
+.nav-dropdown-menu a:hover {
+  background: rgba(20, 20, 20, .045);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.is-open .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.nav-dropdown:hover .nav-chevron,
+.nav-dropdown:focus-within .nav-chevron,
+.nav-dropdown.is-open .nav-chevron {
+  transform: translateY(-1px) rotate(180deg);
+}
+
+/* Mobile category submenu */
+.mobile-category-group {
+  width: 100%;
+}
+
+.mobile-category-toggle {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.mobile-category-menu {
+  display: none;
+  padding: 12px 0 4px 16px;
+}
+
+.mobile-category-group.is-open .mobile-category-menu {
+  display: block;
+}
+
+.mobile-category-menu a {
+  display: block;
+  padding: 8px 0;
+  font-size: .92em;
+  opacity: .68;
+}
+
+/* The category items are temporary front-end data.
+   Later the backend can render this same menu from the category table. */
