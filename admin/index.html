@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>威肯管理後台</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                "Noto Sans TC",
+                "Microsoft JhengHei",
+                Arial,
+                sans-serif;
+
+            background: #f5f5f3;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #222;
+        }
+
+        .login-page {
+            width: 100%;
+            padding: 30px 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            margin: auto;
+
+            background: #ffffff;
+
+            padding: 48px 42px;
+
+            border: 1px solid #e7e7e3;
+            border-radius: 18px;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.06);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .brand-en {
+            font-size: 13px;
+            letter-spacing: 4px;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .brand h1 {
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 9px;
+        }
+
+        .brand p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            height: 50px;
+
+            border: 1px solid #d9d9d5;
+            border-radius: 9px;
+
+            padding: 0 15px;
+
+            font-size: 15px;
+            outline: none;
+
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #333;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+        }
+
+        .login-button {
+            width: 100%;
+            height: 52px;
+
+            margin-top: 8px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #222;
+            color: #fff;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s,
+                transform 0.1s;
+        }
+
+        .login-button:hover {
+            background: #000;
+        }
+
+        .login-button:active {
+            transform: scale(0.99);
+        }
+
+        .login-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .message {
+            display: none;
+
+            margin-top: 18px;
+            padding: 12px 14px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff1f1;
+            color: #b42318;
+        }
+
+        .message.success {
+            display: block;
+            background: #edf8ef;
+            color: #16733c;
+        }
+
+        .footer-text {
+            margin-top: 30px;
+
+            text-align: center;
+
+            color: #aaa;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 520px) {
+
+            .login-page {
+                padding: 20px;
+            }
+
+            .login-card {
+                padding: 38px 25px;
+            }
+
+            .brand h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-card">
+
+        <div class="brand">
+
+            <div class="brand-en">
+                WEIKEN
+            </div>
+
+            <h1>
+                威肯管理後台
+            </h1>
+
+            <p>
+                Administrator Login
+            </p>
+
+        </div>
+
+
+        <form id="loginForm">
+
+            <div class="form-group">
+
+                <label for="email">
+                    管理員帳號
+                </label>
+
+                <input
+                    id="email"
+                    type="email"
+                    autocomplete="username"
+                    placeholder="請輸入 Email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    密碼
+                </label>
+
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="請輸入密碼"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                id="loginButton"
+                class="login-button"
+                type="submit"
+            >
+                登入管理後台
+            </button>
+
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+        </form>
+
+
+        <div class="footer-text">
+            WEIKEN HEALTH
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Appwrite Web SDK -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
+<script>
+
+    /*
+    =========================================
+    WEIKEN Appwrite 設定
+    =========================================
+    */
+
+    const ENDPOINT =
+        "https://sgp.cloud.appwrite.io/v1";
+
+    const PROJECT_ID =
+        "6aab96e3000fa724b62d";
+
+
+    /*
+    =========================================
+    建立 Appwrite Client
+    =========================================
+    */
+
+    const client = new Appwrite.Client();
+
+    client
+        .setEndpoint(ENDPOINT)
+        .setProject(PROJECT_ID);
+
+
+    const account =
+        new Appwrite.Account(client);
+
+
+    /*
+    =========================================
+    HTML 元素
+    =========================================
+    */
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const emailInput =
+        document.getElementById("email");
+
+    const passwordInput =
+        document.getElementById("password");
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const message =
+        document.getElementById("message");
+
+
+    /*
+    =========================================
+    顯示訊息
+    =========================================
+    */
+
+    function showMessage(text, type) {
+
+        message.textContent = text;
+
+        message.className =
+            "message " + type;
+    }
+
+
+    /*
+    =========================================
+    檢查是否已經登入
+    =========================================
+    */
+
+    async function checkLogin() {
+
+        try {
+
+            await account.get();
+
+            /*
+            已登入的話，
+            之後會直接送到管理首頁。
+
+            現階段 dashboard.html
+            還沒建立，所以先不跳轉。
+            */
+
+            console.log("管理員目前已登入");
+
+        } catch (error) {
+
+            console.log("目前尚未登入");
+
+        }
+
+    }
+
+
+    checkLogin();
+
+
+    /*
+    =========================================
+    登入
+    =========================================
+    */
+
+    loginForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const email =
+                emailInput.value.trim();
+
+            const password =
+                passwordInput.value;
+
+
+            if (!email || !password) {
+
+                showMessage(
+                    "請輸入管理員帳號與密碼。",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            loginButton.disabled = true;
+
+            loginButton.textContent =
+                "登入中...";
+
+            message.className =
+                "message";
+
+
+            try {
+
+                /*
+                Appwrite Email / Password 登入
+                */
+
+                await account.createEmailPasswordSession(
+                    email,
+                    password
+                );
+
+
+                /*
+                再讀一次目前登入者
+                確認 Session 成功
+                */
+
+                const user =
+                    await account.get();
+
+
+                console.log(
+                    "登入成功：",
+                    user
+                );
+
+
+                showMessage(
+                    "登入成功！Appwrite 已成功連線。",
+                    "success"
+                );
+
+
+                loginButton.textContent =
+                    "登入成功";
+
+
+                /*
+                =====================================
+                下一階段
+
+                我們建立 dashboard.html 後，
+                這裡會改成：
+
+                window.location.href =
+                    "dashboard.html";
+
+                =====================================
+                */
+
+
+            } catch (error) {
+
+                console.error(
+                    "Appwrite Login Error:",
+                    error
+                );
+
+
+                let errorText =
+                    "登入失敗，請確認 Email 與密碼是否正確。";
+
+
+                if (
+                    error &&
+                    error.message
+                ) {
+
+                    console.error(
+                        error.message
+                    );
+
+                }
+
+
+                showMessage(
+                    errorText,
+                    "error"
+                );
+
+
+                loginButton.disabled = false;
+
+                loginButton.textContent =
+                    "登入管理後台";
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
