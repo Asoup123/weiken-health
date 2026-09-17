@@ -1,92 +1,1362 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>威肯管理後台｜商品分類</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:"Microsoft JhengHei",Arial,sans-serif;background:#f5f5f3;color:#222}
-button,input{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:230px 1fr}
-aside{background:#20211f;color:white;padding:30px 22px;display:flex;flex-direction:column}.logo{font-size:12px;letter-spacing:4px;color:#aaa}
-aside h1{font-size:20px;margin:8px 0 42px}.nav{padding:13px 14px;border-radius:9px;background:white;color:#222;font-weight:700}
-.logout{margin-top:auto;padding:12px;border:1px solid #555;border-radius:9px;background:none;color:#ddd;cursor:pointer}
-main{padding:42px;max-width:1300px;width:100%;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:20px}
-h2{margin:0 0 7px;font-size:28px}.top p{margin:0;color:#888}.add,.save{border:0;border-radius:9px;background:#222;color:white;padding:13px 20px;font-weight:700;cursor:pointer}
-.card{background:white;border:1px solid #e5e5e1;border-radius:14px;overflow:hidden}
-.row{display:grid;grid-template-columns:90px 90px 1fr 170px;gap:18px;align-items:center;padding:15px 20px;border-bottom:1px solid #eee}
-.head{background:#fafafa;color:#888;font-size:13px;font-weight:700}.thumb{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#eee}
-.noimg{display:grid;place-items:center;font-size:11px;color:#aaa}.actions{display:flex;gap:8px}.actions button{padding:8px 11px;border:1px solid #ddd;background:white;border-radius:7px;cursor:pointer}.danger{color:#b42318}
-.state{padding:45px;text-align:center;color:#888}.bad{color:#b42318}.notice{display:none;margin-bottom:16px;padding:12px 14px;border-radius:8px}.notice.show{display:block}.notice.ok{background:#edf8ef;color:#16733c}.notice.err{background:#fff1f1;color:#b42318}
-.modal{position:fixed;inset:0;background:#0006;display:none;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}
-.panel{width:min(500px,100%);background:white;border-radius:16px;padding:28px}.panel h3{margin-top:0}.field{margin:18px 0}.field label{display:block;font-weight:700;font-size:14px;margin-bottom:8px}
-.field input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px}.preview{display:none;width:90px;height:90px;object-fit:cover;border-radius:50%;margin-top:10px}
-.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:25px}.cancel{padding:11px 16px;border:1px solid #ddd;background:white;border-radius:8px;cursor:pointer}
-@media(max-width:760px){.app{display:block}aside{padding:18px}aside h1{margin-bottom:15px}.logout{margin-top:15px}main{padding:24px 15px}.top{align-items:flex-start;flex-direction:column}.row{grid-template-columns:70px 65px 1fr}.row .actions{grid-column:2/4}.head{display:none}}
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:"Microsoft JhengHei",Arial,sans-serif;
+    background:#f5f5f3;
+    color:#222;
+}
+
+button,input{
+    font:inherit;
+}
+
+.app{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:230px 1fr;
+}
+
+/* =========================
+   左側選單
+========================= */
+
+aside{
+    background:#20211f;
+    color:white;
+    padding:30px 22px;
+    display:flex;
+    flex-direction:column;
+}
+
+.logo{
+    font-size:12px;
+    letter-spacing:4px;
+    color:#aaa;
+}
+
+aside h1{
+    font-size:20px;
+    margin:8px 0 42px;
+}
+
+.nav{
+    padding:13px 14px;
+    border-radius:9px;
+    background:white;
+    color:#222;
+    font-weight:700;
+}
+
+.logout{
+    margin-top:auto;
+    padding:12px;
+    border:1px solid #555;
+    border-radius:9px;
+    background:none;
+    color:#ddd;
+    cursor:pointer;
+}
+
+/* =========================
+   主畫面
+========================= */
+
+main{
+    padding:42px;
+    max-width:1300px;
+    width:100%;
+    margin:auto;
+}
+
+.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:28px;
+    gap:20px;
+}
+
+h2{
+    margin:0 0 7px;
+    font-size:28px;
+}
+
+.top p{
+    margin:0;
+    color:#888;
+}
+
+.add,
+.save{
+    border:0;
+    border-radius:9px;
+    background:#222;
+    color:white;
+    padding:13px 20px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.add:hover,
+.save:hover{
+    background:#000;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+/* =========================
+   分類列表
+========================= */
+
+.card{
+    background:white;
+    border:1px solid #e5e5e1;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:90px 90px 1fr 170px;
+    gap:18px;
+    align-items:center;
+    padding:15px 20px;
+    border-bottom:1px solid #eee;
+}
+
+.row:last-child{
+    border-bottom:0;
+}
+
+.head{
+    background:#fafafa;
+    color:#888;
+    font-size:13px;
+    font-weight:700;
+}
+
+.thumb{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#eee;
+}
+
+.noimg{
+    display:grid;
+    place-items:center;
+    font-size:11px;
+    color:#aaa;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+.actions button{
+    padding:8px 11px;
+    border:1px solid #ddd;
+    background:white;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.actions button:hover{
+    background:#f5f5f5;
+}
+
+.danger{
+    color:#b42318;
+}
+
+.state{
+    padding:45px;
+    text-align:center;
+    color:#888;
+}
+
+.bad{
+    color:#b42318;
+}
+
+/* =========================
+   提示訊息
+========================= */
+
+.notice{
+    display:none;
+    margin-bottom:16px;
+    padding:12px 14px;
+    border-radius:8px;
+}
+
+.notice.show{
+    display:block;
+}
+
+.notice.ok{
+    background:#edf8ef;
+    color:#16733c;
+}
+
+.notice.err{
+    background:#fff1f1;
+    color:#b42318;
+}
+
+/* =========================
+   新增 / 修改視窗
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:#0006;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:999;
+}
+
+.modal.open{
+    display:flex;
+}
+
+.panel{
+    width:min(500px,100%);
+    background:white;
+    border-radius:16px;
+    padding:28px;
+}
+
+.panel h3{
+    margin-top:0;
+}
+
+.field{
+    margin:18px 0;
+}
+
+.field label{
+    display:block;
+    font-weight:700;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.field input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.preview{
+    display:none;
+    width:90px;
+    height:90px;
+    object-fit:cover;
+    border-radius:50%;
+    margin-top:12px;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:25px;
+}
+
+.cancel{
+    padding:11px 16px;
+    border:1px solid #ddd;
+    background:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* =========================
+   手機版
+========================= */
+
+@media(max-width:760px){
+
+    .app{
+        display:block;
+    }
+
+    aside{
+        padding:18px;
+    }
+
+    aside h1{
+        margin-bottom:15px;
+    }
+
+    .logout{
+        margin-top:15px;
+    }
+
+    main{
+        padding:24px 15px;
+    }
+
+    .top{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .row{
+        grid-template-columns:70px 65px 1fr;
+    }
+
+    .row .actions{
+        grid-column:2/4;
+    }
+
+    .head{
+        display:none;
+    }
+}
 </style>
 </head>
-<body>
-<div class="app">
-<aside><div class="logo">WEIKEN</div><h1>威肯管理後台</h1><div class="nav">商品分類</div><button id="logout" class="logout">登出</button></aside>
-<main>
-<div class="top"><div><h2>商品分類管理</h2><p>新增、修改、刪除官網的商品分類。</p></div><button id="add" class="add">＋ 新增分類</button></div>
-<div id="notice" class="notice"></div>
-<div class="card"><div class="row head"><div>圖片</div><div>順序</div><div>分類名稱</div><div>操作</div></div><div id="list"><div class="state">正在讀取分類...</div></div></div>
-</main></div>
 
-<div id="modal" class="modal"><div class="panel"><h3 id="title">新增分類</h3>
+<body>
+
+<div class="app">
+
+<aside>
+
+    <div class="logo">
+        WEIKEN
+    </div>
+
+    <h1>
+        威肯管理後台
+    </h1>
+
+    <div class="nav">
+        商品分類
+    </div>
+
+    <button
+        id="logout"
+        class="logout"
+    >
+        登出
+    </button>
+
+</aside>
+
+
+<main>
+
+<div class="top">
+
+    <div>
+
+        <h2>
+            商品分類管理
+        </h2>
+
+        <p>
+            新增、修改、刪除官網的商品分類。
+        </p>
+
+    </div>
+
+    <button
+        id="add"
+        class="add"
+    >
+        ＋ 新增分類
+    </button>
+
+</div>
+
+
+<div
+    id="notice"
+    class="notice"
+></div>
+
+
+<div class="card">
+
+    <div class="row head">
+
+        <div>圖片</div>
+
+        <div>順序</div>
+
+        <div>分類名稱</div>
+
+        <div>操作</div>
+
+    </div>
+
+
+    <div id="list">
+
+        <div class="state">
+            正在讀取分類...
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+</div>
+
+
+
+<!-- =========================
+     新增 / 修改分類
+========================= -->
+
+<div
+    id="modal"
+    class="modal"
+>
+
+<div class="panel">
+
+<h3 id="title">
+    新增分類
+</h3>
+
+
 <form id="form">
-<div class="field"><label>分類名稱</label><input id="name" required placeholder="例如：輪椅"></div>
-<div class="field"><label>排序</label><input id="sort" required type="number" min="0" value="1"></div>
-<div class="field"><label>分類圖片</label><input id="image" type="file" accept="image/*"><img id="preview" class="preview"></div>
-<div class="modal-actions"><button id="cancel" type="button" class="cancel">取消</button><button id="save" class="save">儲存分類</button></div>
-</form></div></div>
+
+<div class="field">
+
+<label>
+    分類名稱
+</label>
+
+<input
+    id="name"
+    required
+    placeholder="例如：輪椅"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+    排序
+</label>
+
+<input
+    id="sort"
+    required
+    type="number"
+    min="0"
+    value="1"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+    分類圖片
+</label>
+
+<input
+    id="image"
+    type="file"
+    accept="image/*"
+>
+
+<img
+    id="preview"
+    class="preview"
+>
+
+</div>
+
+
+<div class="modal-actions">
+
+<button
+    id="cancel"
+    type="button"
+    class="cancel"
+>
+    取消
+</button>
+
+<button
+    id="save"
+    class="save"
+>
+    儲存分類
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
 <script>
-const ENDPOINT="https://sgp.cloud.appwrite.io/v1";
-const PROJECT_ID="6aab96e3000fa724b62d";
-const DATABASE_ID="6aab978f00363c84475b";
-const TABLE_ID="categories";
-const BUCKET_ID="weiken-images";
 
-const client=new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
-const account=new Appwrite.Account(client),db=new Appwrite.Databases(client),storage=new Appwrite.Storage(client);
-const list=document.querySelector("#list"),modal=document.querySelector("#modal"),form=document.querySelector("#form");
-const nameEl=document.querySelector("#name"),sortEl=document.querySelector("#sort"),imageEl=document.querySelector("#image"),preview=document.querySelector("#preview"),notice=document.querySelector("#notice");
-let editing=null;
+/* =====================================================
+   APPWRITE 設定
+===================================================== */
 
-function esc(v){return String(v??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
-function fileUrl(id){return id?`${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`:""}
-function say(t,type="ok"){notice.textContent=t;notice.className="notice show "+type;setTimeout(()=>notice.className="notice",3500)}
-async function guard(){try{await account.get()}catch(e){location.replace("index.html")}}
+const ENDPOINT =
+"https://sgp.cloud.appwrite.io/v1";
+
+const PROJECT_ID =
+"6aab96e3000fa724b62d";
+
+const DATABASE_ID =
+"6aab978f00363c84475b";
+
+const TABLE_ID =
+"categories";
+
+const BUCKET_ID =
+"weiken-images";
+
+/* WEIKEN Admin Team */
+
+const ADMIN_TEAM_ID =
+"6aaba9fa001fa283e8a7";
+
+
+/* =====================================================
+   APPWRITE
+===================================================== */
+
+const client =
+new Appwrite.Client()
+.setEndpoint(ENDPOINT)
+.setProject(PROJECT_ID);
+
+const account =
+new Appwrite.Account(client);
+
+const db =
+new Appwrite.Databases(client);
+
+const storage =
+new Appwrite.Storage(client);
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const list =
+document.querySelector("#list");
+
+const modal =
+document.querySelector("#modal");
+
+const form =
+document.querySelector("#form");
+
+const nameEl =
+document.querySelector("#name");
+
+const sortEl =
+document.querySelector("#sort");
+
+const imageEl =
+document.querySelector("#image");
+
+const preview =
+document.querySelector("#preview");
+
+const notice =
+document.querySelector("#notice");
+
+const saveBtn =
+document.querySelector("#save");
+
+let editing = null;
+
+
+/* =====================================================
+   安全輸出
+===================================================== */
+
+function esc(v){
+
+return String(v ?? "")
+.replace(
+    /[&<>"']/g,
+    x => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+    }[x])
+);
+
+}
+
+
+/* =====================================================
+   圖片網址
+===================================================== */
+
+function fileUrl(id){
+
+if(!id) return "";
+
+return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
+
+}
+
+
+/* =====================================================
+   訊息
+===================================================== */
+
+function say(text,type="ok"){
+
+notice.textContent=text;
+
+notice.className=
+"notice show "+type;
+
+setTimeout(()=>{
+
+    notice.className="notice";
+
+},3500);
+
+}
+
+
+/* =====================================================
+   登入檢查
+===================================================== */
+
+async function guard(){
+
+try{
+
+    await account.get();
+
+}catch(e){
+
+    location.replace("index.html");
+
+}
+
+}
+
+
+/* =====================================================
+   讀取分類
+===================================================== */
 
 async function load(){
- try{
-  const r=await db.listDocuments(DATABASE_ID,TABLE_ID,[Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]);
-  if(!r.documents.length){list.innerHTML='<div class="state">目前沒有分類，請按「新增分類」。</div>';return}
-  list.innerHTML=r.documents.map(d=>`<div class="row">
-   <div>${d.image_id?`<img class="thumb" src="${fileUrl(d.image_id)}">`:'<div class="thumb noimg">無圖片</div>'}</div>
-   <div>${esc(d.sort_order)}</div><div><strong>${esc(d.name)}</strong></div>
-   <div class="actions"><button onclick="editItem('${d.$id}')">修改</button><button class="danger" onclick="removeItem('${d.$id}')">刪除</button></div>
-  </div>`).join("");
- }catch(e){console.error(e);list.innerHTML=`<div class="state bad">讀取失敗：${esc(e.message)}</div>`}
+
+list.innerHTML =
+'<div class="state">正在讀取分類...</div>';
+
+try{
+
+const result =
+await db.listDocuments(
+
+    DATABASE_ID,
+
+    TABLE_ID,
+
+    [
+        Appwrite.Query.orderAsc("sort_order"),
+        Appwrite.Query.limit(100)
+    ]
+
+);
+
+
+if(!result.documents.length){
+
+list.innerHTML =
+'<div class="state">目前沒有分類，請按「新增分類」。</div>';
+
+return;
+
 }
-function open(d=null){editing=d;document.querySelector("#title").textContent=d?"修改分類":"新增分類";nameEl.value=d?.name||"";sortEl.value=d?.sort_order??1;imageEl.value="";
- if(d?.image_id){preview.src=fileUrl(d.image_id);preview.style.display="block"}else preview.style.display="none";modal.classList.add("open")}
-function close(){modal.classList.remove("open");editing=null}
-window.editItem=async id=>{try{open(await db.getDocument(DATABASE_ID,TABLE_ID,id))}catch(e){say(e.message,"err")}}
-window.removeItem=async id=>{if(!confirm("確定刪除這個分類嗎？"))return;try{const d=await db.getDocument(DATABASE_ID,TABLE_ID,id);await db.deleteDocument(DATABASE_ID,TABLE_ID,id);if(d.image_id)try{await storage.deleteFile(BUCKET_ID,d.image_id)}catch(_){ }say("分類已刪除");load()}catch(e){say("刪除失敗："+e.message,"err")}}
-imageEl.onchange=()=>{const f=imageEl.files[0];if(f){preview.src=URL.createObjectURL(f);preview.style.display="block"}}
-form.onsubmit=async e=>{e.preventDefault();const btn=document.querySelector("#save");btn.disabled=true;btn.textContent="儲存中...";let uploaded="";
- try{
-  let imageId=editing?.image_id||"";const f=imageEl.files[0];
-  if(f){const u=await storage.createFile(BUCKET_ID,Appwrite.ID.unique(),f);uploaded=u.$id;imageId=u.$id}
-  const data={name:nameEl.value.trim(),sort_order:Number(sortEl.value),image_id:imageId};
-  if(editing){const old=editing.image_id;await db.updateDocument(DATABASE_ID,TABLE_ID,editing.$id,data);if(f&&old)try{await storage.deleteFile(BUCKET_ID,old)}catch(_){ }say("分類已更新")}
-  else{await db.createDocument(DATABASE_ID,TABLE_ID,Appwrite.ID.unique(),data);say("分類已新增")}
-  close();await load();
- }catch(e){if(uploaded)try{await storage.deleteFile(BUCKET_ID,uploaded)}catch(_){ }say("儲存失敗："+e.message,"err")}
- finally{btn.disabled=false;btn.textContent="儲存分類"}}
-document.querySelector("#add").onclick=()=>open();document.querySelector("#cancel").onclick=close;modal.onclick=e=>{if(e.target===modal)close()}
-document.querySelector("#logout").onclick=async()=>{try{await account.deleteSession("current")}finally{location.replace("index.html")}}
-(async()=>{await guard();await load()})();
-</script></body></html>
+
+
+list.innerHTML =
+result.documents.map(d=>`
+
+<div class="row">
+
+<div>
+
+${
+
+d.image_id
+
+?
+
+`<img
+class="thumb"
+src="${fileUrl(d.image_id)}"
+alt="${esc(d.name)}"
+>`
+
+:
+
+'<div class="thumb noimg">無圖片</div>'
+
+}
+
+</div>
+
+
+<div>
+${esc(d.sort_order)}
+</div>
+
+
+<div>
+
+<strong>
+${esc(d.name)}
+</strong>
+
+</div>
+
+
+<div class="actions">
+
+<button
+onclick="editItem('${d.$id}')"
+>
+修改
+</button>
+
+<button
+class="danger"
+onclick="removeItem('${d.$id}')"
+>
+刪除
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+
+}catch(e){
+
+console.error(e);
+
+list.innerHTML =
+
+`<div class="state bad">
+讀取失敗：${esc(e.message)}
+</div>`;
+
+}
+
+}
+
+
+/* =====================================================
+   開啟視窗
+===================================================== */
+
+function openModal(d=null){
+
+editing=d;
+
+document.querySelector("#title").textContent =
+d ? "修改分類" : "新增分類";
+
+nameEl.value =
+d?.name || "";
+
+sortEl.value =
+d?.sort_order ?? 1;
+
+imageEl.value="";
+
+
+if(d?.image_id){
+
+preview.src =
+fileUrl(d.image_id);
+
+preview.style.display =
+"block";
+
+}else{
+
+preview.removeAttribute("src");
+
+preview.style.display =
+"none";
+
+}
+
+
+modal.classList.add("open");
+
+}
+
+
+/* =====================================================
+   關閉視窗
+===================================================== */
+
+function closeModal(){
+
+modal.classList.remove("open");
+
+editing=null;
+
+form.reset();
+
+sortEl.value=1;
+
+preview.removeAttribute("src");
+
+preview.style.display="none";
+
+}
+
+
+/* =====================================================
+   修改分類
+===================================================== */
+
+window.editItem =
+async function(id){
+
+try{
+
+const document =
+await db.getDocument(
+
+    DATABASE_ID,
+    TABLE_ID,
+    id
+
+);
+
+openModal(document);
+
+}catch(e){
+
+say(
+"讀取分類失敗："+e.message,
+"err"
+);
+
+}
+
+};
+
+
+/* =====================================================
+   刪除分類
+===================================================== */
+
+window.removeItem =
+async function(id){
+
+if(
+!confirm(
+"確定要刪除這個分類嗎？"
+)
+){
+
+return;
+
+}
+
+
+try{
+
+const document =
+await db.getDocument(
+
+    DATABASE_ID,
+    TABLE_ID,
+    id
+
+);
+
+
+/* 刪除資料 */
+
+await db.deleteDocument(
+
+    DATABASE_ID,
+    TABLE_ID,
+    id
+
+);
+
+
+/* 刪除圖片 */
+
+if(document.image_id){
+
+try{
+
+await storage.deleteFile(
+
+    BUCKET_ID,
+    document.image_id
+
+);
+
+}catch(error){
+
+console.warn(
+"圖片刪除失敗",
+error
+);
+
+}
+
+}
+
+
+say(
+"分類已刪除"
+);
+
+await load();
+
+
+}catch(e){
+
+say(
+"刪除失敗："+e.message,
+"err"
+);
+
+}
+
+};
+
+
+/* =====================================================
+   圖片預覽
+===================================================== */
+
+imageEl.onchange = ()=>{
+
+const file =
+imageEl.files[0];
+
+if(!file){
+
+return;
+
+}
+
+preview.src =
+URL.createObjectURL(file);
+
+preview.style.display =
+"block";
+
+};
+
+
+/* =====================================================
+   儲存分類
+===================================================== */
+
+form.onsubmit =
+async function(e){
+
+e.preventDefault();
+
+
+const categoryName =
+nameEl.value.trim();
+
+const sortOrder =
+Number(sortEl.value);
+
+
+if(!categoryName){
+
+say(
+"請輸入分類名稱",
+"err"
+);
+
+return;
+
+}
+
+
+saveBtn.disabled=true;
+
+saveBtn.textContent=
+"儲存中...";
+
+
+let uploadedFileId="";
+
+
+try{
+
+
+/* =================================================
+   原本圖片
+================================================= */
+
+let imageId =
+editing?.image_id || "";
+
+
+/* =================================================
+   如果有選新圖片 → 上傳
+================================================= */
+
+const file =
+imageEl.files[0];
+
+
+if(file){
+
+const upload =
+await storage.createFile(
+
+    BUCKET_ID,
+
+    Appwrite.ID.unique(),
+
+    file,
+
+    [
+
+        /* 官網所有人可以看圖片 */
+
+        Appwrite.Permission.read(
+            Appwrite.Role.any()
+        ),
+
+        /* WEIKEN Admin 可以修改 */
+
+        Appwrite.Permission.update(
+            Appwrite.Role.team(
+                ADMIN_TEAM_ID
+            )
+        ),
+
+        /* WEIKEN Admin 可以刪除 */
+
+        Appwrite.Permission.delete(
+            Appwrite.Role.team(
+                ADMIN_TEAM_ID
+            )
+        )
+
+    ]
+
+);
+
+
+uploadedFileId =
+upload.$id;
+
+imageId =
+upload.$id;
+
+}
+
+
+/* =================================================
+   分類資料
+================================================= */
+
+const data = {
+
+    name:categoryName,
+
+    sort_order:sortOrder,
+
+    image_id:imageId
+
+};
+
+
+/* =================================================
+   修改分類
+================================================= */
+
+if(editing){
+
+const oldImageId =
+editing.image_id;
+
+
+await db.updateDocument(
+
+    DATABASE_ID,
+
+    TABLE_ID,
+
+    editing.$id,
+
+    data
+
+);
+
+
+/* 新圖片成功後刪除舊圖片 */
+
+if(
+file &&
+oldImageId &&
+oldImageId !== imageId
+){
+
+try{
+
+await storage.deleteFile(
+
+    BUCKET_ID,
+    oldImageId
+
+);
+
+}catch(error){
+
+console.warn(
+"舊圖片刪除失敗",
+error
+);
+
+}
+
+}
+
+
+say(
+"分類已更新"
+);
+
+
+/* =================================================
+   新增分類
+================================================= */
+
+}else{
+
+
+await db.createDocument(
+
+    DATABASE_ID,
+
+    TABLE_ID,
+
+    Appwrite.ID.unique(),
+
+    data,
+
+    [
+
+        /* 官網訪客可以讀 */
+
+        Appwrite.Permission.read(
+            Appwrite.Role.any()
+        ),
+
+        /* WEIKEN Admin 可以修改 */
+
+        Appwrite.Permission.update(
+            Appwrite.Role.team(
+                ADMIN_TEAM_ID
+            )
+        ),
+
+        /* WEIKEN Admin 可以刪除 */
+
+        Appwrite.Permission.delete(
+            Appwrite.Role.team(
+                ADMIN_TEAM_ID
+            )
+        )
+
+    ]
+
+);
+
+
+say(
+"分類已新增"
+);
+
+}
+
+
+closeModal();
+
+await load();
+
+
+}catch(e){
+
+console.error(e);
+
+
+/* 如果資料新增失敗
+   但圖片已經上傳
+   → 把圖片清掉
+*/
+
+if(uploadedFileId){
+
+try{
+
+await storage.deleteFile(
+
+    BUCKET_ID,
+    uploadedFileId
+
+);
+
+}catch(error){
+
+console.warn(error);
+
+}
+
+}
+
+
+say(
+"儲存失敗："+e.message,
+"err"
+);
+
+
+}finally{
+
+saveBtn.disabled=false;
+
+saveBtn.textContent=
+"儲存分類";
+
+}
+
+};
+
+
+/* =====================================================
+   按鈕
+===================================================== */
+
+document
+.querySelector("#add")
+.onclick =
+()=>openModal();
+
+
+document
+.querySelector("#cancel")
+.onclick =
+closeModal;
+
+
+modal.onclick =
+e=>{
+
+if(e.target===modal){
+
+closeModal();
+
+}
+
+};
+
+
+/* =====================================================
+   登出
+===================================================== */
+
+document
+.querySelector("#logout")
+.onclick =
+async()=>{
+
+try{
+
+await account.deleteSession(
+"current"
+);
+
+}catch(e){
+
+console.warn(e);
+
+}finally{
+
+location.replace(
+"index.html"
+);
+
+}
+
+};
+
+
+/* =====================================================
+   啟動
+===================================================== */
+
+(async()=>{
+
+await guard();
+
+await load();
+
+})();
+
+</script>
+
+</body>
+</html>
