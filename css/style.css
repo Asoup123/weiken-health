@@ -2215,3 +2215,64 @@ img {
     font-size: 14px;
   }
 }
+
+/* =========================================================
+   PRODUCTS PAGE — compact breadcrumb
+========================================================= */
+.products-hero {
+  display: none !important;
+}
+
+.products-breadcrumb-section {
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(20, 20, 20, .08);
+  background: #fff;
+}
+
+.products-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(20, 20, 20, .48);
+}
+
+.products-breadcrumb a {
+  color: rgba(20, 20, 20, .48);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.products-breadcrumb a:hover {
+  color: #151515;
+}
+
+.products-breadcrumb [aria-current="page"] {
+  color: #151515;
+}
+
+.breadcrumb-separator {
+  color: rgba(20, 20, 20, .25);
+}
+
+.products-catalog {
+  padding-top: 34px;
+}
+
+@media (max-width: 700px) {
+  .products-breadcrumb-section {
+    padding: 16px 0;
+  }
+
+  .products-breadcrumb {
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .products-catalog {
+    padding-top: 22px;
+  }
+}
