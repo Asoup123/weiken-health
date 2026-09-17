@@ -356,79 +356,8 @@
         </div>
 
 
-        <div class="category-list">
-
-          <a
-            href="products.html?category=wheelchair"
-            class="category-item"
-          >
-            <div class="category-circle">
-              <span class="category-icon">♿</span>
-            </div>
-
-            <strong>輪椅</strong>
-          </a>
-
-
-          <a
-            href="products.html?category=walking"
-            class="category-item category-offset"
-          >
-            <div class="category-circle">
-              <span class="category-icon">⌁</span>
-            </div>
-
-            <strong>助行輔具</strong>
-          </a>
-
-
-          <a
-            href="products.html?category=toilet"
-            class="category-item"
-          >
-            <div class="category-circle">
-              <span class="category-icon">○</span>
-            </div>
-
-            <strong>如廁用品</strong>
-          </a>
-
-
-          <a
-            href="products.html?category=bath"
-            class="category-item category-offset"
-          >
-            <div class="category-circle">
-              <span class="category-icon">♨</span>
-            </div>
-
-            <strong>沐浴用品</strong>
-          </a>
-
-
-          <a
-            href="products.html?category=homecare"
-            class="category-item"
-          >
-            <div class="category-circle">
-              <span class="category-icon">⌂</span>
-            </div>
-
-            <strong>居家照護</strong>
-          </a>
-
-
-          <a
-            href="products.html"
-            class="category-item category-offset"
-          >
-            <div class="category-circle category-all">
-              <span class="category-icon">＋</span>
-            </div>
-
-            <strong>全部商品</strong>
-          </a>
-
+        <div class="category-list" id="dynamicCategoryList">
+          <div class="category-loading">正在讀取商品分類...</div>
         </div>
 
       </div>
@@ -607,6 +536,75 @@
     </span>
   </a>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
+  <script>
+  (() => {
+    const ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
+    const PROJECT_ID = "6aab96e3000fa724b62d";
+    const DATABASE_ID = "6aab978f00363c84475b";
+    const TABLE_ID = "categories";
+    const BUCKET_ID = "weiken-images";
+
+    const client = new Appwrite.Client()
+      .setEndpoint(ENDPOINT)
+      .setProject(PROJECT_ID);
+    const db = new Appwrite.Databases(client);
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+      })[ch]);
+    }
+
+    function fileUrl(id) {
+      return id
+        ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`
+        : "";
+    }
+
+    function categoryUrl(doc) {
+      return `products.html?category=${encodeURIComponent(doc.$id)}`;
+    }
+
+    async function loadCategories() {
+      const list = document.getElementById("dynamicCategoryList");
+      if (!list) return;
+
+      try {
+        const result = await db.listDocuments(
+          DATABASE_ID,
+          TABLE_ID,
+          [Appwrite.Query.orderAsc("sort_order"), Appwrite.Query.limit(100)]
+        );
+
+        if (!result.documents.length) {
+          list.innerHTML = '<div class="category-loading">目前尚未建立商品分類。</div>';
+          return;
+        }
+
+        list.innerHTML = result.documents.map((doc, index) => {
+          const image = doc.image_id
+            ? `<img src="${fileUrl(doc.image_id)}" alt="${escapeHtml(doc.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`
+            : '<span class="category-icon">＋</span>';
+
+          return `
+            <a href="${categoryUrl(doc)}" class="category-item${index % 2 ? ' category-offset' : ''}">
+              <div class="category-circle">${image}</div>
+              <strong>${escapeHtml(doc.name)}</strong>
+            </a>`;
+        }).join("");
+
+      } catch (error) {
+        console.error("商品分類讀取失敗：", error);
+        list.innerHTML = '<div class="category-loading">商品分類暫時無法讀取。</div>';
+      }
+    }
+
+    loadCategories();
+  })();
+  </script>
 
   <script src="js/main.js"></script>
 
