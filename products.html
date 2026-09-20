@@ -13,227 +13,229 @@
   text-align:center;
   color:#888;
 }
+.product-card-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
-/* ===== 大分類 / 小分類 ===== */
+/* ===== 商品分類：大分類橫排 / hover 顯示小分類 ===== */
 .product-category-directory{
-  margin-bottom:38px;
-  overflow:visible;
-}
-.category-strip-shell{
   position:relative;
-  border-bottom:1px solid #deded8;
+  margin-bottom:54px;
+  border-top:1px solid rgba(36,75,54,.18);
 }
-.product-filter{
-  display:flex;
-  flex-wrap:nowrap;
-  gap:34px;
+.products-page .product-filter{
+  display:flex!important;
+  width:100%;
+  gap:0!important;
+  padding:0!important;
   overflow-x:auto;
   overflow-y:hidden;
+  flex-wrap:nowrap!important;
+  border-bottom:1px solid rgba(36,75,54,.15);
   scrollbar-width:none;
-  -ms-overflow-style:none;
-  scroll-behavior:smooth;
-  padding:0 0 2px;
 }
-.product-filter::-webkit-scrollbar{display:none}
-.product-filter-btn{
-  flex:0 0 auto;
-  position:relative;
-  display:flex;
+.products-page .product-filter::-webkit-scrollbar{display:none}
+
+.products-page .product-filter-btn{
+  flex:1 0 180px!important;
+  width:auto!important;
+  min-width:180px!important;
+  min-height:92px!important;
+  padding:0 18px!important;
+  display:flex!important;
   align-items:center;
-  gap:8px;
-  min-width:max-content;
-  padding:15px 1px 17px;
-  border:0;
-  background:transparent;
-  color:#777;
-  font-size:15px;
-  font-weight:700;
+  gap:14px;
+  border:0!important;
+  border-right:1px solid rgba(36,75,54,.13)!important;
+  border-bottom:2px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#173b2a!important;
+  text-align:left;
   cursor:pointer;
-  white-space:nowrap;
+  transition:background .2s ease,border-color .2s ease,color .2s ease;
 }
-.product-filter-btn::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:2px;
-  background:#315d43;
-  transform:scaleX(0);
-  transform-origin:left center;
-  transition:transform .2s ease;
-}
-.product-filter-btn:hover,
-.product-filter-btn.is-active{
-  color:#315d43;
-}
-.product-filter-btn.is-active::after{
-  transform:scaleX(1);
+.products-page .product-filter-btn:hover,
+.products-page .product-filter-btn.is-parent-open,
+.products-page .product-filter-btn.is-active{
+  padding:0 18px!important;
+  background:rgba(168,183,155,.12)!important;
+  border-bottom-color:#356b4a!important;
 }
 .filter-number{
-  color:#aaa;
+  flex:0 0 auto;
+  color:rgba(36,75,54,.45);
   font-size:11px;
   font-weight:600;
-  letter-spacing:.04em;
+  letter-spacing:.12em;
 }
-.product-filter-btn.is-active .filter-number{color:#76907e}
-.filter-arrow{
-  font-size:12px;
-  transition:transform .2s ease;
+.filter-name{
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:.01em;
+  white-space:nowrap;
 }
-.product-filter-btn.is-open .filter-arrow{transform:rotate(180deg)}
+/* 分類箭頭完全移除 */
+.filter-arrow{display:none!important}
 
+/* 小分類區 */
 .subcategory-panel{
-  display:none;
-  padding:17px 0 0;
-}
-.subcategory-panel.is-open{display:block}
-.subcategory-list{
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px 22px;
-  align-items:center;
-}
-.subcategory-btn{
-  position:relative;
-  border:0;
-  background:transparent;
-  padding:8px 0 9px;
-  color:#777;
-  font-size:14px;
-  cursor:pointer;
-}
-.subcategory-btn::after{
-  content:"";
   position:absolute;
+  z-index:30;
   left:0;
   right:0;
-  bottom:3px;
-  height:1px;
-  background:#315d43;
-  transform:scaleX(0);
-  transition:transform .18s ease;
+  top:100%;
+  padding:0;
+  background:#fff;
+  border-bottom:1px solid rgba(36,75,54,.16);
+  box-shadow:0 12px 24px rgba(23,59,42,.07);
+}
+.subcategory-panel[hidden]{display:none!important}
+.subcategory-list{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:0;
+  min-height:62px;
+  padding:8px 18px;
+}
+.subcategory-btn{
+  appearance:none;
+  border:0;
+  background:transparent;
+  padding:12px 18px;
+  color:#59635c;
+  font:inherit;
+  font-size:14px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:color .18s ease,background .18s ease;
 }
 .subcategory-btn:hover,
 .subcategory-btn.is-active{
-  color:#315d43;
+  color:#173b2a;
+  background:#f1f4ef;
 }
-.subcategory-btn.is-active::after{transform:scaleX(1)}
 .subcategory-empty{
-  color:#aaa;
-  font-size:13px;
-  padding:8px 0;
+  padding:12px 18px;
+  color:#999;
+  font-size:14px;
 }
 
-/* ===== 商品卡 ===== */
-.products-grid{
-  align-items:start;
+/* 商品卡：維持圖片可點、縮小圖片、名稱加大、hover 回應 */
+.products-page .products-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:48px 22px;
 }
-.product-card{
-  transition:transform .22s ease, box-shadow .22s ease;
+.products-page .product-card{
+  min-width:0;
+  transition:transform .22s ease,box-shadow .22s ease;
 }
-.product-card:hover{
+.products-page .product-card:hover{
   transform:translateY(-3px);
 }
-.product-card-image-link{
-  display:block;
-  color:inherit;
-  text-decoration:none;
-}
-.product-card-image{
+.products-page .product-card-image{
   position:relative;
   width:100%;
-  aspect-ratio:1 / 1;
-  max-height:260px;
+  aspect-ratio:1/1;
   overflow:hidden;
+  display:grid;
+  place-items:center;
   background:#fff;
 }
 .product-card-images{
-  position:relative;
-  width:100%;
-  height:100%;
+  position:absolute;
+  inset:0;
+  background:#fff;
 }
-.product-card-photo{
+.products-page .product-card-photo{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  display:block;
+  max-height:260px;
+  margin:auto;
+  padding:24px;
   object-fit:contain;
-  padding:10px;
   opacity:0;
-  transform:scale(.98);
-  transition:opacity .2s ease, transform .25s ease;
+  visibility:hidden;
+  transition:opacity .25s ease,transform .25s ease;
 }
-.product-card-photo.is-active{
+.products-page .product-card-photo.is-active{
   opacity:1;
-  transform:scale(1);
+  visibility:visible;
 }
-.product-card:hover .product-card-photo.is-active{
+.products-page .product-card:hover .product-card-photo.is-active{
   transform:scale(1.035);
 }
+.product-card-image-link{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:block;
+}
+.product-image-nav{z-index:5}
 .product-card-link{
   display:block;
-  text-align:center;
+  color:inherit;
   text-decoration:none;
-  color:#222;
-  padding-top:14px;
+  text-align:center;
 }
-.product-card-link h2{
-  margin:0;
+.products-page .product-card h2{
+  margin:14px 0 0;
+  color:#173b2a;
   font-size:18px;
-  line-height:1.55;
+  line-height:1.5;
   font-weight:700;
   transition:color .2s ease;
 }
-.product-card:hover .product-card-link h2{
-  color:#315d43;
-}
-.product-image-nav{
-  position:absolute;
-  top:50%;
-  z-index:4;
-  width:34px;
-  height:34px;
-  margin-top:-17px;
-  border:0;
-  border-radius:50%;
-  background:rgba(255,255,255,.92);
-  color:#333;
-  box-shadow:0 3px 12px rgba(0,0,0,.10);
-  opacity:0;
-  transform:translateY(4px);
-  transition:opacity .18s ease, transform .18s ease;
-}
-.product-card-image:hover .product-image-nav{
-  opacity:1;
-  transform:translateY(0);
-}
-.product-image-prev{left:9px}
-.product-image-next{right:9px}
+.products-page .product-card:hover h2{color:#356b4a}
 
-@media(max-width:760px){
-  .product-category-directory{margin-bottom:28px}
-  .product-filter{
-    gap:25px;
-    padding-right:18px;
+@media(max-width:1050px){
+  .products-page .products-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
   }
-  .product-filter-btn{
-    padding-top:12px;
-    padding-bottom:14px;
-    font-size:14px;
+}
+
+@media(max-width:700px){
+  .product-category-directory{margin-bottom:38px}
+  .products-page .product-filter-btn{
+    flex:0 0 auto!important;
+    min-width:145px!important;
+    min-height:70px!important;
+    padding:0 14px!important;
   }
-  .subcategory-panel{padding-top:13px}
-  .subcategory-list{gap:5px 18px}
-  .product-card-image{max-height:220px}
-  .product-card-link h2{font-size:17px}
-  .product-image-nav{
-    opacity:.88;
-    transform:none;
-    width:31px;
-    height:31px;
-    margin-top:-15.5px;
+  .products-page .product-filter-btn:hover,
+  .products-page .product-filter-btn.is-parent-open,
+  .products-page .product-filter-btn.is-active{
+    padding:0 14px!important;
   }
+  .filter-name{font-size:15px}
+
+  /* 手機沒有 hover：點大分類展開小分類 */
+  .subcategory-panel{
+    position:static;
+    box-shadow:none;
+  }
+  .subcategory-list{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding:6px 8px;
+  }
+  .subcategory-btn{flex:0 0 auto}
+
+  .products-page .products-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:32px 12px;
+  }
+  .products-page .product-card-photo{
+    max-height:220px;
+    padding:14px;
+  }
+  .products-page .product-card h2{font-size:17px}
 }
 </style>
 </head>
@@ -403,16 +405,14 @@
     <div class="section-container">
 
       <section class="product-category-directory" id="category" aria-label="商品分類">
-          <div class="category-strip-shell">
-            <nav class="product-filter" id="productFilter" aria-label="商品大分類">
-              <button class="product-filter-btn is-active" type="button" data-filter="all">
-                <span class="filter-number">01</span>
-                <span class="filter-name">全部商品</span>
-              </button>
-            </nav>
-          </div>
+          <nav class="product-filter" id="productFilter" aria-label="商品大分類">
+            <button class="product-filter-btn is-active" type="button" data-filter="all">
+              <span class="filter-number">01</span>
+              <span class="filter-name">全部商品</span>
+            </button>
+          </nav>
 
-          <div class="subcategory-panel" id="subcategoryPanel">
+          <div class="subcategory-panel" id="subcategoryPanel" hidden>
             <div class="subcategory-list" id="subcategoryList"></div>
           </div>
         </section>
@@ -506,6 +506,7 @@
 
   const desktopLinks = document.getElementById('desktopCategoryLinks');
   const mobileLinks = document.getElementById('mobileCategoryLinks');
+  const categoryDirectory = document.querySelector('.product-category-directory');
   const filterNav = document.getElementById('productFilter');
   const subcategoryPanel = document.getElementById('subcategoryPanel');
   const subcategoryList = document.getElementById('subcategoryList');
@@ -515,8 +516,9 @@
   let categories = [];
   let products = [];
   let currentFilter = 'all';
-  let openParentId = '';
   let currentSearch = '';
+  let openParentId = '';
+  let closeTimer = null;
 
   function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -541,10 +543,6 @@
       .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
   }
 
-  function categoryById(id) {
-    return categories.find(category => category.$id === id);
-  }
-
   function normalizeImageIds(value) {
     if (!value) return [];
 
@@ -563,9 +561,8 @@
       if (!text) return [];
 
       if (text.startsWith('[')) {
-        try {
-          return normalizeImageIds(JSON.parse(text));
-        } catch (error) {}
+        try { return normalizeImageIds(JSON.parse(text)); }
+        catch (error) {}
       }
 
       return text.split(',').map(item => item.trim()).filter(Boolean);
@@ -575,17 +572,13 @@
   }
 
   function getProductImages(product) {
-    const candidates = [
+    let ids = [];
+    [
       product.image_ids,
       product.images,
       product.gallery_image_ids,
       product.gallery_ids
-    ];
-
-    let ids = [];
-    candidates.forEach(value => {
-      ids.push(...normalizeImageIds(value));
-    });
+    ].forEach(value => ids.push(...normalizeImageIds(value)));
 
     if (product.image_id) ids.unshift(product.image_id);
     return [...new Set(ids.filter(Boolean))];
@@ -594,11 +587,9 @@
   function productImageMarkup(product) {
     const images = getProductImages(product);
 
-    if (!images.length) {
-      return '<span>商品圖片</span>';
-    }
+    if (!images.length) return '<span>商品圖片</span>';
 
-    const slides = images.map((id, index) => `
+    const slides = images.map((id,index) => `
       <img
         src="${fileUrl(id)}"
         alt="${esc(product.name)}${images.length > 1 ? ` 第 ${index + 1} 張` : ''}"
@@ -615,6 +606,11 @@
 
     return `
       <div class="product-card-images" data-current-image="0" data-image-count="${images.length}">
+        <a
+          class="product-card-image-link"
+          href="product.html?id=${encodeURIComponent(product.$id)}"
+          aria-label="查看 ${esc(product.name)}"
+        ></a>
         ${slides}
         ${controls}
       </div>
@@ -627,10 +623,8 @@
     const visible = products.filter(product => {
       const categoryMatch =
         currentFilter === 'all' || product.category_id === currentFilter;
-
       const searchMatch =
         !keyword || String(product.name || '').toLowerCase().includes(keyword);
-
       return categoryMatch && searchMatch;
     });
 
@@ -641,150 +635,82 @@
       return;
     }
 
-    grid.innerHTML = visible.map(product => {
-      const detailUrl = `product.html?id=${encodeURIComponent(product.$id)}`;
+    grid.innerHTML = visible.map(product => `
+      <article class="product-card" data-category="${esc(product.category_id)}">
+        <div class="product-card-image">
+          ${productImageMarkup(product)}
+        </div>
 
-      return `
-        <article class="product-card" data-category="${esc(product.category_id)}">
-          <a
-            href="${detailUrl}"
-            class="product-card-image-link"
-            aria-label="查看 ${esc(product.name)}"
-          >
-            <div class="product-card-image">
-              ${productImageMarkup(product)}
-            </div>
-          </a>
-
-          <a
-            href="${detailUrl}"
-            class="product-card-link"
-            aria-label="查看 ${esc(product.name)}"
-          >
-            <h2>${esc(product.name)}</h2>
-          </a>
-        </article>
-      `;
-    }).join('');
+        <a
+          href="product.html?id=${encodeURIComponent(product.$id)}"
+          class="product-card-link"
+          aria-label="查看 ${esc(product.name)}"
+        >
+          <h2>${esc(product.name)}</h2>
+        </a>
+      </article>
+    `).join('');
   }
 
   function setFilter(filter) {
     currentFilter = filter;
 
     document.querySelectorAll('.subcategory-btn').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.filter === filter);
+      btn.classList.toggle('is-active', btn.dataset.category === filter);
     });
 
-    document.querySelectorAll('.product-filter-btn').forEach(btn => {
-      const isAll = filter === 'all' && btn.dataset.filter === 'all';
-      const belongsToOpenParent =
-        filter !== 'all' &&
-        openParentId &&
-        btn.dataset.parentId === openParentId;
-
-      btn.classList.toggle('is-active', isAll || belongsToOpenParent);
-    });
-
-    const url = new URL(location.href);
-
-    if (filter === 'all') {
-      url.searchParams.delete('category');
-    } else {
-      url.searchParams.set('category', filter);
+    const allButton = filterNav.querySelector('[data-filter="all"]');
+    if (allButton) {
+      allButton.classList.toggle('is-active', filter === 'all' && !openParentId);
     }
 
-    history.replaceState(null, '', url);
     renderProducts();
+  }
+
+  function setParentVisual(parentId) {
+    filterNav.querySelectorAll('.product-filter-btn[data-parent]').forEach(btn => {
+      btn.classList.toggle('is-parent-open', btn.dataset.parent === parentId);
+    });
   }
 
   function closeSubcategories() {
     openParentId = '';
-    subcategoryPanel.classList.remove('is-open');
+    subcategoryPanel.hidden = true;
     subcategoryList.innerHTML = '';
+    setParentVisual('');
 
-    document.querySelectorAll('.product-filter-btn[data-parent-id]').forEach(btn => {
-      btn.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    });
+    const allButton = filterNav.querySelector('[data-filter="all"]');
+    if (allButton) allButton.classList.toggle('is-active', currentFilter === 'all');
   }
 
-  function openSubcategories(parentId, keepFilter = false) {
-    const parent = categoryById(parentId);
-    if (!parent) return;
+  function showSubcategories(parentId) {
+    clearTimeout(closeTimer);
 
     const children = childrenOf(parentId);
     openParentId = parentId;
+    setParentVisual(parentId);
 
-    document.querySelectorAll('.product-filter-btn[data-parent-id]').forEach(btn => {
-      const active = btn.dataset.parentId === parentId;
-      btn.classList.toggle('is-open', active);
-      btn.setAttribute('aria-expanded', active ? 'true' : 'false');
-    });
+    const allButton = filterNav.querySelector('[data-filter="all"]');
+    if (allButton) allButton.classList.remove('is-active');
 
-    if (!children.length) {
-      subcategoryList.innerHTML =
-        '<div class="subcategory-empty">此大分類目前尚未建立小分類。</div>';
-    } else {
-      subcategoryList.innerHTML = children.map(child => `
-        <button
-          class="subcategory-btn${currentFilter === child.$id ? ' is-active' : ''}"
-          type="button"
-          data-filter="${esc(child.$id)}"
-        >${esc(child.name)}</button>
-      `).join('');
-    }
+    subcategoryList.innerHTML = children.length
+      ? children.map(child => `
+          <button
+            class="subcategory-btn ${child.$id === currentFilter ? 'is-active' : ''}"
+            type="button"
+            data-category="${esc(child.$id)}"
+            data-parent="${esc(parentId)}"
+          >${esc(child.name)}</button>
+        `).join('')
+      : '<span class="subcategory-empty">此分類目前尚未建立小分類。</span>';
 
-    subcategoryPanel.classList.add('is-open');
-
-    if (!keepFilter && currentFilter === 'all') {
-      document.querySelector('.product-filter-btn[data-filter="all"]')
-        ?.classList.remove('is-active');
-    }
+    subcategoryPanel.hidden = false;
   }
 
-  function renderCategoryNavigation() {
-    const parentItems = parents();
-
-    filterNav.innerHTML = `
-      <button class="product-filter-btn is-active" type="button" data-filter="all">
-        <span class="filter-number">01</span>
-        <span class="filter-name">全部商品</span>
-      </button>
-    `;
-
-    desktopLinks.innerHTML = '<a href="products.html">全部商品</a>';
-    mobileLinks.innerHTML = '<a href="products.html">全部商品</a>';
-
-    parentItems.forEach((parent, index) => {
-      const number = String(index + 2).padStart(2, '0');
-
-      filterNav.insertAdjacentHTML('beforeend', `
-        <button
-          class="product-filter-btn"
-          type="button"
-          data-parent-id="${esc(parent.$id)}"
-          aria-expanded="false"
-        >
-          <span class="filter-number">${number}</span>
-          <span class="filter-name">${esc(parent.name)}</span>
-          <span class="filter-arrow" aria-hidden="true">⌄</span>
-        </button>
-      `);
-
-      /* 頁首選單只列大分類；點擊後進商品頁並展開該大分類 */
-      const parentUrl =
-        `products.html?parent=${encodeURIComponent(parent.$id)}`;
-
-      desktopLinks.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${parentUrl}">${esc(parent.name)}</a>`
-      );
-
-      mobileLinks.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${parentUrl}">${esc(parent.name)}</a>`
-      );
-    });
+  function scheduleClose() {
+    if (window.matchMedia('(max-width:700px)').matches) return;
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => closeSubcategories(), 120);
   }
 
   async function loadCategories() {
@@ -794,7 +720,87 @@
     ]);
 
     categories = result.documents;
-    renderCategoryNavigation();
+    const parentList = parents();
+
+    /* 頁首只顯示大分類 */
+    parentList.forEach(parent => {
+      const url = `products.html?parent=${encodeURIComponent(parent.$id)}`;
+      const name = esc(parent.name);
+
+      desktopLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
+      mobileLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
+    });
+
+    /* 商品頁上方只顯示大分類，沒有任何箭頭 */
+    parentList.forEach((parent,index) => {
+      const number = String(index + 2).padStart(2,'0');
+
+      filterNav.insertAdjacentHTML('beforeend', `
+        <button
+          class="product-filter-btn"
+          type="button"
+          data-parent="${esc(parent.$id)}"
+        >
+          <span class="filter-number">${number}</span>
+          <span class="filter-name">${esc(parent.name)}</span>
+        </button>
+      `);
+    });
+
+    /* 電腦：滑鼠移到大分類就顯示小分類 */
+    filterNav.addEventListener('mouseover', e => {
+      if (window.matchMedia('(max-width:700px)').matches) return;
+      const button = e.target.closest('.product-filter-btn[data-parent]');
+      if (!button) return;
+      showSubcategories(button.dataset.parent);
+    });
+
+    filterNav.addEventListener('mouseleave', scheduleClose);
+    subcategoryPanel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+    subcategoryPanel.addEventListener('mouseleave', scheduleClose);
+
+    /* 手機：沒有 hover，所以點大分類展開 */
+    filterNav.addEventListener('click', e => {
+      const allButton = e.target.closest('.product-filter-btn[data-filter="all"]');
+      if (allButton) {
+        closeSubcategories();
+        const url = new URL(location.href);
+        url.searchParams.delete('category');
+        url.searchParams.delete('parent');
+        history.replaceState(null,'',url);
+        setFilter('all');
+        return;
+      }
+
+      const parentButton = e.target.closest('.product-filter-btn[data-parent]');
+      if (!parentButton) return;
+
+      const parentId = parentButton.dataset.parent;
+
+      if (window.matchMedia('(max-width:700px)').matches) {
+        if (openParentId === parentId && !subcategoryPanel.hidden) {
+          closeSubcategories();
+        } else {
+          showSubcategories(parentId);
+        }
+      }
+    });
+
+    subcategoryList.addEventListener('click', e => {
+      const button = e.target.closest('.subcategory-btn');
+      if (!button) return;
+
+      const categoryId = button.dataset.category;
+      const parentId = button.dataset.parent;
+      const url = new URL(location.href);
+
+      url.searchParams.set('category', categoryId);
+      url.searchParams.set('parent', parentId);
+      history.replaceState(null,'',url);
+
+      setFilter(categoryId);
+      showSubcategories(parentId);
+    });
   }
 
   async function loadProducts() {
@@ -806,63 +812,6 @@
     products = result.documents;
   }
 
-  filterNav.addEventListener('click', e => {
-    const button = e.target.closest('.product-filter-btn');
-    if (!button) return;
-
-    if (button.dataset.filter === 'all') {
-      closeSubcategories();
-      setFilter('all');
-
-      const url = new URL(location.href);
-      url.searchParams.delete('parent');
-      history.replaceState(null, '', url);
-      return;
-    }
-
-    const parentId = button.dataset.parentId;
-    if (!parentId) return;
-
-    if (openParentId === parentId) {
-      closeSubcategories();
-
-      if (currentFilter !== 'all') {
-        setFilter('all');
-      } else {
-        document.querySelector('.product-filter-btn[data-filter="all"]')
-          ?.classList.add('is-active');
-      }
-
-      const url = new URL(location.href);
-      url.searchParams.delete('parent');
-      url.searchParams.delete('category');
-      history.replaceState(null, '', url);
-      return;
-    }
-
-    openSubcategories(parentId);
-
-    const url = new URL(location.href);
-    url.searchParams.set('parent', parentId);
-    history.replaceState(null, '', url);
-  });
-
-  subcategoryList.addEventListener('click', e => {
-    const button = e.target.closest('.subcategory-btn');
-    if (!button) return;
-
-    const filter = button.dataset.filter;
-    setFilter(filter);
-
-    const url = new URL(location.href);
-    if (openParentId) url.searchParams.set('parent', openParentId);
-    history.replaceState(null, '', url);
-  });
-
-  /*
-    圖片整張都可以進詳細頁。
-    只有點左右箭頭時攔截連結，改成切換商品圖片。
-  */
   grid.addEventListener('click', e => {
     const navButton = e.target.closest('.product-image-nav');
     if (!navButton) return;
@@ -878,13 +827,11 @@
 
     let current = Number(imagesWrap.dataset.currentImage || 0);
 
-    if (navButton.classList.contains('product-image-next')) {
-      current = (current + 1) % photos.length;
-    } else {
-      current = (current - 1 + photos.length) % photos.length;
-    }
+    current = navButton.classList.contains('product-image-next')
+      ? (current + 1) % photos.length
+      : (current - 1 + photos.length) % photos.length;
 
-    photos.forEach((photo, index) => {
+    photos.forEach((photo,index) => {
       photo.classList.toggle('is-active', index === current);
     });
 
@@ -896,30 +843,30 @@
       await Promise.all([loadCategories(), loadProducts()]);
 
       const params = new URLSearchParams(location.search);
-      const requestedCategory = params.get('category') || '';
-      const requestedParent = params.get('parent') || '';
+      const requestedCategory = params.get('category');
+      const requestedParent = params.get('parent');
 
-      const requestedCategoryData =
-        requestedCategory ? categoryById(requestedCategory) : null;
+      const child = requestedCategory
+        ? categories.find(c => c.$id === requestedCategory && c.parent_id)
+        : null;
 
-      if (requestedCategoryData) {
-        if (requestedCategoryData.parent_id) {
-          openSubcategories(requestedCategoryData.parent_id, true);
-          setFilter(requestedCategoryData.$id);
-        } else {
-          /* 舊連結若直接指向大分類，只展開，不做「全部某分類」篩選 */
-          openSubcategories(requestedCategoryData.$id);
-          setFilter('all');
-        }
-      } else if (
-        requestedParent &&
-        parents().some(parent => parent.$id === requestedParent)
-      ) {
-        openSubcategories(requestedParent);
-        setFilter('all');
-      } else {
-        setFilter('all');
+      if (child) {
+        setFilter(child.$id);
+        showSubcategories(child.parent_id);
+        return;
       }
+
+      const parent = requestedParent
+        ? parents().find(c => c.$id === requestedParent)
+        : null;
+
+      if (parent) {
+        setFilter('all');
+        showSubcategories(parent.$id);
+        return;
+      }
+
+      setFilter('all');
 
     } catch (error) {
       console.error('商品專區讀取失敗：', error);
