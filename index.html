@@ -47,13 +47,9 @@
     <div class="mega-panel">
       <div class="mega-panel-inner">
         <span class="mega-panel-label">PRODUCTS</span>
-        <div class="mega-links mega-category-links">
+        <div class="mega-links mega-category-links" id="desktopCategoryMenu">
           <a href="products.html">全部商品</a>
-          <a href="products.html?category=wheelchair">輪椅</a>
-          <a href="products.html?category=walker">助行輔具</a>
-          <a href="products.html?category=toilet">如廁用品</a>
-          <a href="products.html?category=bath">沐浴用品</a>
-          <a href="products.html?category=homecare">居家照護</a>
+          <span class="nav-category-loading">正在讀取分類...</span>
         </div>
       </div>
     </div>
@@ -142,13 +138,9 @@
 
   <div class="mobile-mega-item">
     <button class="mobile-mega-toggle" type="button" aria-expanded="false">商品專區<span>＋</span></button>
-    <div class="mobile-mega-menu">
+    <div class="mobile-mega-menu" id="mobileCategoryMenu">
       <a href="products.html">全部商品</a>
-      <a href="products.html?category=wheelchair">輪椅</a>
-      <a href="products.html?category=walker">助行輔具</a>
-      <a href="products.html?category=toilet">如廁用品</a>
-      <a href="products.html?category=bath">沐浴用品</a>
-      <a href="products.html?category=homecare">居家照護</a>
+      <span class="nav-category-loading">正在讀取分類...</span>
     </div>
   </div>
 
@@ -570,7 +562,8 @@
 
     async function loadCategories() {
       const list = document.getElementById("dynamicCategoryList");
-      if (!list) return;
+      const desktopMenu = document.getElementById("desktopCategoryMenu");
+      const mobileMenu = document.getElementById("mobileCategoryMenu");
 
       try {
         const result = await db.listDocuments(
@@ -580,9 +573,20 @@
         );
 
         if (!result.documents.length) {
-          list.innerHTML = '<div class="category-loading">目前尚未建立商品分類。</div>';
+          if (list) list.innerHTML = '<div class="category-loading">目前尚未建立商品分類。</div>';
+          if (desktopMenu) desktopMenu.innerHTML = '<a href="products.html">全部商品</a>';
+          if (mobileMenu) mobileMenu.innerHTML = '<a href="products.html">全部商品</a>';
           return;
         }
+
+        const menuHtml = '<a href="products.html">全部商品</a>' + result.documents.map(doc =>
+          `<a href="${categoryUrl(doc)}">${escapeHtml(doc.name)}</a>`
+        ).join("");
+
+        if (desktopMenu) desktopMenu.innerHTML = menuHtml;
+        if (mobileMenu) mobileMenu.innerHTML = menuHtml;
+
+        if (!list) return;
 
         list.innerHTML = result.documents.map((doc, index) => {
           const image = doc.image_id
@@ -598,7 +602,9 @@
 
       } catch (error) {
         console.error("商品分類讀取失敗：", error);
-        list.innerHTML = '<div class="category-loading">商品分類暫時無法讀取。</div>';
+        if (list) list.innerHTML = '<div class="category-loading">商品分類暫時無法讀取。</div>';
+        if (desktopMenu) desktopMenu.innerHTML = '<a href="products.html">全部商品</a>';
+        if (mobileMenu) mobileMenu.innerHTML = '<a href="products.html">全部商品</a>';
       }
     }
 
