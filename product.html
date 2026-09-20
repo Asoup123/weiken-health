@@ -9,50 +9,193 @@
 <style>
 .product-detail-page{background:#fff}
 .product-detail-wrap{padding:34px 0 80px}
-.product-detail-breadcrumb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:#888;margin-bottom:28px}
+.product-detail-breadcrumb{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  font-size:14px;color:#888;margin-bottom:30px
+}
 .product-detail-breadcrumb a{color:inherit;text-decoration:none}
 .product-detail-breadcrumb a:hover{color:#244b36}
 .product-detail-breadcrumb .current{color:#555}
-.product-detail-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:64px;align-items:start}
 
-/* 商品多圖 */
-.product-detail-gallery{position:relative}
-.product-detail-image{position:relative;background:#fff;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
-.product-detail-image img{width:100%;height:100%;object-fit:contain;display:block}
+/* 三欄：左分類 / 中圖片 / 右資訊 */
+.product-detail-main{
+  display:grid;
+  grid-template-columns:190px minmax(360px,520px) minmax(300px,1fr);
+  gap:42px;
+  align-items:start
+}
+
+/* 左側分類 */
+.detail-category-sidebar{min-width:0}
+.detail-category-title{
+  margin:0 0 14px;
+  padding-bottom:14px;
+  border-bottom:1px solid #e3e5df;
+  color:#173b2a;
+  font-size:17px;
+  font-weight:700
+}
+.detail-category-list{display:flex;flex-direction:column}
+.detail-category-link{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-height:48px;
+  padding:0 12px;
+  border-bottom:1px solid #eceee9;
+  color:#555;
+  text-decoration:none;
+  font-size:14px;
+  transition:background .2s ease,color .2s ease,padding .2s ease
+}
+.detail-category-link:hover,
+.detail-category-link.is-active{
+  padding-left:17px;
+  background:#f1f4ef;
+  color:#244b36
+}
+.detail-category-link.is-active{font-weight:700}
+
+/* 中間圖片 */
+.product-detail-gallery{min-width:0}
+.product-detail-image{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #eceee9
+}
+.product-detail-image img{
+  width:100%;
+  height:100%;
+  padding:22px;
+  object-fit:contain;
+  display:block
+}
 .product-detail-noimg{color:#aaa}
 .detail-image-nav{
-position:absolute;z-index:4;top:50%;width:46px;height:46px;
-display:grid;place-items:center;border:1px solid rgba(36,75,54,.12);
-border-radius:50%;background:rgba(255,255,255,.92);color:#244b36;
-box-shadow:0 6px 20px rgba(24,53,38,.10);font-size:20px;cursor:pointer;
-opacity:0;visibility:hidden;transform:translateY(-50%);
-transition:opacity .2s ease,visibility .2s ease,background .2s ease,color .2s ease
+  position:absolute;z-index:5;top:50%;
+  width:44px;height:44px;
+  display:grid;place-items:center;
+  border:1px solid rgba(36,75,54,.12);
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#244b36;
+  box-shadow:0 6px 20px rgba(24,53,38,.10);
+  font-size:19px;cursor:pointer;
+  opacity:0;visibility:hidden;
+  transform:translateY(-50%);
+  transition:opacity .2s ease,visibility .2s ease,background .2s ease,color .2s ease
 }
-.detail-image-prev{left:16px}
-.detail-image-next{right:16px}
-.product-detail-gallery:hover .detail-image-nav,
+.detail-image-prev{left:14px}
+.detail-image-next{right:14px}
+.product-detail-image:hover .detail-image-nav,
 .detail-image-nav:focus-visible{opacity:1;visibility:visible}
 .detail-image-nav:hover{background:#244b36;color:#fff}
-.detail-image-counter{
-position:absolute;right:14px;bottom:14px;z-index:3;
-padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.88);
-color:#555;font-size:12px
+.detail-image-nav[hidden]{display:none!important}
+
+/* 主圖下方縮圖 */
+.detail-thumbnails{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  overflow-x:auto;
+  padding:1px 1px 5px;
+  scrollbar-width:thin
+}
+.detail-thumbnail{
+  flex:0 0 72px;
+  width:72px;height:72px;
+  padding:5px;
+  border:1px solid #dedfd9;
+  border-radius:2px;
+  background:#fff;
+  cursor:pointer;
+  transition:border-color .2s ease,box-shadow .2s ease
+}
+.detail-thumbnail img{
+  width:100%;height:100%;
+  display:block;
+  object-fit:contain
+}
+.detail-thumbnail:hover{border-color:#8ca18f}
+.detail-thumbnail.is-active{
+  border:2px solid #244b36;
+  box-shadow:0 0 0 1px rgba(36,75,54,.08)
 }
 
-.product-detail-info h1{font-size:32px;line-height:1.35;margin:4px 0 14px}
-.product-detail-category{font-size:14px;color:#888;margin-bottom:30px}
-.detail-block{border-top:1px solid #e6e6e2;padding:26px 0}
-.detail-block h2{font-size:18px;margin:0 0 15px}
-.detail-text{white-space:pre-wrap;line-height:1.9;color:#444}
+/* 右側商品資料 */
+.product-detail-info{padding-top:2px}
+.product-detail-info h1{
+  margin:0 0 26px;
+  color:#173b2a;
+  font-size:clamp(28px,2.5vw,38px);
+  line-height:1.35;
+  font-weight:700;
+  letter-spacing:-.02em
+}
+.detail-block{
+  border-top:1px solid #e3e5df;
+  padding:26px 0
+}
+.detail-block h2{
+  margin:0 0 18px;
+  color:#173b2a;
+  font-size:18px
+}
+.detail-text{
+  white-space:pre-wrap;
+  line-height:1.9;
+  color:#444;
+  font-size:15px
+}
 .detail-empty{color:#999}
 .product-detail-state{padding:80px 0;text-align:center;color:#888}
-@media(max-width:760px){
-.product-detail-wrap{padding:22px 0 55px}
-.product-detail-main{grid-template-columns:1fr;gap:28px}
-.product-detail-info h1{font-size:26px}
-.detail-image-nav{width:40px;height:40px;opacity:.82;visibility:visible}
-.detail-image-prev{left:10px}
-.detail-image-next{right:10px}
+
+@media(max-width:1100px){
+  .product-detail-main{
+    grid-template-columns:160px minmax(320px,460px) minmax(260px,1fr);
+    gap:28px
+  }
+}
+
+@media(max-width:900px){
+  .product-detail-main{
+    grid-template-columns:1fr 1fr;
+    gap:28px
+  }
+  .detail-category-sidebar{
+    grid-column:1/-1
+  }
+  .detail-category-list{
+    flex-direction:row;
+    overflow-x:auto;
+    border-bottom:1px solid #e3e5df
+  }
+  .detail-category-link{
+    flex:0 0 auto;
+    border-bottom:0;
+    white-space:nowrap
+  }
+}
+
+@media(max-width:700px){
+  .product-detail-wrap{padding:22px 0 55px}
+  .product-detail-main{grid-template-columns:1fr;gap:26px}
+  .detail-category-sidebar{grid-column:auto}
+  .detail-category-title{font-size:16px}
+  .product-detail-info h1{font-size:27px;margin-bottom:20px}
+  .product-detail-image{max-width:520px;margin:0 auto}
+  .detail-image-nav{
+    width:40px;height:40px;
+    opacity:.84;visibility:visible
+  }
+  .detail-image-prev{left:9px}
+  .detail-image-next{right:9px}
+  .detail-thumbnail{flex-basis:64px;width:64px;height:64px}
 }
 </style>
 </head>
@@ -214,22 +357,34 @@ color:#555;font-size:12px
 <a href="products.html" id="breadcrumbCategory">商品分類</a><span>/</span>
 <span id="breadcrumbName" class="current">商品詳細</span>
 </nav>
+
 <div id="detailState" class="product-detail-state">正在讀取商品...</div>
+
 <div id="productDetail" class="product-detail-main" hidden>
-<div class="product-detail-gallery" id="detailGallery">
-<div class="product-detail-image" id="detailImage"></div>
+
+<aside class="detail-category-sidebar">
+<h2 class="detail-category-title">商品分類</h2>
+<nav class="detail-category-list" id="detailCategoryList" aria-label="商品分類">
+<a href="products.html" class="detail-category-link" data-category="">全部商品</a>
+</nav>
+</aside>
+
+<div class="product-detail-gallery">
+<div class="product-detail-image" id="detailImage">
 <button class="detail-image-nav detail-image-prev" id="detailPrev" type="button" aria-label="上一張圖片">←</button>
 <button class="detail-image-nav detail-image-next" id="detailNext" type="button" aria-label="下一張圖片">→</button>
-<div class="detail-image-counter" id="detailImageCounter" hidden></div>
 </div>
+<div class="detail-thumbnails" id="detailThumbnails"></div>
+</div>
+
 <div class="product-detail-info">
 <h1 id="detailName"></h1>
-<div id="detailCategory" class="product-detail-category"></div>
 <section class="detail-block">
 <h2>商品資訊</h2>
 <div id="detailProductInfo" class="detail-text"></div>
 </section>
 </div>
+
 </div>
 </div>
 </section>
@@ -305,14 +460,17 @@ const DATABASE_ID="6aab978f00363c84475b";
 const CATEGORY_TABLE_ID="categories";
 const PRODUCT_TABLE_ID="products";
 const BUCKET_ID="weiken-images";
+
 const client=new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
 const db=new Appwrite.Databases(client);
+
 const desktopLinks=document.getElementById('desktopCategoryLinks');
 const mobileLinks=document.getElementById('mobileCategoryLinks');
 
 function esc(value){
 return String(value ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
+
 function fileUrl(id){
 if(!id)return '';
 return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
@@ -320,6 +478,7 @@ return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJ
 
 function getProductImageIds(product){
 let ids=[];
+
 if(Array.isArray(product?.image_ids)){
 ids=product.image_ids.filter(Boolean);
 }else if(typeof product?.image_ids==='string' && product.image_ids.trim()){
@@ -330,34 +489,78 @@ if(Array.isArray(parsed))ids=parsed.filter(Boolean);
 ids=product.image_ids.split(',').map(v=>v.trim()).filter(Boolean);
 }
 }
-if(product?.image_id && !ids.includes(product.image_id))ids.unshift(product.image_id);
+
+if(product?.image_id && !ids.includes(product.image_id)){
+ids.unshift(product.image_id);
+}
+
 return [...new Set(ids)];
 }
 
 function getProductInfo(product){
 if(product?.product_info?.trim())return product.product_info.trim();
+
 const legacy=[];
 if(product?.features?.trim())legacy.push(product.features.trim());
 if(product?.specifications?.trim())legacy.push(product.specifications.trim());
 return legacy.join('\n\n');
 }
+
 async function loadCategories(){
 try{
-const result=await db.listDocuments(DATABASE_ID,CATEGORY_TABLE_ID,[Appwrite.Query.orderAsc('sort_order'),Appwrite.Query.limit(100)]);
+const result=await db.listDocuments(
+DATABASE_ID,
+CATEGORY_TABLE_ID,
+[
+Appwrite.Query.orderAsc('sort_order'),
+Appwrite.Query.limit(100)
+]
+);
+
 result.documents.forEach(category=>{
 const url=`products.html?category=${encodeURIComponent(category.$id)}`;
 const name=esc(category.name);
+
 desktopLinks?.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
 mobileLinks?.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
 });
+
 return result.documents;
-}catch(e){console.error(e);return [];}
+
+}catch(e){
+console.error(e);
+return [];
 }
+}
+
+function renderSidebar(categories,currentCategoryId){
+const list=document.getElementById('detailCategoryList');
+
+list.innerHTML=`
+<a href="products.html" class="detail-category-link ${currentCategoryId?'':'is-active'}" data-category="">
+全部商品
+</a>
+${categories.map(category=>`
+<a
+href="products.html?category=${encodeURIComponent(category.$id)}"
+class="detail-category-link ${category.$id===currentCategoryId?'is-active':''}"
+data-category="${esc(category.$id)}"
+>
+${esc(category.name)}
+</a>
+`).join('')}
+`;
+}
+
 async function start(){
 const state=document.getElementById('detailState');
 const detail=document.getElementById('productDetail');
 const id=new URLSearchParams(location.search).get('id');
-if(!id){state.textContent='找不到商品資料。';return;}
+
+if(!id){
+state.textContent='找不到商品資料。';
+return;
+}
 
 try{
 const categoriesPromise=loadCategories();
@@ -367,7 +570,8 @@ const category=categories.find(c=>c.$id===product.category_id);
 
 document.title=`${product.name}｜威肯健康生活用品館`;
 
-document.getElementById('breadcrumbName').textContent=product.name||'商品詳細';
+document.getElementById('breadcrumbName').textContent=
+product.name||'商品詳細';
 
 const breadcrumbCategory=document.getElementById('breadcrumbCategory');
 breadcrumbCategory.textContent=category?.name||'商品分類';
@@ -376,50 +580,81 @@ breadcrumbCategory.href=category
 : 'products.html';
 
 document.getElementById('detailName').textContent=product.name||'';
-document.getElementById('detailCategory').textContent=category?.name||'';
+
+renderSidebar(categories,product.category_id);
 
 const imageIds=getProductImageIds(product);
 const image=document.getElementById('detailImage');
 const prev=document.getElementById('detailPrev');
 const next=document.getElementById('detailNext');
-const counter=document.getElementById('detailImageCounter');
+const thumbs=document.getElementById('detailThumbnails');
+
 let imageIndex=0;
 
-function renderImage(){
+function renderGallery(){
 if(!imageIds.length){
-image.innerHTML='<span class="product-detail-noimg">商品圖片</span>';
-prev.hidden=true;
-next.hidden=true;
-counter.hidden=true;
+image.innerHTML=`
+<span class="product-detail-noimg">商品圖片</span>
+<button class="detail-image-nav detail-image-prev" id="detailPrev" type="button" aria-label="上一張圖片" hidden>←</button>
+<button class="detail-image-nav detail-image-next" id="detailNext" type="button" aria-label="下一張圖片" hidden>→</button>
+`;
+thumbs.innerHTML='';
 return;
 }
 
-image.innerHTML=`<img src="${fileUrl(imageIds[imageIndex])}" alt="${esc(product.name)}" loading="${imageIndex===0?'eager':'lazy'}">`;
+/* 只更新圖片，不把箭頭蓋掉 */
+let photo=image.querySelector('.detail-main-photo');
+
+if(!photo){
+photo=document.createElement('img');
+photo.className='detail-main-photo';
+image.prepend(photo);
+}
+
+photo.src=fileUrl(imageIds[imageIndex]);
+photo.alt=product.name||'商品圖片';
 
 const multiple=imageIds.length>1;
 prev.hidden=!multiple;
 next.hidden=!multiple;
-counter.hidden=!multiple;
 
-if(multiple){
-counter.textContent=`${imageIndex+1} / ${imageIds.length}`;
-}
+thumbs.innerHTML=imageIds.map((imageId,index)=>`
+<button
+type="button"
+class="detail-thumbnail ${index===imageIndex?'is-active':''}"
+data-index="${index}"
+aria-label="查看第 ${index+1} 張商品圖片"
+>
+<img src="${fileUrl(imageId)}" alt="${esc(product.name)} 第 ${index+1} 張">
+</button>
+`).join('');
+
+thumbs.hidden=imageIds.length<=1;
 }
 
 prev.onclick=()=>{
 imageIndex=(imageIndex-1+imageIds.length)%imageIds.length;
-renderImage();
+renderGallery();
 };
 
 next.onclick=()=>{
 imageIndex=(imageIndex+1)%imageIds.length;
-renderImage();
+renderGallery();
 };
 
-renderImage();
+thumbs.addEventListener('click',e=>{
+const button=e.target.closest('.detail-thumbnail');
+if(!button)return;
+
+imageIndex=Number(button.dataset.index)||0;
+renderGallery();
+});
+
+renderGallery();
 
 const info=document.getElementById('detailProductInfo');
 const productInfo=getProductInfo(product);
+
 info.textContent=productInfo||'尚未提供商品資訊。';
 info.classList.toggle('detail-empty',!productInfo);
 
@@ -431,6 +666,7 @@ console.error(e);
 state.textContent='商品資料讀取失敗，或此商品已不存在。';
 }
 }
+
 start();
 })();
 </script>
