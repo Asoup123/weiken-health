@@ -506,6 +506,95 @@ button:disabled{
     }
 }
 
+
+/* =========================================================
+   商品管理：搜尋 / 分類篩選
+========================================================= */
+.product-tools{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:0 0 16px;
+    padding:14px;
+    background:#fff;
+    border:1px solid #e5e5e1;
+    border-radius:12px;
+}
+.product-search-wrap{
+    position:relative;
+    flex:1 1 360px;
+}
+.product-search-wrap input,
+.product-filter-select{
+    width:100%;
+    height:44px;
+    padding:0 13px;
+    border:1px solid #dcdcd7;
+    border-radius:9px;
+    background:#fff;
+    color:#222;
+    outline:none;
+}
+.product-search-wrap input{
+    padding-right:42px;
+}
+.product-search-wrap input:focus,
+.product-filter-select:focus{
+    border-color:#8d9c91;
+    box-shadow:0 0 0 3px rgba(49,93,67,.08);
+}
+.product-search-icon{
+    position:absolute;
+    right:13px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#888;
+    pointer-events:none;
+}
+.product-filter-wrap{
+    flex:0 1 300px;
+    min-width:220px;
+}
+.product-count{
+    flex:0 0 auto;
+    min-width:105px;
+    text-align:right;
+    color:#777;
+    font-size:13px;
+    white-space:nowrap;
+}
+.product-count strong{
+    color:#315d43;
+    font-size:15px;
+}
+.product-filter-note{
+    margin:-4px 0 16px;
+    color:#999;
+    font-size:12px;
+}
+.product-filtered .drag-handle{
+    opacity:.3;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+@media(max-width:760px){
+    .product-tools{
+        align-items:stretch;
+        flex-direction:column;
+    }
+    .product-search-wrap,
+    .product-filter-wrap{
+        width:100%;
+        min-width:0;
+        flex:auto;
+    }
+    .product-count{
+        min-width:0;
+        text-align:left;
+    }
+}
+
 </style>
 </head>
 
@@ -552,6 +641,24 @@ button:disabled{
         </div>
 
         <div id="productNotice" class="notice"></div>
+
+        <div class="product-tools">
+            <div class="product-search-wrap">
+                <input id="productSearch" type="search" placeholder="搜尋商品名稱…" autocomplete="off">
+                <span class="product-search-icon">⌕</span>
+            </div>
+
+            <div class="product-filter-wrap">
+                <select id="productCategoryFilter" class="product-filter-select">
+                    <option value="all">全部分類</option>
+                </select>
+            </div>
+
+            <div id="productCount" class="product-count">
+                共 <strong>0</strong> 項商品
+            </div>
+        </div>
+        <div class="product-filter-note">搜尋與分類只影響目前顯示；篩選中會暫停拖曳排序，清除條件後即可繼續排序。</div>
 
         <div class="card">
             <div class="row product-row head">
@@ -671,6 +778,8 @@ let childCategorySortables=[];
 let productSortable=null;
 let categoryModalMode="parent";
 let categoryModalParentId="";
+let productSearchKeyword="";
+let productCategoryFilter="all";
 
 const $=s=>document.querySelector(s);
 
@@ -1061,6 +1170,7 @@ async function loadCategories(){
         }
 
         fillCategorySelect();
+        fillProductCategoryFilter();
         setupCategoryTreeSortables();
 
     }catch(e){
@@ -1518,6 +1628,137 @@ function productMainImageId(product){
     return product?.image_id || "";
 }
 
+function categoryDisplayName(categoryId){
+    const category=categoryById(categoryId);
+    if(!category) return "分類已不存在";
+
+    if(category.parent_id){
+        const parent=categoryById(category.parent_id);
+        return parent
+            ? `${parent.name} › ${category.name}`
+            : category.name;
+    }
+
+    return category.name;
+}
+
+function fillProductCategoryFilter(){
+    const select=$("#productCategoryFilter");
+    if(!select) return;
+
+    const current=productCategoryFilter;
+    const options=['<option value="all">全部分類</option>'];
+
+    parentCategories().forEach(parent=>{
+        const children=childCategories(parent.$id);
+
+        if(children.length){
+            options.push(
+                `<optgroup label="${esc(parent.name)}">`+
+                `<option value="parent:${esc(parent.$id)}">${esc(parent.name)}（全部小分類）</option>`+
+                children.map(child=>
+                    `<option value="${esc(child.$id)}">${esc(parent.name)} › ${esc(child.name)}</option>`
+                ).join("")+
+                `</optgroup>`
+            );
+        }else{
+            options.push(
+                `<option value="${esc(parent.$id)}">${esc(parent.name)}</option>`
+            );
+        }
+    });
+
+    select.innerHTML=options.join("");
+
+    const valid=[...select.options].some(option=>option.value===current);
+    productCategoryFilter=valid ? current : "all";
+    select.value=productCategoryFilter;
+}
+
+function productMatchesAdminFilter(product){
+    const keyword=productSearchKeyword.trim().toLowerCase();
+
+    if(keyword && !String(product.name || "").toLowerCase().includes(keyword)){
+        return false;
+    }
+
+    if(productCategoryFilter==="all"){
+        return true;
+    }
+
+    if(productCategoryFilter.startsWith("parent:")){
+        const parentId=productCategoryFilter.slice(7);
+        const allowedIds=new Set([
+            parentId,
+            ...childCategories(parentId).map(child=>child.$id)
+        ]);
+        return allowedIds.has(product.category_id);
+    }
+
+    return product.category_id===productCategoryFilter;
+}
+
+function renderProductList(){
+    const list=$("#productList");
+    const count=$("#productCount");
+    const visible=products.filter(productMatchesAdminFilter);
+    const filtering=
+        productSearchKeyword.trim()!=="" ||
+        productCategoryFilter!=="all";
+
+    $("#productsPage")?.classList.toggle("product-filtered",filtering);
+
+    if(count){
+        count.innerHTML=`共 <strong>${visible.length}</strong> 項商品`;
+    }
+
+    if(!products.length){
+        list.innerHTML='<div class="state">目前沒有商品，請按「新增商品」。</div>';
+        if(productSortable){
+            productSortable.destroy();
+            productSortable=null;
+        }
+        return;
+    }
+
+    if(!visible.length){
+        list.innerHTML='<div class="state">找不到符合條件的商品。</div>';
+        if(productSortable){
+            productSortable.destroy();
+            productSortable=null;
+        }
+        return;
+    }
+
+    list.innerHTML=visible.map(d=>`
+        <div class="row product-row sortable-row" data-id="${d.$id}">
+            <div>${productMainImageId(d)
+                ? `<img class="thumb product-thumb" src="${fileUrl(productMainImageId(d))}" alt="${esc(d.name)}">`
+                : '<div class="thumb product-thumb noimg">無圖片</div>'}</div>
+            <div class="sort-cell"><span class="drag-handle" title="${filtering ? "搜尋或篩選中暫停拖曳排序" : "拖曳排序"}">☰</span><span>${esc(d.sort_order)}</span></div>
+            <div><strong>${esc(d.name)}</strong></div>
+            <div class="category-cell">${esc(categoryDisplayName(d.category_id))}</div>
+            <div class="actions">
+                <button onclick="editProduct('${d.$id}')">修改</button>
+                <button class="danger" onclick="removeProduct('${d.$id}')">刪除</button>
+            </div>
+        </div>
+    `).join("");
+
+    if(productSortable){
+        productSortable.destroy();
+        productSortable=null;
+    }
+
+    /*
+      只有「顯示全部商品」時才允許拖曳排序。
+      避免在搜尋/分類篩選後只拿部分商品重新編號，破壞完整商品順序。
+    */
+    if(!filtering){
+        productSortable=makeSortable(list,PRODUCT_TABLE_ID,"product");
+    }
+}
+
 async function loadProducts(){
     const list=$("#productList");
     list.innerHTML='<div class="state">正在讀取商品...</div>';
@@ -1528,32 +1769,11 @@ async function loadProducts(){
             PRODUCT_TABLE_ID,
             [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]
         );
+
         products=result.documents;
+        fillProductCategoryFilter();
+        renderProductList();
 
-        if(!products.length){
-            list.innerHTML='<div class="state">目前沒有商品，請按「新增商品」。</div>';
-            return;
-        }
-
-        const categoryMap=Object.fromEntries(categories.map(c=>[c.$id,c.name]));
-
-        list.innerHTML=products.map(d=>`
-            <div class="row product-row sortable-row" data-id="${d.$id}">
-                <div>${productMainImageId(d)
-                    ? `<img class="thumb product-thumb" src="${fileUrl(productMainImageId(d))}" alt="${esc(d.name)}">`
-                    : '<div class="thumb product-thumb noimg">無圖片</div>'}</div>
-                <div class="sort-cell"><span class="drag-handle" title="拖曳排序">☰</span><span>${esc(d.sort_order)}</span></div>
-                <div><strong>${esc(d.name)}</strong></div>
-                <div class="category-cell">${esc(categoryMap[d.category_id] || "分類已不存在")}</div>
-                <div class="actions">
-                    <button onclick="editProduct('${d.$id}')">修改</button>
-                    <button class="danger" onclick="removeProduct('${d.$id}')">刪除</button>
-                </div>
-            </div>
-        `).join("");
-
-        if(productSortable) productSortable.destroy();
-        productSortable=makeSortable(list,PRODUCT_TABLE_ID,"product");
     }catch(e){
         console.error(e);
         list.innerHTML=`<div class="state bad">讀取失敗：${esc(e.message)}</div>`;
@@ -1846,6 +2066,17 @@ $("#productForm").onsubmit=async e=>{
         btn.textContent="儲存商品";
     }
 };
+
+/* 商品搜尋 / 分類篩選 */
+$("#productSearch").addEventListener("input",e=>{
+    productSearchKeyword=e.target.value || "";
+    renderProductList();
+});
+
+$("#productCategoryFilter").addEventListener("change",e=>{
+    productCategoryFilter=e.target.value || "all";
+    renderProductList();
+});
 
 /* 按鈕 */
 $("#addCategory").onclick=async()=>{
