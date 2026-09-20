@@ -12,6 +12,78 @@
   >
 
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* 首頁：後台廣告輪播 */
+    .ad-carousel .popular-track{display:flex;transition:transform .45s ease}
+    .ad-carousel .popular-slide{flex:0 0 100%;min-width:100%}
+    .ad-carousel .popular-slide-visual{position:relative;width:100%;height:100%;overflow:hidden}
+    .ad-carousel .popular-slide-visual img{width:100%;height:100%;display:block;object-fit:cover}
+    .ad-empty{min-height:360px;display:grid;place-items:center;color:#9aa49b;background:#eef1e9}
+
+    /* 首頁：熱門商品分類頁籤 */
+    .featured-tabs{
+      display:flex;align-items:center;gap:34px;overflow-x:auto;white-space:nowrap;
+      margin:22px 0 28px;padding:0 0 9px;border-bottom:1px solid #dfe3da;
+      scrollbar-width:none
+    }
+    .featured-tabs::-webkit-scrollbar{display:none}
+    .featured-tab{
+      flex:0 0 auto;border:0;background:none;padding:8px 0 10px;color:#7c857c;
+      font:inherit;font-weight:700;cursor:pointer;position:relative
+    }
+    .featured-tab::after{
+      content:"";position:absolute;left:0;right:0;bottom:-10px;height:2px;
+      background:#24573f;transform:scaleX(0);transition:.2s
+    }
+    .featured-tab:hover,.featured-tab.is-active{color:#24573f}
+    .featured-tab.is-active::after{transform:scaleX(1)}
+    .featured-products-grid{
+      display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px
+    }
+    .featured-card{
+      min-width:0;border:1px solid transparent;background:transparent;
+      transition:border-color .2s,box-shadow .2s,transform .2s
+    }
+    .featured-card:hover{
+      border-color:#b9cbbb;box-shadow:0 10px 26px rgba(36,87,63,.08);
+      transform:translateY(-2px)
+    }
+    .featured-image-wrap{
+      position:relative;aspect-ratio:1/1;background:#f3f4ee;overflow:hidden
+    }
+    .featured-image-link{display:block;width:100%;height:100%}
+    .featured-image{
+      width:100%;height:100%;display:block;object-fit:contain;padding:14px;box-sizing:border-box
+    }
+    .featured-image-empty{
+      width:100%;height:100%;display:grid;place-items:center;color:#a8afa7
+    }
+    .featured-arrow{
+      position:absolute;top:50%;transform:translateY(-50%);
+      width:38px;height:38px;border:0;border-radius:50%;
+      background:rgba(255,255,255,.92);color:#24573f;display:grid;place-items:center;
+      opacity:0;pointer-events:none;transition:.2s;box-shadow:0 5px 18px rgba(0,0,0,.09);
+      z-index:2
+    }
+    .featured-arrow.prev{left:10px}.featured-arrow.next{right:10px}
+    .featured-image-wrap:hover .featured-arrow{opacity:1;pointer-events:auto}
+    .featured-name{
+      display:block;padding:14px 12px 16px;color:#173f2e;text-decoration:none;
+      font-weight:700;text-align:center
+    }
+    .featured-state{grid-column:1/-1;padding:55px 10px;text-align:center;color:#8a938a}
+    @media(max-width:1000px){
+      .featured-products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media(max-width:640px){
+      .featured-tabs{gap:24px}
+      .featured-products-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      .featured-arrow{opacity:1;pointer-events:auto;width:34px;height:34px}
+      .ad-empty{min-height:220px}
+    }
+  </style>
+
 </head>
 
 <body>
@@ -206,8 +278,8 @@
               <span>↗</span>
             </a>
 
-            <a href="#category" class="secondary-link">
-              依需求找商品
+            <a href="products.html" class="secondary-link">
+              瀏覽商品分類
               <span>↓</span>
             </a>
 
@@ -242,23 +314,15 @@
     ========================== -->
     <section class="ad-section" id="ad-banner">
       <div class="section-container">
-        <div class="popular-carousel ad-carousel" id="popularCarousel">
+        <div class="popular-carousel ad-carousel" id="homeBannerCarousel">
           <div class="popular-viewport">
-            <div class="popular-track">
-              <a href="#" class="popular-slide is-active"><div class="popular-slide-visual popular-visual-1"><span class="popular-image-placeholder">廣告圖片</span></div></a>
-              <a href="#" class="popular-slide"><div class="popular-slide-visual popular-visual-2"><span class="popular-image-placeholder">廣告圖片</span></div></a>
-              <a href="#" class="popular-slide"><div class="popular-slide-visual popular-visual-3"><span class="popular-image-placeholder">廣告圖片</span></div></a>
-              <a href="#" class="popular-slide"><div class="popular-slide-visual popular-visual-4"><span class="popular-image-placeholder">廣告圖片</span></div></a>
+            <div class="popular-track" id="bannerTrack">
+              <div class="ad-empty">正在讀取首頁廣告...</div>
             </div>
           </div>
-          <button class="popular-nav popular-prev" type="button" aria-label="上一張廣告">←</button>
-          <button class="popular-nav popular-next" type="button" aria-label="下一張廣告">→</button>
-          <div class="popular-dots" aria-label="廣告切換">
-            <button class="popular-dot is-active" type="button" aria-label="第 1 張廣告"></button>
-            <button class="popular-dot" type="button" aria-label="第 2 張廣告"></button>
-            <button class="popular-dot" type="button" aria-label="第 3 張廣告"></button>
-            <button class="popular-dot" type="button" aria-label="第 4 張廣告"></button>
-          </div>
+          <button class="popular-nav popular-prev" id="bannerPrev" type="button" aria-label="上一張廣告">←</button>
+          <button class="popular-nav popular-next" id="bannerNext" type="button" aria-label="下一張廣告">→</button>
+          <div class="popular-dots" id="bannerDots" aria-label="廣告切換"></div>
         </div>
       </div>
     </section>
@@ -275,85 +339,12 @@
           </div>
           <a href="products.html" class="view-all">查看全部商品 <span>↗</span></a>
         </div>
-        <div class="hot-products-scroller" aria-label="熱門商品">
-          <div class="hot-products-grid">
 
-            <a href="products.html" class="hot-product-card">
-              <div class="hot-product-image">
-                <span>商品圖片</span>
-              </div>
-              <h3>商品名稱</h3>
-            </a>
-
-            <a href="products.html" class="hot-product-card">
-              <div class="hot-product-image">
-                <span>商品圖片</span>
-              </div>
-              <h3>商品名稱</h3>
-            </a>
-
-            <a href="products.html" class="hot-product-card">
-              <div class="hot-product-image">
-                <span>商品圖片</span>
-              </div>
-              <h3>商品名稱</h3>
-            </a>
-
-            <a href="products.html" class="hot-product-card">
-              <div class="hot-product-image">
-                <span>商品圖片</span>
-              </div>
-              <h3>商品名稱</h3>
-            </a>
-
-            <a href="products.html" class="hot-product-card">
-              <div class="hot-product-image">
-                <span>商品圖片</span>
-              </div>
-              <h3>商品名稱</h3>
-            </a>
-
-          </div>
+        <div class="featured-tabs" id="featuredTabs" aria-label="熱門商品分類"></div>
+        <div class="featured-products-grid" id="featuredProducts">
+          <div class="featured-state">正在讀取熱門商品...</div>
         </div>
       </div>
-    </section>
-
-
-
-    <!-- =========================
-         CATEGORY
-    ========================== -->
-    <section class="category-section" id="category">
-
-      <div class="section-container">
-
-        <div class="category-heading">
-
-          <div>
-
-            <p class="section-en">
-              FIND WHAT YOU NEED
-            </p>
-
-            <h2>
-              你正在找什麼？
-            </h2>
-          </div>
-
-          <p class="category-description">
-            從生活需求開始找，
-            比從一大堆商品裡慢慢翻更簡單。
-          </p>
-
-        </div>
-
-
-        <div class="category-list" id="dynamicCategoryList">
-          <div class="category-loading">正在讀取商品分類...</div>
-        </div>
-
-      </div>
-
     </section>
 
 
@@ -450,7 +441,6 @@
       <div class="footer-column">
         <span class="footer-label">SHOP</span>
         <a href="products.html">商品專區</a>
-        <a href="#category">商品分類</a>
         <a href="#popular">熱門商品</a>
       </div>
 
@@ -536,13 +526,22 @@
     const ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
     const PROJECT_ID = "6aab96e3000fa724b62d";
     const DATABASE_ID = "6aab978f00363c84475b";
-    const TABLE_ID = "categories";
+    const CATEGORY_TABLE_ID = "categories";
+    const PRODUCT_TABLE_ID = "products";
+    const BANNER_TABLE_ID = "banners";
     const BUCKET_ID = "weiken-images";
 
     const client = new Appwrite.Client()
       .setEndpoint(ENDPOINT)
       .setProject(PROJECT_ID);
     const db = new Appwrite.Databases(client);
+
+    let categories = [];
+    let products = [];
+    let banners = [];
+    let activeFeaturedParent = "";
+    let bannerIndex = 0;
+    let bannerTimer = null;
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, ch => ({
@@ -560,28 +559,50 @@
       return `products.html?parent=${encodeURIComponent(doc.$id)}`;
     }
 
-    async function loadCategories() {
-      const list = document.getElementById("dynamicCategoryList");
+    function parentCategories() {
+      return categories
+        .filter(doc => !doc.parent_id)
+        .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
+    }
+
+    function categoryById(id) {
+      return categories.find(c => c.$id === id);
+    }
+
+    function topParentId(categoryId) {
+      const category = categoryById(categoryId);
+      if (!category) return "";
+      return category.parent_id || category.$id;
+    }
+
+    function productImageIds(product) {
+      let ids = [];
+      if (Array.isArray(product?.image_ids)) {
+        ids = product.image_ids.filter(Boolean);
+      } else if (typeof product?.image_ids === "string" && product.image_ids.trim()) {
+        try {
+          const parsed = JSON.parse(product.image_ids);
+          if (Array.isArray(parsed)) ids = parsed.filter(Boolean);
+        } catch (e) {
+          ids = product.image_ids.split(",").map(v => v.trim()).filter(Boolean);
+        }
+      }
+      if (product?.image_id && !ids.includes(product.image_id)) ids.unshift(product.image_id);
+      return [...new Set(ids)];
+    }
+
+    async function loadCategoriesAndMenus() {
       const desktopMenu = document.getElementById("desktopCategoryMenu");
       const mobileMenu = document.getElementById("mobileCategoryMenu");
 
       try {
         const result = await db.listDocuments(
           DATABASE_ID,
-          TABLE_ID,
+          CATEGORY_TABLE_ID,
           [Appwrite.Query.orderAsc("sort_order"), Appwrite.Query.limit(100)]
         );
-
-        const parents = result.documents
-          .filter(doc => !doc.parent_id)
-          .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
-
-        if (!parents.length) {
-          if (list) list.innerHTML = '<div class="category-loading">目前尚未建立商品大分類。</div>';
-          if (desktopMenu) desktopMenu.innerHTML = '<a href="products.html">全部商品</a>';
-          if (mobileMenu) mobileMenu.innerHTML = '<a href="products.html">全部商品</a>';
-          return;
-        }
+        categories = result.documents;
+        const parents = parentCategories();
 
         const menuHtml =
           '<a href="products.html">全部商品</a>' +
@@ -591,30 +612,225 @@
 
         if (desktopMenu) desktopMenu.innerHTML = menuHtml;
         if (mobileMenu) mobileMenu.innerHTML = menuHtml;
-
-        if (!list) return;
-
-        list.innerHTML = parents.map((doc, index) => {
-          const image = doc.image_id
-            ? `<img src="${fileUrl(doc.image_id)}" alt="${escapeHtml(doc.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`
-            : '<span class="category-icon">＋</span>';
-
-          return `
-            <a href="${parentUrl(doc)}" class="category-item${index % 2 ? ' category-offset' : ''}">
-              <div class="category-circle">${image}</div>
-              <strong>${escapeHtml(doc.name)}</strong>
-            </a>`;
-        }).join("");
-
       } catch (error) {
         console.error("商品分類讀取失敗：", error);
-        if (list) list.innerHTML = '<div class="category-loading">商品分類暫時無法讀取。</div>';
         if (desktopMenu) desktopMenu.innerHTML = '<a href="products.html">全部商品</a>';
         if (mobileMenu) mobileMenu.innerHTML = '<a href="products.html">全部商品</a>';
       }
     }
 
-    loadCategories();
+    function renderFeaturedTabs() {
+      const tabs = document.getElementById("featuredTabs");
+      const parentsWithFeatured = parentCategories().filter(parent =>
+        products.some(product =>
+          product.is_featured === true && topParentId(product.category_id) === parent.$id
+        )
+      );
+
+      if (!parentsWithFeatured.length) {
+        tabs.innerHTML = "";
+        activeFeaturedParent = "";
+        renderFeaturedProducts();
+        return;
+      }
+
+      if (!parentsWithFeatured.some(p => p.$id === activeFeaturedParent)) {
+        activeFeaturedParent = parentsWithFeatured[0].$id;
+      }
+
+      tabs.innerHTML = parentsWithFeatured.map(parent => `
+        <button
+          type="button"
+          class="featured-tab ${parent.$id === activeFeaturedParent ? "is-active" : ""}"
+          data-parent-id="${escapeHtml(parent.$id)}"
+        >${escapeHtml(parent.name)}</button>
+      `).join("");
+
+      tabs.querySelectorAll(".featured-tab").forEach(button => {
+        button.addEventListener("click", () => {
+          activeFeaturedParent = button.dataset.parentId;
+          renderFeaturedTabs();
+          renderFeaturedProducts();
+        });
+      });
+    }
+
+    function renderFeaturedProducts() {
+      const grid = document.getElementById("featuredProducts");
+      if (!activeFeaturedParent) {
+        grid.innerHTML = '<div class="featured-state">目前尚未設定熱門商品。</div>';
+        return;
+      }
+
+      const list = products
+        .filter(product =>
+          product.is_featured === true &&
+          topParentId(product.category_id) === activeFeaturedParent
+        )
+        .slice(0, 5);
+
+      if (!list.length) {
+        grid.innerHTML = '<div class="featured-state">這個分類目前沒有熱門商品。</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(product => {
+        const ids = productImageIds(product);
+        const image = ids.length
+          ? `<img class="featured-image" src="${fileUrl(ids[0])}" alt="${escapeHtml(product.name)}" loading="lazy">`
+          : '<div class="featured-image-empty">暫無圖片</div>';
+        const arrows = ids.length > 1
+          ? `<button class="featured-arrow prev" type="button" aria-label="上一張圖片">←</button>
+             <button class="featured-arrow next" type="button" aria-label="下一張圖片">→</button>`
+          : "";
+
+        return `
+          <article class="featured-card" data-product-id="${escapeHtml(product.$id)}" data-images="${escapeHtml(JSON.stringify(ids))}" data-image-index="0">
+            <div class="featured-image-wrap">
+              <a class="featured-image-link" href="product.html?id=${encodeURIComponent(product.$id)}">${image}</a>
+              ${arrows}
+            </div>
+            <a class="featured-name" href="product.html?id=${encodeURIComponent(product.$id)}">${escapeHtml(product.name)}</a>
+          </article>`;
+      }).join("");
+
+      grid.querySelectorAll(".featured-card").forEach(card => {
+        let ids = [];
+        try { ids = JSON.parse(card.dataset.images || "[]"); } catch(e) {}
+        if (ids.length < 2) return;
+
+        const img = card.querySelector(".featured-image");
+        const prev = card.querySelector(".featured-arrow.prev");
+        const next = card.querySelector(".featured-arrow.next");
+
+        function move(step) {
+          let index = Number(card.dataset.imageIndex || 0);
+          index = (index + step + ids.length) % ids.length;
+          card.dataset.imageIndex = String(index);
+          if (img) img.src = fileUrl(ids[index]);
+        }
+
+        prev?.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); move(-1); });
+        next?.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); move(1); });
+      });
+    }
+
+    async function loadFeaturedProducts() {
+      try {
+        const result = await db.listDocuments(
+          DATABASE_ID,
+          PRODUCT_TABLE_ID,
+          [Appwrite.Query.orderAsc("sort_order"), Appwrite.Query.limit(100)]
+        );
+        products = result.documents;
+        renderFeaturedTabs();
+        renderFeaturedProducts();
+      } catch (error) {
+        console.error("熱門商品讀取失敗：", error);
+        document.getElementById("featuredTabs").innerHTML = "";
+        document.getElementById("featuredProducts").innerHTML =
+          '<div class="featured-state">熱門商品暫時無法讀取。</div>';
+      }
+    }
+
+    function renderBanners() {
+      const track = document.getElementById("bannerTrack");
+      const dots = document.getElementById("bannerDots");
+      const prev = document.getElementById("bannerPrev");
+      const next = document.getElementById("bannerNext");
+
+      if (!banners.length) {
+        track.innerHTML = '<div class="ad-empty">目前尚未上傳首頁廣告。</div>';
+        dots.innerHTML = "";
+        prev.style.display = "none";
+        next.style.display = "none";
+        return;
+      }
+
+      bannerIndex = Math.min(bannerIndex, banners.length - 1);
+      track.innerHTML = banners.map((banner, index) => `
+        <div class="popular-slide ${index === bannerIndex ? "is-active" : ""}">
+          <div class="popular-slide-visual">
+            <img src="${fileUrl(banner.image_id)}" alt="首頁廣告 ${index + 1}">
+          </div>
+        </div>
+      `).join("");
+
+      dots.innerHTML = banners.map((_, index) => `
+        <button class="popular-dot ${index === bannerIndex ? "is-active" : ""}" type="button" data-index="${index}" aria-label="第 ${index + 1} 張廣告"></button>
+      `).join("");
+
+      const showNav = banners.length > 1;
+      prev.style.display = showNav ? "" : "none";
+      next.style.display = showNav ? "" : "none";
+      updateBannerPosition();
+
+      dots.querySelectorAll(".popular-dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+          bannerIndex = Number(dot.dataset.index);
+          updateBannerPosition();
+          restartBannerTimer();
+        });
+      });
+    }
+
+    function updateBannerPosition() {
+      const track = document.getElementById("bannerTrack");
+      track.style.transform = `translateX(-${bannerIndex * 100}%)`;
+      track.querySelectorAll(".popular-slide").forEach((slide, i) =>
+        slide.classList.toggle("is-active", i === bannerIndex)
+      );
+      document.querySelectorAll("#bannerDots .popular-dot").forEach((dot, i) =>
+        dot.classList.toggle("is-active", i === bannerIndex)
+      );
+    }
+
+    function moveBanner(step) {
+      if (banners.length < 2) return;
+      bannerIndex = (bannerIndex + step + banners.length) % banners.length;
+      updateBannerPosition();
+    }
+
+    function restartBannerTimer() {
+      clearInterval(bannerTimer);
+      if (banners.length > 1) {
+        bannerTimer = setInterval(() => moveBanner(1), 5000);
+      }
+    }
+
+    async function loadBanners() {
+      try {
+        const result = await db.listDocuments(
+          DATABASE_ID,
+          BANNER_TABLE_ID,
+          [Appwrite.Query.orderAsc("sort_order"), Appwrite.Query.limit(5)]
+        );
+        banners = result.documents;
+        renderBanners();
+        restartBannerTimer();
+      } catch (error) {
+        console.error("首頁廣告讀取失敗：", error);
+        document.getElementById("bannerTrack").innerHTML =
+          '<div class="ad-empty">首頁廣告暫時無法讀取。</div>';
+        document.getElementById("bannerDots").innerHTML = "";
+        document.getElementById("bannerPrev").style.display = "none";
+        document.getElementById("bannerNext").style.display = "none";
+      }
+    }
+
+    document.getElementById("bannerPrev")?.addEventListener("click", () => {
+      moveBanner(-1);
+      restartBannerTimer();
+    });
+    document.getElementById("bannerNext")?.addEventListener("click", () => {
+      moveBanner(1);
+      restartBannerTimer();
+    });
+
+    (async () => {
+      await loadCategoriesAndMenus();
+      await Promise.all([loadFeaturedProducts(), loadBanners()]);
+    })();
   })();
   </script>
 
