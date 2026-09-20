@@ -736,6 +736,13 @@ button:disabled{
             <label>商品資訊</label>
             <textarea id="productInfo" placeholder="請輸入商品介紹、特色、尺寸、規格等資訊"></textarea>
         </div>
+        <div class="field featured-field">
+            <label class="featured-check-label">
+                <input id="productFeatured" type="checkbox">
+                <span>設為首頁熱門商品</span>
+            </label>
+            <div class="product-image-help">每個大分類最多 5 個熱門商品；小分類會合併計算到所屬大分類。</div>
+        </div>
         <div class="field">
             <label>商品圖片</label>
             <input id="productImage" type="file" accept="image/*" multiple>
@@ -758,6 +765,7 @@ const PROJECT_ID="6aab96e3000fa724b62d";
 const DATABASE_ID="6aab978f00363c84475b";
 const CATEGORY_TABLE_ID="categories";
 const PRODUCT_TABLE_ID="products";
+const BANNER_TABLE_ID="banners";
 const BUCKET_ID="weiken-images";
 const ADMIN_TEAM_ID="6aaba9fa001fa283e8a7";
 
@@ -801,13 +809,10 @@ function say(el,text,type="ok"){
 }
 
 async function guard(){
-    // 不能把 dashboard.html 當登入入口。
-    // 必須先在同一個分頁從 admin.html 成功登入。
     if(sessionStorage.getItem("weiken_admin_pass") !== "1"){
         location.replace("admin.html");
         return false;
     }
-
     try{
         await account.get();
         return true;
@@ -2131,7 +2136,6 @@ $("#logout").onclick=async()=>{
 (async()=>{
     const allowed=await guard();
     if(!allowed) return;
-
     await loadCategories();
 
     /* 預先讀取商品資料，分類刪除時可檢查是否仍有商品使用 */
@@ -2147,5 +2151,358 @@ $("#logout").onclick=async()=>{
     }
 })();
 </script>
+
+<style>
+/* 新版後台：分類不再使用圖片 */
+#categoryImageField{display:none!important}
+.category-parent-row{
+    grid-template-columns:48px minmax(180px,1fr) 180px!important;
+}
+.category-parent-row>div:nth-child(2){display:none!important}
+.featured-check-label{display:flex!important;align-items:center;gap:10px;cursor:pointer}
+.featured-check-label input{width:18px!important;height:18px;margin:0}
+.featured-badge{
+    display:inline-flex;margin-left:8px;padding:3px 7px;border-radius:999px;
+    background:#edf3ee;color:#315d43;font-size:11px;font-weight:700
+}
+
+/* 首頁廣告管理 */
+.banner-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.banner-item{
+    position:relative;background:#fff;border:1px solid #e5e5e1;border-radius:12px;
+    overflow:hidden;cursor:grab
+}
+.banner-item:active{cursor:grabbing}
+.banner-item img{display:block;width:100%;aspect-ratio:16/6;object-fit:cover;background:#f3f3ef}
+.banner-meta{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+.banner-order{color:#777;font-size:13px}
+.banner-delete{border:1px solid #e4cccc;background:#fff;color:#b42318;border-radius:7px;padding:7px 10px}
+.banner-help{margin:0 0 16px;color:#888;font-size:13px;line-height:1.7}
+.banner-upload-box{
+    margin-bottom:18px;padding:18px;background:#fff;border:1px solid #e5e5e1;border-radius:12px
+}
+.banner-upload-box input{display:block;margin-top:10px}
+@media(max-width:760px){
+    .category-parent-row{grid-template-columns:38px 1fr!important}
+    .category-parent-actions{grid-column:2/3!important}
+    .banner-grid{grid-template-columns:1fr}
+}
+</style>
+
+<script>
+/* =========================================================
+   首頁功能擴充：熱門商品 + 首頁廣告 + 分類不使用圖片
+========================================================= */
+(() => {
+    /* ---------- 商品熱門設定 ---------- */
+    function adminTopParentId(categoryId){
+        const category=categories.find(c=>c.$id===categoryId);
+        if(!category) return "";
+        return category.parent_id || category.$id;
+    }
+
+    function featuredCountForParent(parentId,excludeId=""){
+        return products.filter(p=>
+            p.$id!==excludeId &&
+            p.is_featured===true &&
+            adminTopParentId(p.category_id)===parentId
+        ).length;
+    }
+
+    const originalOpenProductModal=openProductModal;
+    openProductModal=async function(d=null){
+        await originalOpenProductModal(d);
+        const checkbox=document.querySelector("#productFeatured");
+        if(checkbox) checkbox.checked=!!d?.is_featured;
+    };
+
+    /* 取代商品儲存，加入 is_featured 與每個大分類最多 5 個限制 */
+    document.querySelector("#productForm").onsubmit=async e=>{
+        e.preventDefault();
+
+        const name=$("#productName").value.trim();
+        const categoryId=$("#productCategory").value;
+        const sort=Number($("#productSort").value);
+        const productInfo=$("#productInfo").value.trim();
+        const isFeatured=$("#productFeatured").checked;
+
+        if(!name) return say($("#productNotice"),"請輸入商品名稱","err");
+        if(!categoryId) return say($("#productNotice"),"請選擇商品分類","err");
+
+        if(isFeatured){
+            const parentId=adminTopParentId(categoryId);
+            const count=featuredCountForParent(parentId,editingProduct?.$id || "");
+            if(count>=5){
+                const parent=categories.find(c=>c.$id===parentId);
+                alert(`「${parent?.name || "此分類"}」的熱門商品已滿（最多 5 個）。\n\n請先取消其中一個熱門商品後再新增。`);
+                return;
+            }
+        }
+
+        const btn=$("#productSave");
+        btn.disabled=true;
+        btn.textContent="儲存中...";
+        const uploadedThisSave=[];
+
+        try{
+            const finalImageIds=[];
+
+            for(const item of productImageItems){
+                if(item.isNew){
+                    const newId=await uploadImage(item.file);
+                    uploadedThisSave.push(newId);
+                    finalImageIds.push(newId);
+                }else if(item.id){
+                    finalImageIds.push(item.id);
+                }
+            }
+
+            const data={
+                name,
+                category_id:categoryId,
+                image_id:finalImageIds[0] || "",
+                image_ids:finalImageIds,
+                sort_order:sort,
+                product_info:productInfo,
+                is_featured:isFeatured
+            };
+
+            if(editingProduct){
+                await db.updateDocument(DATABASE_ID,PRODUCT_TABLE_ID,editingProduct.$id,data);
+                await placeAt(PRODUCT_TABLE_ID,editingProduct.$id,sort);
+
+                for(const removedId of removedProductImageIds){
+                    if(!finalImageIds.includes(removedId)) await deleteImage(removedId);
+                }
+                say($("#productNotice"),"商品已更新");
+            }else{
+                const created=await db.createDocument(
+                    DATABASE_ID,
+                    PRODUCT_TABLE_ID,
+                    Appwrite.ID.unique(),
+                    data,
+                    [
+                        Appwrite.Permission.read(Appwrite.Role.any()),
+                        Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+                        Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+                    ]
+                );
+                await placeAt(PRODUCT_TABLE_ID,created.$id,sort);
+                say($("#productNotice"),"商品已新增");
+            }
+
+            closeProductModal();
+            await loadProducts();
+        }catch(e){
+            console.error(e);
+            for(const uploadedId of uploadedThisSave) await deleteImage(uploadedId);
+            say($("#productNotice"),"儲存失敗："+e.message,"err");
+        }finally{
+            btn.disabled=false;
+            btn.textContent="儲存商品";
+        }
+    };
+
+    /* 商品列表名稱旁標示熱門 */
+    const originalRenderProductList=renderProductList;
+    renderProductList=function(){
+        originalRenderProductList();
+        document.querySelectorAll("#productList .product-row").forEach(row=>{
+            const product=products.find(p=>p.$id===row.dataset.id);
+            if(!product?.is_featured) return;
+            const nameCell=row.children[2];
+            if(nameCell && !nameCell.querySelector(".featured-badge")){
+                nameCell.insertAdjacentHTML("beforeend",'<span class="featured-badge">熱門</span>');
+            }
+        });
+    };
+
+    /* ---------- 首頁廣告管理 ---------- */
+    let banners=[];
+    let bannerSortable=null;
+
+    const navList=document.querySelector(".nav-list");
+    const bannerNav=document.createElement("button");
+    bannerNav.className="nav";
+    bannerNav.type="button";
+    bannerNav.textContent="首頁廣告";
+    navList.appendChild(bannerNav);
+
+    const main=document.querySelector("main");
+    const bannerPage=document.createElement("section");
+    bannerPage.id="bannersPage";
+    bannerPage.className="page";
+    bannerPage.innerHTML=`
+        <div class="top">
+            <div>
+                <h2>首頁廣告管理</h2>
+                <p>最多 5 張；可拖曳調整首頁輪播順序。</p>
+            </div>
+        </div>
+        <div id="bannerNotice" class="notice"></div>
+        <div class="banner-upload-box">
+            <strong>上傳廣告圖片</strong>
+            <div class="banner-help">可一次選擇多張圖片；超過剩餘名額時會阻止上傳。</div>
+            <input id="bannerUpload" type="file" accept="image/*" multiple>
+        </div>
+        <div id="bannerList" class="banner-grid">
+            <div class="state">正在讀取首頁廣告...</div>
+        </div>
+    `;
+    main.appendChild(bannerPage);
+
+    bannerNav.addEventListener("click",async()=>{
+        document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+        document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+        bannerNav.classList.add("active");
+        bannerPage.classList.add("active");
+        await loadBannersAdmin();
+    });
+
+    async function resequenceBanners(ids){
+        await Promise.all(ids.map((id,index)=>
+            db.updateDocument(DATABASE_ID,BANNER_TABLE_ID,id,{sort_order:index+1})
+        ));
+    }
+
+    function renderBannersAdmin(){
+        const list=$("#bannerList");
+
+        if(!banners.length){
+            list.innerHTML='<div class="state" style="grid-column:1/-1">目前沒有首頁廣告。</div>';
+        }else{
+            list.innerHTML=banners.map((banner,index)=>`
+                <div class="banner-item" data-id="${esc(banner.$id)}">
+                    <img src="${fileUrl(banner.image_id)}" alt="首頁廣告 ${index+1}">
+                    <div class="banner-meta">
+                        <span class="banner-order">第 ${index+1} 張</span>
+                        <button type="button" class="banner-delete" data-id="${esc(banner.$id)}">刪除</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        if(bannerSortable){
+            bannerSortable.destroy();
+            bannerSortable=null;
+        }
+
+        if(banners.length>1){
+            bannerSortable=new Sortable(list,{
+                animation:170,
+                draggable:".banner-item",
+                ghostClass:"drag-ghost",
+                onEnd:async()=>{
+                    const ids=[...list.querySelectorAll(".banner-item")].map(el=>el.dataset.id);
+                    try{
+                        say($("#bannerNotice"),"正在儲存廣告順序...");
+                        await resequenceBanners(ids);
+                        await loadBannersAdmin();
+                        say($("#bannerNotice"),"廣告順序已更新");
+                    }catch(e){
+                        say($("#bannerNotice"),"排序失敗："+e.message,"err");
+                        await loadBannersAdmin();
+                    }
+                }
+            });
+        }
+    }
+
+    async function loadBannersAdmin(){
+        try{
+            const result=await db.listDocuments(
+                DATABASE_ID,
+                BANNER_TABLE_ID,
+                [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(5)]
+            );
+            banners=result.documents;
+            renderBannersAdmin();
+        }catch(e){
+            console.error(e);
+            $("#bannerList").innerHTML=`<div class="state bad" style="grid-column:1/-1">讀取失敗：${esc(e.message)}</div>`;
+        }
+    }
+
+    $("#bannerUpload").addEventListener("change",async e=>{
+        const input=e.currentTarget;
+        const files=[...(input.files || [])].filter(file=>file.type.startsWith("image/"));
+        input.value="";
+        if(!files.length) return;
+
+        await loadBannersAdmin();
+        const remaining=5-banners.length;
+
+        if(remaining<=0){
+            alert("首頁廣告已達上限（最多 5 張），請先刪除一張廣告後再新增。");
+            return;
+        }
+
+        if(files.length>remaining){
+            alert(`目前只剩 ${remaining} 個廣告名額。\n\n請重新選擇最多 ${remaining} 張圖片。`);
+            return;
+        }
+
+        const uploaded=[];
+        try{
+            say($("#bannerNotice"),"正在上傳廣告...");
+            let nextOrder=banners.length+1;
+
+            for(const file of files){
+                const imageId=await uploadImage(file);
+                uploaded.push(imageId);
+
+                await db.createDocument(
+                    DATABASE_ID,
+                    BANNER_TABLE_ID,
+                    Appwrite.ID.unique(),
+                    {image_id:imageId,sort_order:nextOrder++},
+                    [
+                        Appwrite.Permission.read(Appwrite.Role.any()),
+                        Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+                        Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+                    ]
+                );
+            }
+
+            await loadBannersAdmin();
+            say($("#bannerNotice"),"首頁廣告已上傳");
+        }catch(e){
+            console.error(e);
+            /* 若某張圖已上傳但文件建立失敗，清掉未被使用的檔案 */
+            await loadBannersAdmin().catch(()=>{});
+            const used=new Set(banners.map(b=>b.image_id));
+            for(const id of uploaded){
+                if(!used.has(id)) await deleteImage(id);
+            }
+            say($("#bannerNotice"),"上傳失敗："+e.message,"err");
+        }
+    });
+
+    $("#bannerList").addEventListener("click",async e=>{
+        const button=e.target.closest(".banner-delete");
+        if(!button) return;
+
+        const banner=banners.find(b=>b.$id===button.dataset.id);
+        if(!banner) return;
+        if(!confirm("確定要刪除這張首頁廣告嗎？")) return;
+
+        try{
+            await db.deleteDocument(DATABASE_ID,BANNER_TABLE_ID,banner.$id);
+            await deleteImage(banner.image_id);
+
+            const remain=banners.filter(b=>b.$id!==banner.$id);
+            if(remain.length) await resequenceBanners(remain.map(b=>b.$id));
+
+            await loadBannersAdmin();
+            say($("#bannerNotice"),"首頁廣告已刪除");
+        }catch(e){
+            say($("#bannerNotice"),"刪除失敗："+e.message,"err");
+        }
+    });
+
+    /* 分類圖片欄位已停用；既有 image_id 先保留在資料庫，不再提供後台上傳。 */
+})();
+</script>
+
 </body>
 </html>
