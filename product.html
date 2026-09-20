@@ -9,12 +9,36 @@
 <style>
 .product-detail-page{background:#fff}
 .product-detail-wrap{padding:34px 0 80px}
-.product-detail-breadcrumb{display:flex;gap:10px;align-items:center;font-size:14px;color:#888;margin-bottom:28px}
+.product-detail-breadcrumb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:#888;margin-bottom:28px}
 .product-detail-breadcrumb a{color:inherit;text-decoration:none}
+.product-detail-breadcrumb a:hover{color:#244b36}
+.product-detail-breadcrumb .current{color:#555}
 .product-detail-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:64px;align-items:start}
-.product-detail-image{background:#f7f7f5;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
+
+/* 商品多圖 */
+.product-detail-gallery{position:relative}
+.product-detail-image{position:relative;background:#fff;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
 .product-detail-image img{width:100%;height:100%;object-fit:contain;display:block}
 .product-detail-noimg{color:#aaa}
+.detail-image-nav{
+position:absolute;z-index:4;top:50%;width:46px;height:46px;
+display:grid;place-items:center;border:1px solid rgba(36,75,54,.12);
+border-radius:50%;background:rgba(255,255,255,.92);color:#244b36;
+box-shadow:0 6px 20px rgba(24,53,38,.10);font-size:20px;cursor:pointer;
+opacity:0;visibility:hidden;transform:translateY(-50%);
+transition:opacity .2s ease,visibility .2s ease,background .2s ease,color .2s ease
+}
+.detail-image-prev{left:16px}
+.detail-image-next{right:16px}
+.product-detail-gallery:hover .detail-image-nav,
+.detail-image-nav:focus-visible{opacity:1;visibility:visible}
+.detail-image-nav:hover{background:#244b36;color:#fff}
+.detail-image-counter{
+position:absolute;right:14px;bottom:14px;z-index:3;
+padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.88);
+color:#555;font-size:12px
+}
+
 .product-detail-info h1{font-size:32px;line-height:1.35;margin:4px 0 14px}
 .product-detail-category{font-size:14px;color:#888;margin-bottom:30px}
 .detail-block{border-top:1px solid #e6e6e2;padding:26px 0}
@@ -26,6 +50,9 @@
 .product-detail-wrap{padding:22px 0 55px}
 .product-detail-main{grid-template-columns:1fr;gap:28px}
 .product-detail-info h1{font-size:26px}
+.detail-image-nav{width:40px;height:40px;opacity:.82;visibility:visible}
+.detail-image-prev{left:10px}
+.detail-image-next{right:10px}
 }
 </style>
 </head>
@@ -184,21 +211,23 @@
 <nav class="product-detail-breadcrumb" aria-label="麵包屑導覽">
 <a href="index.html">首頁</a><span>/</span>
 <a href="products.html">商品專區</a><span>/</span>
-<span id="breadcrumbName">商品詳細</span>
+<a href="products.html" id="breadcrumbCategory">商品分類</a><span>/</span>
+<span id="breadcrumbName" class="current">商品詳細</span>
 </nav>
 <div id="detailState" class="product-detail-state">正在讀取商品...</div>
 <div id="productDetail" class="product-detail-main" hidden>
+<div class="product-detail-gallery" id="detailGallery">
 <div class="product-detail-image" id="detailImage"></div>
+<button class="detail-image-nav detail-image-prev" id="detailPrev" type="button" aria-label="上一張圖片">←</button>
+<button class="detail-image-nav detail-image-next" id="detailNext" type="button" aria-label="下一張圖片">→</button>
+<div class="detail-image-counter" id="detailImageCounter" hidden></div>
+</div>
 <div class="product-detail-info">
 <h1 id="detailName"></h1>
 <div id="detailCategory" class="product-detail-category"></div>
 <section class="detail-block">
-<h2>商品特色</h2>
-<div id="detailFeatures" class="detail-text"></div>
-</section>
-<section class="detail-block">
-<h2>商品規格</h2>
-<div id="detailSpecifications" class="detail-text"></div>
+<h2>商品資訊</h2>
+<div id="detailProductInfo" class="detail-text"></div>
 </section>
 </div>
 </div>
@@ -288,6 +317,30 @@ function fileUrl(id){
 if(!id)return '';
 return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
 }
+
+function getProductImageIds(product){
+let ids=[];
+if(Array.isArray(product?.image_ids)){
+ids=product.image_ids.filter(Boolean);
+}else if(typeof product?.image_ids==='string' && product.image_ids.trim()){
+try{
+const parsed=JSON.parse(product.image_ids);
+if(Array.isArray(parsed))ids=parsed.filter(Boolean);
+}catch(e){
+ids=product.image_ids.split(',').map(v=>v.trim()).filter(Boolean);
+}
+}
+if(product?.image_id && !ids.includes(product.image_id))ids.unshift(product.image_id);
+return [...new Set(ids)];
+}
+
+function getProductInfo(product){
+if(product?.product_info?.trim())return product.product_info.trim();
+const legacy=[];
+if(product?.features?.trim())legacy.push(product.features.trim());
+if(product?.specifications?.trim())legacy.push(product.specifications.trim());
+return legacy.join('\n\n');
+}
 async function loadCategories(){
 try{
 const result=await db.listDocuments(DATABASE_ID,CATEGORY_TABLE_ID,[Appwrite.Query.orderAsc('sort_order'),Appwrite.Query.limit(100)]);
@@ -305,27 +358,78 @@ const state=document.getElementById('detailState');
 const detail=document.getElementById('productDetail');
 const id=new URLSearchParams(location.search).get('id');
 if(!id){state.textContent='找不到商品資料。';return;}
+
 try{
 const categoriesPromise=loadCategories();
 const product=await db.getDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
 const categories=await categoriesPromise;
 const category=categories.find(c=>c.$id===product.category_id);
+
 document.title=`${product.name}｜威肯健康生活用品館`;
+
 document.getElementById('breadcrumbName').textContent=product.name||'商品詳細';
+
+const breadcrumbCategory=document.getElementById('breadcrumbCategory');
+breadcrumbCategory.textContent=category?.name||'商品分類';
+breadcrumbCategory.href=category
+? `products.html?category=${encodeURIComponent(category.$id)}`
+: 'products.html';
+
 document.getElementById('detailName').textContent=product.name||'';
 document.getElementById('detailCategory').textContent=category?.name||'';
+
+const imageIds=getProductImageIds(product);
 const image=document.getElementById('detailImage');
-image.innerHTML=product.image_id
-? `<img src="${fileUrl(product.image_id)}" alt="${esc(product.name)}" loading="eager">`
-: '<span class="product-detail-noimg">商品圖片</span>';
-const features=document.getElementById('detailFeatures');
-const specs=document.getElementById('detailSpecifications');
-features.textContent=product.features||'尚未提供商品特色。';
-specs.textContent=product.specifications||'尚未提供商品規格。';
-if(!product.features)features.classList.add('detail-empty');
-if(!product.specifications)specs.classList.add('detail-empty');
-state.hidden=true;detail.hidden=false;
-}catch(e){console.error(e);state.textContent='商品資料讀取失敗，或此商品已不存在。';}
+const prev=document.getElementById('detailPrev');
+const next=document.getElementById('detailNext');
+const counter=document.getElementById('detailImageCounter');
+let imageIndex=0;
+
+function renderImage(){
+if(!imageIds.length){
+image.innerHTML='<span class="product-detail-noimg">商品圖片</span>';
+prev.hidden=true;
+next.hidden=true;
+counter.hidden=true;
+return;
+}
+
+image.innerHTML=`<img src="${fileUrl(imageIds[imageIndex])}" alt="${esc(product.name)}" loading="${imageIndex===0?'eager':'lazy'}">`;
+
+const multiple=imageIds.length>1;
+prev.hidden=!multiple;
+next.hidden=!multiple;
+counter.hidden=!multiple;
+
+if(multiple){
+counter.textContent=`${imageIndex+1} / ${imageIds.length}`;
+}
+}
+
+prev.onclick=()=>{
+imageIndex=(imageIndex-1+imageIds.length)%imageIds.length;
+renderImage();
+};
+
+next.onclick=()=>{
+imageIndex=(imageIndex+1)%imageIds.length;
+renderImage();
+};
+
+renderImage();
+
+const info=document.getElementById('detailProductInfo');
+const productInfo=getProductInfo(product);
+info.textContent=productInfo||'尚未提供商品資訊。';
+info.classList.toggle('detail-empty',!productInfo);
+
+state.hidden=true;
+detail.hidden=false;
+
+}catch(e){
+console.error(e);
+state.textContent='商品資料讀取失敗，或此商品已不存在。';
+}
 }
 start();
 })();
