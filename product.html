@@ -198,99 +198,97 @@
   .detail-thumbnail{flex-basis:64px;width:64px;height:64px}
 }
 
-/* ===== 兩層式側邊分類 ===== */
-.detail-category-list{gap:0}
-.detail-category-all{
-  display:flex;
-  align-items:center;
-  min-height:46px;
-  padding:0 12px;
-  border-bottom:1px solid #e3e5df;
-  color:#555;
-  text-decoration:none;
-  font-size:14px;
+/* ===== 商品內頁左側：大分類 > 小分類 > 商品 三級 hover 導覽 ===== */
+.detail-category-list{display:flex;flex-direction:column}
+.detail-tree-all{
+  display:flex;align-items:center;min-height:48px;padding:0 12px;
+  border-bottom:1px solid #eceee9;color:#555;text-decoration:none;font-size:14px;
+  transition:background .18s ease,color .18s ease,padding .18s ease
 }
-.detail-category-all:hover{color:#244b36;background:#f6f8f5}
-.detail-category-group{border-bottom:1px solid #eceee9}
-.detail-category-parent{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  min-height:48px;
-  padding:0 12px;
-  color:#444;
-  font-size:14px;
-  font-weight:700;
-  text-decoration:none;
-  background:transparent;
+.detail-tree-all:hover{padding-left:17px;background:#f1f4ef;color:#244b36}
+
+.detail-tree-parent{border-bottom:1px solid #eceee9}
+.detail-tree-parent-row{
+  display:flex;align-items:center;min-height:50px
 }
-.detail-category-parent:hover,
-.detail-category-group.is-current .detail-category-parent{
-  color:#244b36;
-  background:#f5f7f3;
+.detail-tree-parent-link{
+  flex:1;min-width:0;padding:14px 8px 14px 12px;
+  color:#173b2a;text-decoration:none;font-size:15px;font-weight:700;
+  transition:color .18s ease,padding .18s ease
 }
-.detail-category-parent .parent-arrow{
-  color:#8a948c;
-  font-size:12px;
+.detail-tree-parent-link:hover,
+.detail-tree-parent.is-current-parent>.detail-tree-parent-row .detail-tree-parent-link{
+  color:#244b36;padding-left:17px
 }
-.detail-category-children{
-  display:none;
-  padding:3px 0 8px 14px;
+.detail-tree-toggle{
+  flex:0 0 34px;width:34px;height:40px;border:0;background:transparent;
+  color:#789184;font-size:12px;cursor:pointer
 }
-.detail-category-group.is-current .detail-category-children{display:block}
-.detail-category-child{
-  position:relative;
-  display:block;
-  padding:9px 12px 9px 20px;
-  color:#777;
-  text-decoration:none;
-  font-size:13px;
-  line-height:1.45;
+.detail-tree-toggle::before{content:"⌄"}
+.detail-tree-parent.is-open>.detail-tree-parent-row .detail-tree-toggle::before{content:"⌃"}
+
+.detail-tree-children{
+  display:none;padding:0 0 7px 18px
 }
-.detail-category-child::before{
-  content:"";
-  position:absolute;
-  left:7px;
-  top:50%;
-  width:5px;
-  height:1px;
-  background:#aab0aa;
+.detail-tree-parent.is-open>.detail-tree-children{display:block}
+
+.detail-tree-child{position:relative}
+.detail-tree-child-row{
+  display:flex;align-items:center;min-height:40px
 }
-.detail-category-child:hover,
-.detail-category-child.is-active{
-  color:#244b36;
+.detail-tree-child-link{
+  flex:1;min-width:0;padding:9px 5px 9px 14px;
+  color:#68736c;text-decoration:none;font-size:14px;
+  transition:color .18s ease,padding .18s ease
 }
-.detail-category-child.is-active{
-  font-weight:700;
-  background:#f1f4ef;
+.detail-tree-child-link::before{
+  content:"";position:absolute;left:2px;top:20px;width:6px;height:1px;background:#b8c2ba
 }
+.detail-tree-child-link:hover,
+.detail-tree-child.is-current-child>.detail-tree-child-row .detail-tree-child-link{
+  color:#244b36;font-weight:700;padding-left:18px
+}
+.detail-tree-child-toggle{
+  flex:0 0 30px;width:30px;height:36px;border:0;background:transparent;
+  color:#8aa092;font-size:11px;cursor:pointer
+}
+.detail-tree-child-toggle::before{content:"⌄"}
+.detail-tree-child.is-open>.detail-tree-child-row .detail-tree-child-toggle::before{content:"⌃"}
+
+.detail-tree-products{
+  display:none;padding:2px 0 7px 17px
+}
+.detail-tree-child.is-open>.detail-tree-products{display:block}
+.detail-tree-product{
+  display:block;position:relative;padding:8px 6px 8px 15px;
+  color:#858b87;text-decoration:none;font-size:13px;line-height:1.45;
+  transition:color .18s ease,padding .18s ease
+}
+.detail-tree-product::before{
+  content:"";position:absolute;left:2px;top:15px;width:4px;height:4px;
+  border-radius:50%;background:#c7cec8
+}
+.detail-tree-product:hover,
+.detail-tree-product.is-current{
+  color:#244b36;padding-left:19px
+}
+.detail-tree-product.is-current{font-weight:700}
+.detail-tree-empty{padding:7px 6px 8px 14px;color:#aaa;font-size:12px}
+
+/* 桌機：滑鼠指到即展開；離開即收合，但目前商品所在路徑保持展開 */
+@media(min-width:901px){
+  .detail-tree-parent:hover>.detail-tree-children{display:block}
+  .detail-tree-child:hover>.detail-tree-products{display:block}
+  .detail-tree-toggle,.detail-tree-child-toggle{pointer-events:none}
+}
+
+/* 平板 / 手機改成點右側小按鈕展開，避免 hover 裝置問題 */
 @media(max-width:900px){
   .detail-category-list{
-    display:block;
-    overflow:visible;
-    border-bottom:0;
+    display:block;overflow:visible;border-bottom:0
   }
-  .detail-category-all{display:none}
-  .detail-category-group{
-    display:none;
-  }
-  .detail-category-group.is-current{
-    display:block;
-    border:1px solid #e3e5df;
-  }
-  .detail-category-group.is-current .detail-category-children{
-    display:flex;
-    gap:4px 14px;
-    overflow-x:auto;
-    padding:4px 10px 10px;
-  }
-  .detail-category-child{
-    flex:0 0 auto;
-    padding:8px 10px;
-    white-space:nowrap;
-  }
-  .detail-category-child::before{display:none}
+  .detail-tree-all{white-space:normal}
+  .detail-tree-parent-link,.detail-tree-child-link,.detail-tree-product{white-space:normal}
 }
 
 </style>
@@ -449,12 +447,8 @@
 <div class="section-container">
 <nav class="product-detail-breadcrumb" aria-label="麵包屑導覽">
 <a href="index.html">首頁</a><span>/</span>
-<a href="products.html">商品專區</a>
-<span id="breadcrumbParentSep" hidden>/</span>
-<a href="products.html" id="breadcrumbParent" hidden>大分類</a>
-<span id="breadcrumbChildSep" hidden>/</span>
-<a href="products.html" id="breadcrumbChild" hidden>小分類</a>
-<span>/</span>
+<a href="products.html">商品專區</a><span>/</span>
+<a href="products.html" id="breadcrumbCategory">商品分類</a><span>/</span>
 <span id="breadcrumbName" class="current">商品詳細</span>
 </nav>
 
@@ -568,22 +562,18 @@ const desktopLinks=document.getElementById('desktopCategoryLinks');
 const mobileLinks=document.getElementById('mobileCategoryLinks');
 
 function esc(value){
-  return String(value ?? '').replace(/[&<>"']/g,ch=>({
+  return String(value??'').replace(/[&<>"']/g,ch=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
 }
-
 function fileUrl(id){
-  if(!id)return '';
-  return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
+  return id?`${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`:'';
 }
-
 function getProductImageIds(product){
   let ids=[];
-
   if(Array.isArray(product?.image_ids)){
     ids=product.image_ids.filter(Boolean);
-  }else if(typeof product?.image_ids==='string' && product.image_ids.trim()){
+  }else if(typeof product?.image_ids==='string'&&product.image_ids.trim()){
     try{
       const parsed=JSON.parse(product.image_ids);
       if(Array.isArray(parsed))ids=parsed.filter(Boolean);
@@ -591,146 +581,191 @@ function getProductImageIds(product){
       ids=product.image_ids.split(',').map(v=>v.trim()).filter(Boolean);
     }
   }
-
-  if(product?.image_id && !ids.includes(product.image_id)){
-    ids.unshift(product.image_id);
-  }
-
+  if(product?.image_id&&!ids.includes(product.image_id))ids.unshift(product.image_id);
   return [...new Set(ids)];
 }
-
 function getProductInfo(product){
   if(product?.product_info?.trim())return product.product_info.trim();
-
   const legacy=[];
   if(product?.features?.trim())legacy.push(product.features.trim());
   if(product?.specifications?.trim())legacy.push(product.specifications.trim());
   return legacy.join('\n\n');
 }
-
-function parentCategories(categories){
-  return categories
-    .filter(category=>!category.parent_id)
+function parents(categories){
+  return categories.filter(c=>!c.parent_id)
     .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
 }
-
 function childrenOf(categories,parentId){
-  return categories
-    .filter(category=>category.parent_id===parentId)
+  return categories.filter(c=>c.parent_id===parentId)
+    .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+}
+function productsOf(products,categoryId){
+  return products.filter(p=>p.category_id===categoryId)
     .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
 }
 
 async function loadCategories(){
-  try{
-    const result=await db.listDocuments(
-      DATABASE_ID,
-      CATEGORY_TABLE_ID,
-      [
-        Appwrite.Query.orderAsc('sort_order'),
-        Appwrite.Query.limit(100)
-      ]
-    );
+  const result=await db.listDocuments(DATABASE_ID,CATEGORY_TABLE_ID,[
+    Appwrite.Query.orderAsc('sort_order'),
+    Appwrite.Query.limit(100)
+  ]);
+  const categories=result.documents;
 
-    const categories=result.documents;
-
-    /* 頁首下拉選單只顯示大分類 */
-    parentCategories(categories).forEach(parent=>{
-      const url=`products.html?parent=${encodeURIComponent(parent.$id)}`;
-      const name=esc(parent.name);
-
-      desktopLinks?.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${url}">${name}</a>`
-      );
-
-      mobileLinks?.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${url}">${name}</a>`
-      );
-    });
-
-    return categories;
-
-  }catch(e){
-    console.error(e);
-    return [];
-  }
+  /* 頁首只放大分類 */
+  parents(categories).forEach(category=>{
+    const url=`products.html?parent=${encodeURIComponent(category.$id)}`;
+    const name=esc(category.name);
+    desktopLinks?.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
+    mobileLinks?.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
+  });
+  return categories;
 }
 
-function renderSidebar(categories,currentCategoryId){
+async function loadAllProducts(){
+  const result=await db.listDocuments(DATABASE_ID,PRODUCT_TABLE_ID,[
+    Appwrite.Query.orderAsc('sort_order'),
+    Appwrite.Query.limit(100)
+  ]);
+  return result.documents;
+}
+
+function renderSidebar(categories,products,currentProduct){
   const list=document.getElementById('detailCategoryList');
-  const current=categories.find(c=>c.$id===currentCategoryId);
+  const currentCategory=categories.find(c=>c.$id===currentProduct.category_id);
+  const currentParent=currentCategory
+    ? (currentCategory.parent_id
+        ? categories.find(c=>c.$id===currentCategory.parent_id)
+        : currentCategory)
+    : null;
+  const currentChild=currentCategory?.parent_id?currentCategory:null;
 
-  /*
-    新資料：商品通常屬於小分類。
-    舊資料：商品可能仍直接屬於大分類。
-  */
-  const currentParentId=current?.parent_id || current?.$id || '';
-  const parents=parentCategories(categories);
+  const parentMarkup=parents(categories).map(parent=>{
+    const children=childrenOf(categories,parent.$id);
+    const parentIsCurrent=currentParent?.$id===parent.$id;
 
-  list.innerHTML=`
-    <a href="products.html" class="detail-category-all">全部商品</a>
+    const childrenMarkup=children.map(child=>{
+      const childProducts=productsOf(products,child.$id);
+      const childIsCurrent=currentChild?.$id===child.$id;
 
-    ${parents.map(parent=>{
-      const children=childrenOf(categories,parent.$id);
-      const isCurrentParent=parent.$id===currentParentId;
+      const productMarkup=childProducts.length
+        ? childProducts.map(p=>`
+            <a href="product.html?id=${encodeURIComponent(p.$id)}"
+               class="detail-tree-product ${p.$id===currentProduct.$id?'is-current':''}">
+              ${esc(p.name)}
+            </a>
+          `).join('')
+        : `<div class="detail-tree-empty">目前尚無商品</div>`;
 
       return `
-        <div class="detail-category-group ${isCurrentParent?'is-current':''}">
-          <a
-            href="products.html?parent=${encodeURIComponent(parent.$id)}"
-            class="detail-category-parent"
-          >
-            <span>${esc(parent.name)}</span>
-            <span class="parent-arrow">⌄</span>
-          </a>
-
-          <div class="detail-category-children">
-            ${children.length
-              ? children.map(child=>`
-                  <a
-                    href="products.html?category=${encodeURIComponent(child.$id)}&parent=${encodeURIComponent(parent.$id)}"
-                    class="detail-category-child ${child.$id===currentCategoryId?'is-active':''}"
-                  >${esc(child.name)}</a>
-                `).join('')
-              : `<span class="detail-category-child">尚無小分類</span>`
-            }
+        <div class="detail-tree-child ${childIsCurrent?'is-current-child is-open':''}">
+          <div class="detail-tree-child-row">
+            <a class="detail-tree-child-link"
+               href="products.html?category=${encodeURIComponent(child.$id)}&parent=${encodeURIComponent(parent.$id)}">
+              ${esc(child.name)}
+            </a>
+            <button class="detail-tree-child-toggle" type="button"
+                    aria-label="展開 ${esc(child.name)} 商品"
+                    aria-expanded="${childIsCurrent?'true':'false'}"></button>
           </div>
+          <div class="detail-tree-products">
+            ${productMarkup}
+          </div>
+        </div>`;
+    }).join('');
+
+    /* 若舊商品直接掛在大分類，也讓它們出現在第三層 */
+    const directProducts=productsOf(products,parent.$id);
+    const directMarkup=directProducts.length?`
+      <div class="detail-tree-child ${currentProduct.category_id===parent.$id?'is-current-child is-open':''}">
+        <div class="detail-tree-child-row">
+          <span class="detail-tree-child-link">其他商品</span>
+          <button class="detail-tree-child-toggle" type="button"
+                  aria-label="展開其他商品"
+                  aria-expanded="${currentProduct.category_id===parent.$id?'true':'false'}"></button>
         </div>
-      `;
-    }).join('')}
+        <div class="detail-tree-products">
+          ${directProducts.map(p=>`
+            <a href="product.html?id=${encodeURIComponent(p.$id)}"
+               class="detail-tree-product ${p.$id===currentProduct.$id?'is-current':''}">
+              ${esc(p.name)}
+            </a>
+          `).join('')}
+        </div>
+      </div>`:'';
+
+    return `
+      <div class="detail-tree-parent ${parentIsCurrent?'is-current-parent is-open':''}">
+        <div class="detail-tree-parent-row">
+          <a class="detail-tree-parent-link"
+             href="products.html?parent=${encodeURIComponent(parent.$id)}">
+            ${esc(parent.name)}
+          </a>
+          <button class="detail-tree-toggle" type="button"
+                  aria-label="展開 ${esc(parent.name)} 分類"
+                  aria-expanded="${parentIsCurrent?'true':'false'}"></button>
+        </div>
+        <div class="detail-tree-children">
+          ${childrenMarkup}${directMarkup}
+        </div>
+      </div>`;
+  }).join('');
+
+  list.innerHTML=`
+    <a href="products.html" class="detail-tree-all">全部商品</a>
+    ${parentMarkup}
   `;
+
+  /* 手機 / 平板：點右側按鈕展開 */
+  list.addEventListener('click',e=>{
+    const parentToggle=e.target.closest('.detail-tree-toggle');
+    if(parentToggle){
+      e.preventDefault();
+      const item=parentToggle.closest('.detail-tree-parent');
+      const open=item.classList.toggle('is-open');
+      parentToggle.setAttribute('aria-expanded',String(open));
+      return;
+    }
+
+    const childToggle=e.target.closest('.detail-tree-child-toggle');
+    if(childToggle){
+      e.preventDefault();
+      const item=childToggle.closest('.detail-tree-child');
+      const open=item.classList.toggle('is-open');
+      childToggle.setAttribute('aria-expanded',String(open));
+    }
+  });
 }
 
 function renderBreadcrumb(categories,product){
-  const current=categories.find(c=>c.$id===product.category_id);
-  const parent=current?.parent_id
-    ? categories.find(c=>c.$id===current.parent_id)
-    : current;
+  const category=categories.find(c=>c.$id===product.category_id);
+  const breadcrumbCategory=document.getElementById('breadcrumbCategory');
 
-  const child=current?.parent_id ? current : null;
-
-  const parentEl=document.getElementById('breadcrumbParent');
-  const parentSep=document.getElementById('breadcrumbParentSep');
-  const childEl=document.getElementById('breadcrumbChild');
-  const childSep=document.getElementById('breadcrumbChildSep');
-
-  if(parent){
-    parentEl.hidden=false;
-    parentSep.hidden=false;
-    parentEl.textContent=parent.name || '商品分類';
-    parentEl.href=`products.html?parent=${encodeURIComponent(parent.$id)}`;
+  if(!category){
+    breadcrumbCategory.textContent='商品分類';
+    breadcrumbCategory.href='products.html';
+    return;
   }
 
-  if(child){
-    childEl.hidden=false;
-    childSep.hidden=false;
-    childEl.textContent=child.name || '商品分類';
-    childEl.href=`products.html?category=${encodeURIComponent(child.$id)}&parent=${encodeURIComponent(parent?.$id || '')}`;
+  if(category.parent_id){
+    const parent=categories.find(c=>c.$id===category.parent_id);
+    if(parent){
+      /* 原本只有一格分類，改成 大分類 / 小分類 / 商品 */
+      breadcrumbCategory.textContent=parent.name;
+      breadcrumbCategory.href=`products.html?parent=${encodeURIComponent(parent.$id)}`;
+
+      const separator=document.createElement('span');
+      separator.textContent='/';
+      const childLink=document.createElement('a');
+      childLink.textContent=category.name;
+      childLink.href=`products.html?category=${encodeURIComponent(category.$id)}&parent=${encodeURIComponent(parent.$id)}`;
+
+      breadcrumbCategory.after(separator,childLink);
+      return;
+    }
   }
 
-  document.getElementById('breadcrumbName').textContent=
-    product.name || '商品詳細';
+  breadcrumbCategory.textContent=category.name;
+  breadcrumbCategory.href=`products.html?parent=${encodeURIComponent(category.$id)}`;
 }
 
 async function start(){
@@ -744,47 +779,42 @@ async function start(){
   }
 
   try{
-    const categoriesPromise=loadCategories();
-    const product=await db.getDocument(
-      DATABASE_ID,
-      PRODUCT_TABLE_ID,
-      id
-    );
-    const categories=await categoriesPromise;
+    const [categories,allProducts,product]=await Promise.all([
+      loadCategories(),
+      loadAllProducts(),
+      db.getDocument(DATABASE_ID,PRODUCT_TABLE_ID,id)
+    ]);
 
     document.title=`${product.name}｜威肯健康生活用品館`;
-
+    document.getElementById('breadcrumbName').textContent=product.name||'商品詳細';
     renderBreadcrumb(categories,product);
     document.getElementById('detailName').textContent=product.name||'';
-    renderSidebar(categories,product.category_id);
+
+    renderSidebar(categories,allProducts,product);
 
     const imageIds=getProductImageIds(product);
     const image=document.getElementById('detailImage');
     const prev=document.getElementById('detailPrev');
     const next=document.getElementById('detailNext');
     const thumbs=document.getElementById('detailThumbnails');
-
     let imageIndex=0;
 
     function renderGallery(){
       if(!imageIds.length){
         image.innerHTML=`
           <span class="product-detail-noimg">商品圖片</span>
-          <button class="detail-image-nav detail-image-prev" type="button" aria-label="上一張圖片" hidden>←</button>
-          <button class="detail-image-nav detail-image-next" type="button" aria-label="下一張圖片" hidden>→</button>
-        `;
+          <button class="detail-image-nav detail-image-prev" type="button" hidden>←</button>
+          <button class="detail-image-nav detail-image-next" type="button" hidden>→</button>`;
         thumbs.innerHTML='';
         return;
       }
 
       let photo=image.querySelector('.detail-main-photo');
-
       if(!photo){
         photo=document.createElement('img');
         photo.className='detail-main-photo';
         image.prepend(photo);
       }
-
       photo.src=fileUrl(imageIds[imageIndex]);
       photo.alt=product.name||'商品圖片';
 
@@ -793,19 +823,12 @@ async function start(){
       next.hidden=!multiple;
 
       thumbs.innerHTML=imageIds.map((imageId,index)=>`
-        <button
-          type="button"
+        <button type="button"
           class="detail-thumbnail ${index===imageIndex?'is-active':''}"
-          data-index="${index}"
-          aria-label="查看第 ${index+1} 張商品圖片"
-        >
-          <img
-            src="${fileUrl(imageId)}"
-            alt="${esc(product.name)} 第 ${index+1} 張"
-          >
+          data-index="${index}" aria-label="查看第 ${index+1} 張商品圖片">
+          <img src="${fileUrl(imageId)}" alt="${esc(product.name)} 第 ${index+1} 張">
         </button>
       `).join('');
-
       thumbs.hidden=imageIds.length<=1;
     }
 
@@ -813,31 +836,25 @@ async function start(){
       imageIndex=(imageIndex-1+imageIds.length)%imageIds.length;
       renderGallery();
     };
-
     next.onclick=()=>{
       imageIndex=(imageIndex+1)%imageIds.length;
       renderGallery();
     };
-
     thumbs.addEventListener('click',e=>{
       const button=e.target.closest('.detail-thumbnail');
       if(!button)return;
-
       imageIndex=Number(button.dataset.index)||0;
       renderGallery();
     });
-
     renderGallery();
 
     const info=document.getElementById('detailProductInfo');
     const productInfo=getProductInfo(product);
-
     info.textContent=productInfo||'尚未提供商品資訊。';
     info.classList.toggle('detail-empty',!productInfo);
 
     state.hidden=true;
     detail.hidden=false;
-
   }catch(e){
     console.error(e);
     state.textContent='商品資料讀取失敗，或此商品已不存在。';
