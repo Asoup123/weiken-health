@@ -10,12 +10,20 @@
 .product-detail-page{background:#fff}
 .product-detail-wrap{padding:34px 0 80px}
 .product-detail-breadcrumb{
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  display:flex;gap:0;align-items:center;flex-wrap:wrap;
   font-size:14px;color:#888;margin-bottom:30px
 }
 .product-detail-breadcrumb a{color:inherit;text-decoration:none}
 .product-detail-breadcrumb a:hover{color:#244b36}
 .product-detail-breadcrumb .current{color:#555}
+.product-detail-breadcrumb > span:not(.current){
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  flex:0 0 30px;
+  margin:0;
+}
 
 /* 三欄：左分類 / 中圖片 / 右資訊 */
 .product-detail-main{
