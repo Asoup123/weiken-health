@@ -186,13 +186,20 @@
   <section class="products-catalog">
     <div class="section-container">
 
-      <nav class="product-filter" id="productFilter" aria-label="商品分類">
-        <button class="product-filter-btn is-active" type="button" data-filter="all">全部商品</button>
-      </nav>
+      <section class="product-category-directory" aria-labelledby="productCategoryTitle">
+          <div class="product-category-heading">
+            <h2 id="productCategoryTitle">商品分類</h2>
+            <span>CATEGORY</span>
+          </div>
 
-      <div class="products-toolbar">
-        <p class="products-count">目前顯示 <strong id="visibleProductCount">0</strong> 項商品</p>
-      </div>
+          <nav class="product-filter" id="productFilter" aria-label="商品分類">
+            <button class="product-filter-btn is-active" type="button" data-filter="all">
+              <span class="filter-number">01</span>
+              <span class="filter-name">全部商品</span>
+              <span class="filter-arrow" aria-hidden="true">↗</span>
+            </button>
+          </nav>
+        </section>
 
       <div class="products-grid" id="productsGrid">
         <div class="products-loading">正在讀取商品...</div>
@@ -285,7 +292,6 @@
   const mobileLinks = document.getElementById('mobileCategoryLinks');
   const filterNav = document.getElementById('productFilter');
   const grid = document.getElementById('productsGrid');
-  const count = document.getElementById('visibleProductCount');
   const empty = document.getElementById('productsEmpty');
 
   let categories = [];
@@ -304,6 +310,86 @@
     return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
   }
 
+
+  function normalizeImageIds(value) {
+    if (!value) return [];
+
+    if (Array.isArray(value)) {
+      return value
+        .map(item => {
+          if (typeof item === 'string') return item;
+          if (item && typeof item === 'object') {
+            return item.$id || item.id || item.file_id || item.image_id || '';
+          }
+          return '';
+        })
+        .filter(Boolean);
+    }
+
+    if (typeof value === 'string') {
+      const text = value.trim();
+      if (!text) return [];
+
+      if (text.startsWith('[')) {
+        try {
+          return normalizeImageIds(JSON.parse(text));
+        } catch (error) {}
+      }
+
+      return text.split(',').map(item => item.trim()).filter(Boolean);
+    }
+
+    return [];
+  }
+
+  function getProductImages(product) {
+    const candidates = [
+      product.image_ids,
+      product.images,
+      product.gallery_image_ids,
+      product.gallery_ids
+    ];
+
+    let ids = [];
+    candidates.forEach(value => {
+      ids.push(...normalizeImageIds(value));
+    });
+
+    if (product.image_id) ids.unshift(product.image_id);
+
+    return [...new Set(ids.filter(Boolean))];
+  }
+
+  function productImageMarkup(product) {
+    const images = getProductImages(product);
+
+    if (!images.length) {
+      return '<span>商品圖片</span>';
+    }
+
+    const slides = images.map((id, index) => `
+      <img
+        src="${fileUrl(id)}"
+        alt="${esc(product.name)}${images.length > 1 ? ` 第 ${index + 1} 張` : ''}"
+        loading="lazy"
+        class="product-card-photo${index === 0 ? ' is-active' : ''}"
+        data-image-index="${index}"
+      >
+    `).join('');
+
+    const controls = images.length > 1 ? `
+      <button class="product-image-nav product-image-prev" type="button" aria-label="上一張商品圖片">←</button>
+      <button class="product-image-nav product-image-next" type="button" aria-label="下一張商品圖片">→</button>
+    ` : '';
+
+    return `
+      <div class="product-card-images" data-current-image="0" data-image-count="${images.length}">
+        ${slides}
+        ${controls}
+      </div>
+    `;
+  }
+
   function renderProducts() {
     const keyword = currentSearch.trim().toLowerCase();
 
@@ -315,7 +401,6 @@
       return categoryMatch && searchMatch;
     });
 
-    count.textContent = visible.length;
     empty.hidden = visible.length !== 0;
 
     if (!visible.length) {
@@ -324,20 +409,22 @@
     }
 
     grid.innerHTML = visible.map(product => `
-      <a
-        href="product.html?id=${encodeURIComponent(product.$id)}"
+      <article
         class="product-card"
         data-category="${esc(product.category_id)}"
       >
         <div class="product-card-image">
-          ${
-            product.image_id
-              ? `<img src="${fileUrl(product.image_id)}" alt="${esc(product.name)}" loading="lazy">`
-              : '<span>商品圖片</span>'
-          }
+          ${productImageMarkup(product)}
         </div>
-        <h2>${esc(product.name)}</h2>
-      </a>
+
+        <a
+          href="product.html?id=${encodeURIComponent(product.$id)}"
+          class="product-card-link"
+          aria-label="查看 ${esc(product.name)}"
+        >
+          <h2>${esc(product.name)}</h2>
+        </a>
+      </article>
     `).join('');
   }
 
@@ -374,9 +461,15 @@
         `<a href="${url}">${name}</a>`
       );
 
+      const number = String(categories.indexOf(category) + 2).padStart(2, '0');
+
       filterNav.insertAdjacentHTML(
         'beforeend',
-        `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">${name}</button>`
+        `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">
+          <span class="filter-number">${number}</span>
+          <span class="filter-name">${name}</span>
+          <span class="filter-arrow" aria-hidden="true">↗</span>
+        </button>`
       );
     });
 
@@ -404,6 +497,34 @@
     products = result.documents;
   }
 
+  grid.addEventListener('click', e => {
+    const navButton = e.target.closest('.product-image-nav');
+    if (!navButton) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const imagesWrap = navButton.closest('.product-card-images');
+    if (!imagesWrap) return;
+
+    const photos = [...imagesWrap.querySelectorAll('.product-card-photo')];
+    if (photos.length < 2) return;
+
+    let current = Number(imagesWrap.dataset.currentImage || 0);
+
+    if (navButton.classList.contains('product-image-next')) {
+      current = (current + 1) % photos.length;
+    } else {
+      current = (current - 1 + photos.length) % photos.length;
+    }
+
+    photos.forEach((photo, index) => {
+      photo.classList.toggle('is-active', index === current);
+    });
+
+    imagesWrap.dataset.currentImage = String(current);
+  });
+
   async function start() {
     try {
       await Promise.all([loadCategories(), loadProducts()]);
@@ -420,7 +541,6 @@
       console.error('商品專區讀取失敗：', error);
       grid.innerHTML =
         '<div class="products-loading">商品讀取失敗，請稍後再試。</div>';
-      count.textContent = '0';
     }
   }
 
