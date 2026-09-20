@@ -595,10 +595,13 @@ button:disabled{
     }
 }
 
+
+/* 登入驗證完成前不顯示後台，避免未登入時短暫看到內容 */
+body.auth-checking .app{visibility:hidden}
 </style>
 </head>
 
-<body>
+<body class="auth-checking">
 <div class="app">
 <aside>
     <div class="logo">WEIKEN</div>
@@ -763,6 +766,7 @@ const ADMIN_TEAM_ID="6aaba9fa001fa283e8a7";
 
 const client=new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
 const account=new Appwrite.Account(client);
+const teams=new Appwrite.Teams(client);
 const db=new Appwrite.Databases(client);
 const storage=new Appwrite.Storage(client);
 
@@ -801,8 +805,25 @@ function say(el,text,type="ok"){
 }
 
 async function guard(){
-    try{ await account.get(); }
-    catch(e){ location.replace("index.html"); }
+    try{
+        // 第一層：必須有有效的 Appwrite 登入 Session
+        await account.get();
+
+        // 第二層：登入者必須是指定的威肯管理員 Team 成員
+        await teams.listMemberships(ADMIN_TEAM_ID);
+
+        // 兩層都通過後才顯示後台
+        document.body.classList.remove("auth-checking");
+        return true;
+    }catch(e){
+        console.warn("後台驗證失敗",e);
+
+        // 若有其他帳號 Session，但不是管理員，也一併登出
+        try{ await account.deleteSession("current"); }catch(err){}
+
+        location.replace("index.html");
+        return false;
+    }
 }
 
 async function uploadImage(file){
@@ -2115,7 +2136,9 @@ $("#logout").onclick=async()=>{
 
 /* 啟動 */
 (async()=>{
-    await guard();
+    const allowed=await guard();
+    if(!allowed) return;
+
     await loadCategories();
 
     /* 預先讀取商品資料，分類刪除時可檢查是否仍有商品使用 */
