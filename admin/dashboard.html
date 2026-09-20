@@ -234,12 +234,70 @@ button:disabled{
     border-radius:50%;
     margin-top:12px;
 }
-.product-preview{border-radius:10px}
-.field textarea{min-height:130px;resize:vertical;line-height:1.7}
-.current-image-actions{display:none;margin-top:10px}
-.remove-image{padding:8px 11px;border:1px solid #e0c7c4;background:#fff;color:#b42318;border-radius:7px}
-.remove-image:hover{background:#fff4f3}
-.image-remove-note{display:none;margin-top:10px;color:#b42318;font-size:13px}
+.field textarea{min-height:180px;resize:vertical;line-height:1.7}
+
+/* 商品多圖片管理 */
+.product-image-help{
+    margin-top:8px;
+    color:#888;
+    font-size:12px;
+    line-height:1.6;
+}
+.product-image-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px;
+    margin-top:14px;
+}
+.product-image-item{
+    position:relative;
+    aspect-ratio:1/1;
+    overflow:hidden;
+    border:1px solid #e4e4df;
+    border-radius:10px;
+    background:#fafafa;
+    cursor:grab;
+    user-select:none;
+}
+.product-image-item:active{cursor:grabbing}
+.product-image-item img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    background:#fff;
+}
+.product-image-remove{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:28px;
+    height:28px;
+    padding:0;
+    display:grid;
+    place-items:center;
+    border:0;
+    border-radius:50%;
+    background:rgba(25,25,25,.78);
+    color:#fff;
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+}
+.product-image-remove:hover{background:#b42318}
+.product-image-badge{
+    position:absolute;
+    left:7px;
+    bottom:7px;
+    padding:4px 7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.92);
+    color:#333;
+    font-size:11px;
+    box-shadow:0 2px 8px #00000012;
+}
+.product-image-ghost{opacity:.3}
+.product-image-chosen{box-shadow:0 8px 24px #0002}
 .modal-actions{
     display:flex;
     justify-content:flex-end;
@@ -265,6 +323,10 @@ button:disabled{
     .row .actions,.product-row .actions{grid-column:2/4}
     .product-row .category-cell{grid-column:2/4}
     .head{display:none}
+    .product-image-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:480px){
+    .product-image-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 </head>
@@ -381,21 +443,14 @@ button:disabled{
             <input id="productSort" required type="number" min="0" value="1">
         </div>
         <div class="field">
-            <label>商品特色</label>
-            <textarea id="productFeatures" placeholder="例如：&#10;輕量鋁合金車架&#10;扶手可掀&#10;方便收折與攜帶"></textarea>
+            <label>商品資訊</label>
+            <textarea id="productInfo" placeholder="請輸入商品介紹、特色、尺寸、規格等資訊"></textarea>
         </div>
         <div class="field">
-            <label>商品規格</label>
-            <textarea id="productSpecifications" placeholder="例如：&#10;座寬：45 cm&#10;座深：40 cm&#10;最大承重：100 kg"></textarea>
-        </div>
-        <div class="field">
-            <label>商品主圖</label>
-            <input id="productImage" type="file" accept="image/*">
-            <img id="productPreview" class="preview product-preview" alt="">
-            <div id="currentImageActions" class="current-image-actions">
-                <button id="removeCurrentImage" type="button" class="remove-image">刪除目前圖片</button>
-            </div>
-            <div id="imageRemoveNote" class="image-remove-note">目前圖片將在「儲存商品」後從 Storage 一併刪除。</div>
+            <label>商品圖片</label>
+            <input id="productImage" type="file" accept="image/*" multiple>
+            <div class="product-image-help">可一次選擇多張圖片。拖曳圖片即可調整順序，第 1 張會作為商品主圖；右上角 × 可移除圖片。</div>
+            <div id="productImageGrid" class="product-image-grid"></div>
         </div>
         <div class="modal-actions">
             <button id="productCancel" type="button" class="cancel">取消</button>
@@ -425,7 +480,9 @@ let categories=[];
 let products=[];
 let editingCategory=null;
 let editingProduct=null;
-let removeProductImage=false;
+let productImageItems=[];
+let removedProductImageIds=new Set();
+let productImageSortable=null;
 let categorySortable=null;
 let productSortable=null;
 
@@ -786,27 +843,119 @@ async function loadProducts(){
     }
 }
 
+function getStoredProductImageIds(product){
+    if(!product) return [];
+
+    let ids=[];
+    if(Array.isArray(product.image_ids)){
+        ids=product.image_ids.filter(Boolean);
+    }else if(typeof product.image_ids==="string" && product.image_ids.trim()){
+        try{
+            const parsed=JSON.parse(product.image_ids);
+            if(Array.isArray(parsed)) ids=parsed.filter(Boolean);
+        }catch(e){
+            ids=product.image_ids.split(",").map(v=>v.trim()).filter(Boolean);
+        }
+    }
+
+    if(product.image_id && !ids.includes(product.image_id)){
+        ids.unshift(product.image_id);
+    }
+
+    return [...new Set(ids)];
+}
+
+function revokeNewImageUrls(){
+    productImageItems.forEach(item=>{
+        if(item.isNew && item.url) URL.revokeObjectURL(item.url);
+    });
+}
+
+function renderProductImageGrid(){
+    const grid=$("#productImageGrid");
+
+    grid.innerHTML=productImageItems.map((item,index)=>`
+        <div class="product-image-item" data-key="${esc(item.key)}">
+            <img src="${esc(item.url)}" alt="商品圖片 ${index+1}">
+            <button
+                type="button"
+                class="product-image-remove"
+                data-key="${esc(item.key)}"
+                aria-label="移除這張圖片"
+                title="移除圖片"
+            >×</button>
+            ${index===0 ? '<span class="product-image-badge">主圖</span>' : ''}
+        </div>
+    `).join("");
+
+    if(productImageSortable) productImageSortable.destroy();
+
+    productImageSortable=new Sortable(grid,{
+        animation:160,
+        draggable:".product-image-item",
+        ghostClass:"product-image-ghost",
+        chosenClass:"product-image-chosen",
+        onEnd(){
+            const order=[...grid.querySelectorAll(".product-image-item")]
+                .map(el=>el.dataset.key);
+
+            productImageItems=order
+                .map(key=>productImageItems.find(item=>item.key===key))
+                .filter(Boolean);
+
+            renderProductImageGrid();
+        }
+    });
+}
+
+function addSelectedProductImages(files){
+    [...files].forEach(file=>{
+        if(!file.type.startsWith("image/")) return;
+
+        productImageItems.push({
+            key:"new-"+crypto.randomUUID(),
+            id:"",
+            file,
+            url:URL.createObjectURL(file),
+            isNew:true
+        });
+    });
+
+    renderProductImageGrid();
+}
+
 async function openProductModal(d=null){
     editingProduct=d;
+    removedProductImageIds=new Set();
+    revokeNewImageUrls();
+    productImageItems=[];
+
     $("#productTitle").textContent=d?"修改商品":"新增商品";
     $("#productName").value=d?.name || "";
     $("#productSort").value=d?.sort_order ?? nextSort(products);
-    $("#productFeatures").value=d?.features || "";
-    $("#productSpecifications").value=d?.specifications || "";
+
+    const oldInfoParts=[];
+    if(d?.features) oldInfoParts.push(d.features);
+    if(d?.specifications) oldInfoParts.push(d.specifications);
+
+    $("#productInfo").value=
+        d?.product_info ||
+        oldInfoParts.join("\n\n");
+
     $("#productImage").value="";
-    removeProductImage=false;
-    $("#imageRemoveNote").style.display="none";
     fillCategorySelect(d?.category_id || "");
 
-    if(d?.image_id){
-        $("#productPreview").src=fileUrl(d.image_id);
-        $("#productPreview").style.display="block";
-        $("#currentImageActions").style.display="block";
-    }else{
-        $("#productPreview").removeAttribute("src");
-        $("#productPreview").style.display="none";
-        $("#currentImageActions").style.display="none";
-    }
+    getStoredProductImageIds(d).forEach(id=>{
+        productImageItems.push({
+            key:"old-"+id,
+            id,
+            file:null,
+            url:fileUrl(id),
+            isNew:false
+        });
+    });
+
+    renderProductImageGrid();
     $("#productModal").classList.add("open");
 }
 
@@ -815,11 +964,17 @@ function closeProductModal(){
     editingProduct=null;
     $("#productForm").reset();
     $("#productSort").value=nextSort(products);
-    removeProductImage=false;
-    $("#productPreview").removeAttribute("src");
-    $("#productPreview").style.display="none";
-    $("#currentImageActions").style.display="none";
-    $("#imageRemoveNote").style.display="none";
+
+    revokeNewImageUrls();
+    productImageItems=[];
+    removedProductImageIds=new Set();
+
+    if(productImageSortable){
+        productImageSortable.destroy();
+        productImageSortable=null;
+    }
+
+    $("#productImageGrid").innerHTML="";
 }
 
 window.editProduct=async id=>{
@@ -832,10 +987,17 @@ window.editProduct=async id=>{
 
 window.removeProduct=async id=>{
     if(!confirm("確定要刪除這個商品嗎？")) return;
+
     try{
         const d=await db.getDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
+        const imageIds=getStoredProductImageIds(d);
+
         await db.deleteDocument(DATABASE_ID,PRODUCT_TABLE_ID,id);
-        await deleteImage(d.image_id);
+
+        for(const imageId of imageIds){
+            await deleteImage(imageId);
+        }
+
         await normalizeTable(PRODUCT_TABLE_ID);
         say($("#productNotice"),"商品已刪除");
         await loadProducts();
@@ -843,24 +1005,34 @@ window.removeProduct=async id=>{
 };
 
 $("#productImage").onchange=()=>{
-    const file=$("#productImage").files[0];
-    if(!file) return;
-    removeProductImage=false;
-    $("#imageRemoveNote").style.display="none";
-    $("#productPreview").src=URL.createObjectURL(file);
-    $("#productPreview").style.display="block";
-    $("#currentImageActions").style.display=editingProduct?.image_id ? "block" : "none";
+    const input=$("#productImage");
+    if(!input.files?.length) return;
+
+    addSelectedProductImages(input.files);
+
+    /* 允許下一次再次選擇同一個檔案 */
+    input.value="";
 };
 
-$("#removeCurrentImage").onclick=()=>{
-    if(!editingProduct?.image_id) return;
-    removeProductImage=true;
-    $("#productImage").value="";
-    $("#productPreview").removeAttribute("src");
-    $("#productPreview").style.display="none";
-    $("#currentImageActions").style.display="none";
-    $("#imageRemoveNote").style.display="block";
-};
+$("#productImageGrid").addEventListener("click",e=>{
+    const button=e.target.closest(".product-image-remove");
+    if(!button) return;
+
+    const key=button.dataset.key;
+    const item=productImageItems.find(image=>image.key===key);
+    if(!item) return;
+
+    if(item.isNew && item.url){
+        URL.revokeObjectURL(item.url);
+    }
+
+    if(!item.isNew && item.id){
+        removedProductImageIds.add(item.id);
+    }
+
+    productImageItems=productImageItems.filter(image=>image.key!==key);
+    renderProductImageGrid();
+});
 
 $("#productForm").onsubmit=async e=>{
     e.preventDefault();
@@ -868,8 +1040,7 @@ $("#productForm").onsubmit=async e=>{
     const name=$("#productName").value.trim();
     const categoryId=$("#productCategory").value;
     const sort=Number($("#productSort").value);
-    const features=$("#productFeatures").value.trim();
-    const specifications=$("#productSpecifications").value.trim();
+    const productInfo=$("#productInfo").value.trim();
 
     if(!name) return say($("#productNotice"),"請輸入商品名稱","err");
     if(!categoryId) return say($("#productNotice"),"請選擇商品分類","err");
@@ -877,37 +1048,52 @@ $("#productForm").onsubmit=async e=>{
     const btn=$("#productSave");
     btn.disabled=true;
     btn.textContent="儲存中...";
-    let uploaded="";
+
+    const uploadedThisSave=[];
 
     try{
-        const oldImageId=editingProduct?.image_id || "";
-        let imageId=removeProductImage ? "" : oldImageId;
-        const file=$("#productImage").files[0];
+        const finalImageIds=[];
 
-        if(file){
-            uploaded=await uploadImage(file);
-            imageId=uploaded;
+        /* 依照目前拖曳後的順序逐張處理 */
+        for(const item of productImageItems){
+            if(item.isNew){
+                const newId=await uploadImage(item.file);
+                uploadedThisSave.push(newId);
+                finalImageIds.push(newId);
+            }else if(item.id){
+                finalImageIds.push(item.id);
+            }
         }
+
+        const imageId=finalImageIds[0] || "";
 
         const data={
             name:name,
             category_id:categoryId,
             image_id:imageId,
+            image_ids:finalImageIds,
             sort_order:sort,
-            features:features,
-            specifications:specifications
+            product_info:productInfo
         };
 
         if(editingProduct){
             await db.updateDocument(
-                DATABASE_ID,PRODUCT_TABLE_ID,editingProduct.$id,data
+                DATABASE_ID,
+                PRODUCT_TABLE_ID,
+                editingProduct.$id,
+                data
             );
+
             await placeAt(PRODUCT_TABLE_ID,editingProduct.$id,sort);
 
-            if(oldImageId && oldImageId!==imageId){
-                await deleteImage(oldImageId);
+            /* 資料儲存成功後，才真的刪除使用者按 × 移除的舊圖片 */
+            for(const removedId of removedProductImageIds){
+                if(!finalImageIds.includes(removedId)){
+                    await deleteImage(removedId);
+                }
             }
-            say($("#productNotice"),removeProductImage ? "商品已更新，原圖片已刪除" : "商品已更新");
+
+            say($("#productNotice"),"商品已更新");
         }else{
             const created=await db.createDocument(
                 DATABASE_ID,
@@ -920,16 +1106,24 @@ $("#productForm").onsubmit=async e=>{
                     Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
                 ]
             );
+
             await placeAt(PRODUCT_TABLE_ID,created.$id,sort);
             say($("#productNotice"),"商品已新增");
         }
 
         closeProductModal();
         await loadProducts();
+
     }catch(e){
         console.error(e);
-        if(uploaded) await deleteImage(uploaded);
+
+        /* 若資料儲存失敗，只清掉這次剛上傳的新圖片 */
+        for(const uploadedId of uploadedThisSave){
+            await deleteImage(uploadedId);
+        }
+
         say($("#productNotice"),"儲存失敗："+e.message,"err");
+
     }finally{
         btn.disabled=false;
         btn.textContent="儲存商品";
