@@ -2725,3 +2725,131 @@ img {
     scroll-margin-top: 82px;
   }
 }
+
+/* =========================================================
+   PRODUCTS PAGE — CATEGORY DIRECTORY + IMAGE GALLERY
+   2026-09-20
+========================================================= */
+
+.products-page .products-catalog{padding-top:42px;background:#fff}
+.product-category-directory{margin-bottom:54px}
+.product-category-heading{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+  padding-bottom:20px;border-bottom:1px solid rgba(36,75,54,.18)
+}
+.product-category-heading h2{
+  margin:0;color:var(--forest-deep);font-size:clamp(26px,3vw,38px);
+  line-height:1.2;font-weight:500;letter-spacing:-.03em
+}
+.product-category-heading>span{
+  padding-bottom:3px;color:rgba(36,75,54,.48);font-size:10px;
+  font-weight:700;letter-spacing:.24em
+}
+
+/* 兩欄目錄式分類 */
+.products-page .product-filter{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:70px;row-gap:0;padding:0;border-bottom:0
+}
+.products-page .product-filter-btn{
+  position:relative;width:100%;min-height:72px;padding:0 8px;
+  display:grid;grid-template-columns:46px 1fr 34px;align-items:center;gap:10px;
+  border:0;border-bottom:1px solid rgba(36,75,54,.15);border-radius:0;
+  background:transparent;color:var(--forest-deep);text-align:left;
+  transition:background .25s ease,color .25s ease,padding .25s ease
+}
+.products-page .product-filter-btn:hover,
+.products-page .product-filter-btn.is-active{
+  padding-left:16px;padding-right:14px;border-color:rgba(36,75,54,.22);
+  background:rgba(168,183,155,.16);color:var(--forest-deep)
+}
+.filter-number{
+  color:rgba(36,75,54,.42);font-size:11px;font-weight:600;letter-spacing:.12em
+}
+.filter-name{font-size:17px;font-weight:500;letter-spacing:.01em}
+.filter-arrow{
+  justify-self:end;color:var(--forest);font-size:17px;
+  transition:transform .25s ease
+}
+.product-filter-btn:hover .filter-arrow,
+.product-filter-btn.is-active .filter-arrow{transform:translate(3px,-3px)}
+.product-filter-btn.is-active .filter-number,
+.product-filter-btn.is-active .filter-name{color:var(--forest)}
+
+/* 刪除「目前顯示 X 項商品」 */
+.products-page .products-toolbar,
+.products-page .products-count{display:none!important}
+
+/* 商品列表 */
+.products-page .products-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:48px 20px
+}
+.products-page .product-card{display:block;min-width:0}
+.products-page .product-card-image{
+  position:relative;width:100%;aspect-ratio:1/1.08;overflow:hidden;
+  display:grid;place-items:center;background:#fff
+}
+.product-card-images{position:absolute;inset:0;background:#fff}
+
+/* 圖片保持白底、完整顯示，不裁切 */
+.products-page .product-card-photo{
+  position:absolute;inset:0;width:100%;height:100%;padding:18px;
+  object-fit:contain;opacity:0;visibility:hidden;transform:none;
+  transition:opacity .25s ease
+}
+.products-page .product-card-photo.is-active{opacity:1;visibility:visible}
+.products-page .product-card:hover .product-card-photo,
+.products-page .product-card:hover .product-card-photo.is-active{transform:none}
+
+/* 滑鼠移到圖片上才出現左右箭頭 */
+.product-image-nav{
+  position:absolute;z-index:5;top:50%;width:42px;height:42px;
+  display:grid;place-items:center;border:1px solid rgba(36,75,54,.12);
+  border-radius:50%;background:rgba(255,255,255,.9);color:var(--forest);
+  box-shadow:0 6px 20px rgba(24,53,38,.10);font-size:17px;
+  opacity:0;visibility:hidden;transform:translateY(-50%);
+  transition:opacity .22s ease,visibility .22s ease,background .22s ease,color .22s ease
+}
+.product-image-prev{left:14px}
+.product-image-next{right:14px}
+.product-card-image:hover .product-image-nav,
+.product-image-nav:focus-visible{opacity:1;visibility:visible}
+.product-image-nav:hover{background:var(--forest);color:#fff}
+
+.product-card-link{display:block;color:inherit;text-decoration:none}
+.products-page .product-card h2{
+  margin:14px 0 0;color:var(--forest-deep);font-size:15px;
+  line-height:1.55;font-weight:600
+}
+
+@media(max-width:1050px){
+  .products-page .products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media(max-width:700px){
+  .product-category-directory{margin-bottom:38px}
+  .product-category-heading{padding-bottom:16px}
+  .product-category-heading h2{font-size:27px}
+
+  .products-page .product-filter{
+    grid-template-columns:1fr;column-gap:0;overflow:visible;padding-bottom:0
+  }
+  .products-page .product-filter-btn{
+    min-height:62px;grid-template-columns:40px 1fr 28px;padding:0 4px;flex:initial
+  }
+  .products-page .product-filter-btn:hover,
+  .products-page .product-filter-btn.is-active{padding-left:10px;padding-right:8px}
+  .filter-name{font-size:15px}
+
+  .products-page .products-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 12px
+  }
+  .products-page .product-card-photo{padding:10px}
+
+  /* 手機沒有 hover，多圖商品直接顯示淡箭頭 */
+  .product-image-nav{
+    width:36px;height:36px;opacity:.82;visibility:visible;font-size:15px
+  }
+  .product-image-prev{left:8px}
+  .product-image-next{right:8px}
+}
