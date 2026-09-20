@@ -354,37 +354,11 @@
 
     /*
     =========================================
-    檢查是否已經登入
+    每次進入登入頁都要求重新登入
     =========================================
     */
 
-    async function checkLogin() {
-
-        try {
-
-            await account.get();
-
-            /*
-            已登入的話，
-            之後會直接送到管理首頁。
-
-            現階段 dashboard.html
-            還沒建立，所以先不跳轉。
-            */
-
-            console.log("管理員目前已登入");
-            window.location.replace("dashboard.html");
-
-        } catch (error) {
-
-            console.log("目前尚未登入");
-
-        }
-
-    }
-
-
-    checkLogin();
+    // 不檢查舊 Session，也不會因為之前登入過就自動進 dashboard。
 
 
     /*
@@ -433,6 +407,12 @@
                 Appwrite Email / Password 登入
                 */
 
+                // 不沿用上一次 Appwrite Session。
+                // 若瀏覽器還留著舊 Session，先清除，再用這次輸入的帳密重新登入。
+                try {
+                    await account.deleteSession("current");
+                } catch (e) {}
+
                 await account.createEmailPasswordSession(
                     email,
                     password
@@ -463,6 +443,8 @@
                 loginButton.textContent =
                     "登入成功";
 
+                // 只有這個分頁「剛剛從 admin.html 登入成功」才取得後台通行證。
+                sessionStorage.setItem("weiken_admin_pass", "1");
                 window.location.replace("dashboard.html");
 
 
