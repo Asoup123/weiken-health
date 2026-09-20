@@ -328,6 +328,184 @@ button:disabled{
 @media(max-width:480px){
     .product-image-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* =========================================================
+   兩層式商品分類管理
+========================================================= */
+.category-tree-card{
+    background:white;
+    border:1px solid #e5e5e1;
+    border-radius:14px;
+    overflow:hidden;
+}
+.category-tree{
+    padding:8px 0;
+}
+.category-group{
+    border-bottom:1px solid #ecece8;
+}
+.category-group:last-child{border-bottom:0}
+.category-parent-row{
+    display:grid;
+    grid-template-columns:48px 72px minmax(180px,1fr) 180px;
+    gap:16px;
+    align-items:center;
+    min-height:82px;
+    padding:12px 20px;
+    background:#fff;
+}
+.category-parent-row:hover{background:#fafbf9}
+.category-parent-name{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+.category-parent-name strong{
+    font-size:16px;
+}
+.category-kind{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#edf3ee;
+    color:#315d43;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+}
+.category-tree-thumb{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#eee;
+}
+.category-tree-thumb.noimg{
+    display:grid;
+    place-items:center;
+    color:#aaa;
+    font-size:10px;
+}
+.category-parent-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.category-parent-actions button,
+.category-child-actions button{
+    padding:8px 10px;
+    border:1px solid #ddd;
+    background:#fff;
+    border-radius:7px;
+}
+.category-parent-actions button:hover,
+.category-child-actions button:hover{background:#f5f5f5}
+.add-child{
+    color:#315d43;
+    border-color:#cbd8ce!important;
+    background:#f7faf7!important;
+}
+.category-children{
+    margin:0 20px 14px 88px;
+    border-left:2px solid #e2e8e3;
+}
+.category-child-row{
+    display:grid;
+    grid-template-columns:42px minmax(180px,1fr) 150px;
+    gap:12px;
+    align-items:center;
+    min-height:54px;
+    padding:7px 12px 7px 14px;
+    border-bottom:1px solid #f0f0ed;
+    background:#fbfbfa;
+}
+.category-child-row:last-child{border-bottom:0}
+.category-child-row:hover{background:#f6f8f5}
+.category-child-name{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+.category-child-name::before{
+    content:"└";
+    color:#9a9f99;
+}
+.category-child-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+.category-empty-child{
+    padding:13px 14px;
+    color:#aaa;
+    font-size:13px;
+    background:#fbfbfa;
+}
+.category-drag-handle{
+    border:0;
+    background:transparent;
+    padding:8px 4px;
+    color:#999;
+    font-size:20px;
+    line-height:1;
+    cursor:grab;
+    touch-action:none;
+    user-select:none;
+}
+.category-drag-handle:active{cursor:grabbing}
+.category-child-sort{
+    color:#aaa;
+    font-size:12px;
+    margin-left:auto;
+}
+.category-parent-ghost,
+.category-child-ghost{opacity:.3;background:#eef3ee}
+.category-parent-chosen,
+.category-child-chosen{box-shadow:0 8px 24px #00000014}
+
+.category-type-note{
+    margin:0 0 18px;
+    padding:12px 14px;
+    border-radius:9px;
+    background:#f5f7f4;
+    color:#657066;
+    font-size:13px;
+    line-height:1.7;
+}
+.category-parent-select-wrap{display:none}
+.category-parent-select-wrap.show{display:block}
+
+@media(max-width:760px){
+    .category-parent-row{
+        grid-template-columns:38px 54px 1fr;
+        gap:10px;
+        padding:12px;
+    }
+    .category-parent-actions{
+        grid-column:2/4;
+        justify-content:flex-start;
+    }
+    .category-tree-thumb{
+        width:46px;
+        height:46px;
+    }
+    .category-children{
+        margin:0 12px 12px 48px;
+    }
+    .category-child-row{
+        grid-template-columns:34px 1fr;
+    }
+    .category-child-actions{
+        grid-column:2/3;
+        justify-content:flex-start;
+    }
+}
+
 </style>
 </head>
 
@@ -352,19 +530,13 @@ button:disabled{
                 <h2>商品分類管理</h2>
                 <p>新增、修改、刪除官網的商品分類。</p>
             </div>
-            <button id="addCategory" class="add">＋ 新增分類</button>
+            <button id="addCategory" class="add">＋ 新增大分類</button>
         </div>
 
         <div id="categoryNotice" class="notice"></div>
 
-        <div class="card">
-            <div class="row head">
-                <div>圖片</div>
-                <div>順序</div>
-                <div>分類名稱</div>
-                <div>操作</div>
-            </div>
-            <div id="categoryList">
+        <div class="category-tree-card">
+            <div id="categoryList" class="category-tree">
                 <div class="state">正在讀取分類...</div>
             </div>
         </div>
@@ -400,21 +572,32 @@ button:disabled{
 <!-- 分類視窗 -->
 <div id="categoryModal" class="modal">
 <div class="panel">
-    <h3 id="categoryTitle">新增分類</h3>
+    <h3 id="categoryTitle">新增大分類</h3>
+    <div id="categoryTypeNote" class="category-type-note">
+        大分類會顯示在官網最上層分類列；小分類會收在所屬大分類下面。
+    </div>
     <form id="categoryForm">
         <div class="field">
             <label>分類名稱</label>
             <input id="categoryName" required placeholder="例如：輪椅">
         </div>
+
+        <div id="categoryParentWrap" class="field category-parent-select-wrap">
+            <label>所屬大分類</label>
+            <select id="categoryParent"></select>
+        </div>
+
         <div class="field">
             <label>排序</label>
-            <input id="categorySort" required type="number" min="0" value="1">
+            <input id="categorySort" required type="number" min="1" value="1">
         </div>
-        <div class="field">
+
+        <div class="field" id="categoryImageField">
             <label>分類圖片</label>
             <input id="categoryImage" type="file" accept="image/*">
             <img id="categoryPreview" class="preview" alt="">
         </div>
+
         <div class="modal-actions">
             <button id="categoryCancel" type="button" class="cancel">取消</button>
             <button id="categorySave" class="save">儲存分類</button>
@@ -484,7 +667,10 @@ let productImageItems=[];
 let removedProductImageIds=new Set();
 let productImageSortable=null;
 let categorySortable=null;
+let childCategorySortables=[];
 let productSortable=null;
+let categoryModalMode="parent";
+let categoryModalParentId="";
 
 const $=s=>document.querySelector(s);
 
@@ -642,158 +828,673 @@ document.querySelectorAll(".nav").forEach(btn=>{
 });
 
 /* ================= 分類 ================= */
+
+function parentCategories(){
+    return categories
+        .filter(c=>!c.parent_id)
+        .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+}
+
+function childCategories(parentId){
+    return categories
+        .filter(c=>c.parent_id===parentId)
+        .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+}
+
+function categoryById(id){
+    return categories.find(c=>c.$id===id);
+}
+
+function nextCategorySort(parentId=""){
+    const items=parentId ? childCategories(parentId) : parentCategories();
+    return nextSort(items);
+}
+
+async function resequenceCategoryGroup(parentId, orderedIds){
+    await Promise.all(
+        orderedIds.map((id,index)=>
+            db.updateDocument(
+                DATABASE_ID,
+                CATEGORY_TABLE_ID,
+                id,
+                {sort_order:index+1}
+            )
+        )
+    );
+}
+
+function destroyCategorySortables(){
+    if(categorySortable){
+        categorySortable.destroy();
+        categorySortable=null;
+    }
+
+    childCategorySortables.forEach(s=>{
+        try{s.destroy()}catch(e){}
+    });
+    childCategorySortables=[];
+}
+
+function setupCategoryTreeSortables(){
+    destroyCategorySortables();
+
+    const tree=$("#categoryList");
+    if(!tree || !window.Sortable) return;
+
+    categorySortable=new Sortable(tree,{
+        animation:170,
+        handle:".category-drag-handle",
+        draggable:".category-group",
+        ghostClass:"category-parent-ghost",
+        chosenClass:"category-parent-chosen",
+        scroll:true,
+        bubbleScroll:true,
+        scrollSensitivity:100,
+        scrollSpeed:18,
+
+        async onEnd(){
+            const ids=[...tree.querySelectorAll(":scope > .category-group")]
+                .map(el=>el.dataset.id)
+                .filter(Boolean);
+
+            try{
+                say($("#categoryNotice"),"正在儲存大分類順序...");
+                await resequenceCategoryGroup("",ids);
+                await loadCategories();
+                say($("#categoryNotice"),"大分類順序已更新");
+            }catch(e){
+                console.error(e);
+                say($("#categoryNotice"),"大分類排序失敗："+e.message,"err");
+                await loadCategories();
+            }
+        }
+    });
+
+    document.querySelectorAll(".category-children[data-parent-id]").forEach(container=>{
+        const parentId=container.dataset.parentId;
+
+        const sortable=new Sortable(container,{
+            animation:160,
+            handle:".category-drag-handle",
+            draggable:".category-child-row",
+            ghostClass:"category-child-ghost",
+            chosenClass:"category-child-chosen",
+            scroll:true,
+            bubbleScroll:true,
+            scrollSensitivity:90,
+            scrollSpeed:16,
+
+            async onEnd(){
+                const ids=[...container.querySelectorAll(".category-child-row")]
+                    .map(el=>el.dataset.id)
+                    .filter(Boolean);
+
+                try{
+                    say($("#categoryNotice"),"正在儲存小分類順序...");
+                    await resequenceCategoryGroup(parentId,ids);
+                    await loadCategories();
+                    say($("#categoryNotice"),"小分類順序已更新");
+                }catch(e){
+                    console.error(e);
+                    say($("#categoryNotice"),"小分類排序失敗："+e.message,"err");
+                    await loadCategories();
+                }
+            }
+        });
+
+        childCategorySortables.push(sortable);
+    });
+}
+
 async function loadCategories(){
     const categoryList=$("#categoryList");
-    if(categoryList) categoryList.innerHTML='<div class="state">正在讀取分類...</div>';
+    if(categoryList){
+        categoryList.innerHTML='<div class="state">正在讀取分類...</div>';
+    }
 
     try{
         const result=await db.listDocuments(
             DATABASE_ID,
             CATEGORY_TABLE_ID,
-            [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]
+            [
+                Appwrite.Query.orderAsc("sort_order"),
+                Appwrite.Query.limit(100)
+            ]
         );
+
         categories=result.documents;
 
         if(categoryList){
-            if(!categories.length){
-                categoryList.innerHTML='<div class="state">目前沒有分類，請按「新增分類」。</div>';
+            const parents=parentCategories();
+
+            if(!parents.length){
+                categoryList.innerHTML=
+                    '<div class="state">目前沒有大分類，請按「新增大分類」。</div>';
             }else{
-                categoryList.innerHTML=categories.map(d=>`
-                    <div class="row sortable-row" data-id="${d.$id}">
-                        <div>${d.image_id
-                            ? `<img class="thumb" src="${fileUrl(d.image_id)}" alt="${esc(d.name)}">`
-                            : '<div class="thumb noimg">無圖片</div>'}</div>
-                        <div class="sort-cell"><span class="drag-handle" title="拖曳排序">☰</span><span>${esc(d.sort_order)}</span></div>
-                        <div><strong>${esc(d.name)}</strong></div>
-                        <div class="actions">
-                            <button onclick="editCategory('${d.$id}')">修改</button>
-                            <button class="danger" onclick="removeCategory('${d.$id}')">刪除</button>
+                categoryList.innerHTML=parents.map(parent=>{
+                    const children=childCategories(parent.$id);
+
+                    return `
+                    <section class="category-group" data-id="${parent.$id}">
+                        <div class="category-parent-row">
+                            <button
+                                type="button"
+                                class="category-drag-handle"
+                                title="拖曳大分類排序"
+                                aria-label="拖曳大分類排序"
+                            >☰</button>
+
+                            <div>
+                                ${parent.image_id
+                                    ? `<img class="category-tree-thumb" src="${fileUrl(parent.image_id)}" alt="${esc(parent.name)}">`
+                                    : '<div class="category-tree-thumb noimg">無圖片</div>'}
+                            </div>
+
+                            <div class="category-parent-name">
+                                <strong>${esc(parent.name)}</strong>
+                                <span class="category-kind">大分類</span>
+                            </div>
+
+                            <div class="category-parent-actions">
+                                <button
+                                    type="button"
+                                    class="add-child"
+                                    onclick="addChildCategory('${parent.$id}')"
+                                >＋ 小分類</button>
+
+                                <button
+                                    type="button"
+                                    onclick="editCategory('${parent.$id}')"
+                                >修改</button>
+
+                                <button
+                                    type="button"
+                                    class="danger"
+                                    onclick="removeCategory('${parent.$id}')"
+                                >刪除</button>
+                            </div>
                         </div>
-                    </div>
-                `).join("");
+
+                        <div
+                            class="category-children"
+                            data-parent-id="${parent.$id}"
+                        >
+                            ${children.length
+                                ? children.map(child=>`
+                                    <div
+                                        class="category-child-row"
+                                        data-id="${child.$id}"
+                                    >
+                                        <button
+                                            type="button"
+                                            class="category-drag-handle"
+                                            title="拖曳小分類排序"
+                                            aria-label="拖曳小分類排序"
+                                        >☰</button>
+
+                                        <div class="category-child-name">
+                                            <strong>${esc(child.name)}</strong>
+                                            <span class="category-child-sort">#${esc(child.sort_order)}</span>
+                                        </div>
+
+                                        <div class="category-child-actions">
+                                            <button
+                                                type="button"
+                                                onclick="editCategory('${child.$id}')"
+                                            >修改</button>
+
+                                            <button
+                                                type="button"
+                                                class="danger"
+                                                onclick="removeCategory('${child.$id}')"
+                                            >刪除</button>
+                                        </div>
+                                    </div>
+                                `).join("")
+                                : '<div class="category-empty-child">尚未建立小分類</div>'
+                            }
+                        </div>
+                    </section>
+                    `;
+                }).join("");
             }
         }
-        fillCategorySelect();
 
-        if(categorySortable) categorySortable.destroy();
-        categorySortable=categories.length
-            ? makeSortable(categoryList,CATEGORY_TABLE_ID,"category")
-            : null;
+        fillCategorySelect();
+        setupCategoryTreeSortables();
+
     }catch(e){
         console.error(e);
-        if(categoryList) categoryList.innerHTML=`<div class="state bad">讀取失敗：${esc(e.message)}</div>`;
+
+        if(categoryList){
+            categoryList.innerHTML=
+                `<div class="state bad">讀取失敗：${esc(e.message)}</div>`;
+        }
+
         throw e;
     }
 }
 
 function fillCategorySelect(selected=""){
     const select=$("#productCategory");
-    if(!categories.length){
+    const parents=parentCategories();
+
+    if(!parents.length){
         select.innerHTML='<option value="">目前沒有商品分類</option>';
         return;
     }
-    select.innerHTML='<option value="">請選擇分類</option>'+
-        categories.map(c=>`<option value="${esc(c.$id)}" ${c.$id===selected?"selected":""}>${esc(c.name)}</option>`).join("");
+
+    const options=[];
+
+    parents.forEach(parent=>{
+        const children=childCategories(parent.$id);
+
+        /* 有小分類時，商品只選小分類 */
+        if(children.length){
+            options.push(
+                `<optgroup label="${esc(parent.name)}">`+
+                children.map(child=>
+                    `<option value="${esc(child.$id)}" ${child.$id===selected?"selected":""}>${esc(child.name)}</option>`
+                ).join("")+
+                `</optgroup>`
+            );
+        }else{
+            /* 尚未建立小分類的大分類仍可暫時使用，避免舊資料卡住 */
+            options.push(
+                `<option value="${esc(parent.$id)}" ${parent.$id===selected?"selected":""}>${esc(parent.name)}</option>`
+            );
+        }
+    });
+
+    select.innerHTML=
+        '<option value="">請選擇分類</option>'+
+        options.join("");
 }
 
-function openCategoryModal(d=null){
+function fillParentSelect(selectedParentId=""){
+    const select=$("#categoryParent");
+    const parents=parentCategories();
+
+    select.innerHTML=parents.map(parent=>`
+        <option
+            value="${esc(parent.$id)}"
+            ${parent.$id===selectedParentId?"selected":""}
+        >${esc(parent.name)}</option>
+    `).join("");
+}
+
+function openCategoryModal(d=null,mode="parent",parentId=""){
     editingCategory=d;
-    $("#categoryTitle").textContent=d?"修改分類":"新增分類";
+
+    if(d){
+        categoryModalMode=d.parent_id ? "child" : "parent";
+        categoryModalParentId=d.parent_id || "";
+    }else{
+        categoryModalMode=mode;
+        categoryModalParentId=parentId || "";
+    }
+
+    const isChild=categoryModalMode==="child";
+
+    $("#categoryTitle").textContent=d
+        ? (isChild ? "修改小分類" : "修改大分類")
+        : (isChild ? "新增小分類" : "新增大分類");
+
+    $("#categoryTypeNote").textContent=isChild
+        ? "小分類會顯示在所屬大分類下方，商品可指定到這個小分類。"
+        : "大分類會顯示在官網最上層分類列，點擊後再展開它的小分類。";
+
     $("#categoryName").value=d?.name || "";
-    $("#categorySort").value=d?.sort_order ?? nextSort(categories);
+
+    $("#categoryParentWrap").classList.toggle("show",isChild);
+
+    if(isChild){
+        fillParentSelect(categoryModalParentId);
+        $("#categoryParent").value=categoryModalParentId;
+    }
+
+    $("#categorySort").value=
+        d?.sort_order ?? nextCategorySort(categoryModalParentId);
+
     $("#categoryImage").value="";
-    if(d?.image_id){
+
+    /*
+      小分類目前不需要圖片。
+      大分類保留原本圖片欄位，避免破壞既有資料。
+    */
+    $("#categoryImageField").style.display=isChild ? "none" : "block";
+
+    if(!isChild && d?.image_id){
         $("#categoryPreview").src=fileUrl(d.image_id);
         $("#categoryPreview").style.display="block";
     }else{
         $("#categoryPreview").removeAttribute("src");
         $("#categoryPreview").style.display="none";
     }
+
     $("#categoryModal").classList.add("open");
 }
 
 function closeCategoryModal(){
     $("#categoryModal").classList.remove("open");
     editingCategory=null;
+    categoryModalMode="parent";
+    categoryModalParentId="";
     $("#categoryForm").reset();
-    $("#categorySort").value=nextSort(categories);
+    $("#categoryParentWrap").classList.remove("show");
+    $("#categoryImageField").style.display="block";
     $("#categoryPreview").removeAttribute("src");
     $("#categoryPreview").style.display="none";
 }
 
+window.addChildCategory=parentId=>{
+    const parent=categoryById(parentId);
+
+    if(!parent){
+        say($("#categoryNotice"),"找不到這個大分類","err");
+        return;
+    }
+
+    openCategoryModal(null,"child",parentId);
+};
+
 window.editCategory=async id=>{
     try{
-        const d=await db.getDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
+        const d=await db.getDocument(
+            DATABASE_ID,
+            CATEGORY_TABLE_ID,
+            id
+        );
+
         openCategoryModal(d);
-    }catch(e){ say($("#categoryNotice"),"讀取分類失敗："+e.message,"err"); }
+
+    }catch(e){
+        say(
+            $("#categoryNotice"),
+            "讀取分類失敗："+e.message,
+            "err"
+        );
+    }
 };
 
 window.removeCategory=async id=>{
-    if(!confirm("確定要刪除這個分類嗎？")) return;
+    const target=categoryById(id);
+
+    if(!target){
+        return say(
+            $("#categoryNotice"),
+            "找不到這個分類",
+            "err"
+        );
+    }
+
+    const isParent=!target.parent_id;
+    const children=isParent ? childCategories(target.$id) : [];
+
+    if(isParent && children.length){
+        alert(
+            `「${target.name}」底下還有 ${children.length} 個小分類。\n\n請先刪除或移動這些小分類，再刪除大分類。`
+        );
+        return;
+    }
+
+    const usedProducts=products.filter(
+        product=>product.category_id===target.$id
+    );
+
+    if(usedProducts.length){
+        alert(
+            `目前有 ${usedProducts.length} 個商品使用「${target.name}」。\n\n請先把這些商品改到其他分類，再刪除。`
+        );
+        return;
+    }
+
+    if(!confirm(`確定要刪除「${target.name}」嗎？`)){
+        return;
+    }
+
     try{
-        const d=await db.getDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
-        await db.deleteDocument(DATABASE_ID,CATEGORY_TABLE_ID,id);
-        await deleteImage(d.image_id);
-        await normalizeTable(CATEGORY_TABLE_ID);
+        await db.deleteDocument(
+            DATABASE_ID,
+            CATEGORY_TABLE_ID,
+            target.$id
+        );
+
+        if(target.image_id){
+            await deleteImage(target.image_id);
+        }
+
+        const siblings=target.parent_id
+            ? childCategories(target.parent_id).filter(x=>x.$id!==target.$id)
+            : parentCategories().filter(x=>x.$id!==target.$id);
+
+        if(siblings.length){
+            await resequenceCategoryGroup(
+                target.parent_id || "",
+                siblings.map(x=>x.$id)
+            );
+        }
+
         say($("#categoryNotice"),"分類已刪除");
         await loadCategories();
-    }catch(e){ say($("#categoryNotice"),"刪除失敗："+e.message,"err"); }
+
+    }catch(e){
+        console.error(e);
+        say(
+            $("#categoryNotice"),
+            "刪除失敗："+e.message,
+            "err"
+        );
+    }
 };
 
 $("#categoryImage").onchange=()=>{
     const file=$("#categoryImage").files[0];
     if(!file) return;
+
     $("#categoryPreview").src=URL.createObjectURL(file);
     $("#categoryPreview").style.display="block";
 };
 
 $("#categoryForm").onsubmit=async e=>{
     e.preventDefault();
+
     const name=$("#categoryName").value.trim();
     const sort=Number($("#categorySort").value);
-    if(!name) return say($("#categoryNotice"),"請輸入分類名稱","err");
+    const isChild=categoryModalMode==="child";
+
+    let parentId=isChild
+        ? $("#categoryParent").value
+        : "";
+
+    if(!name){
+        return say(
+            $("#categoryNotice"),
+            "請輸入分類名稱",
+            "err"
+        );
+    }
+
+    if(isChild && !parentId){
+        return say(
+            $("#categoryNotice"),
+            "請選擇所屬大分類",
+            "err"
+        );
+    }
+
+    if(
+        editingCategory &&
+        isChild &&
+        editingCategory.$id===parentId
+    ){
+        return say(
+            $("#categoryNotice"),
+            "分類不能設成自己的小分類",
+            "err"
+        );
+    }
 
     const btn=$("#categorySave");
     btn.disabled=true;
     btn.textContent="儲存中...";
+
     let uploaded="";
 
     try{
-        let imageId=editingCategory?.image_id || "";
-        const file=$("#categoryImage").files[0];
+        let imageId=isChild
+            ? ""
+            : (editingCategory?.image_id || "");
+
+        const file=isChild
+            ? null
+            : $("#categoryImage").files[0];
+
         if(file){
             uploaded=await uploadImage(file);
             imageId=uploaded;
         }
-        const data={name,sort_order:sort,image_id:imageId};
-        let savedId="";
+
+        const data={
+            name:name,
+            sort_order:sort,
+            image_id:imageId,
+            parent_id:parentId
+        };
 
         if(editingCategory){
-            const old=editingCategory.image_id;
-            savedId=editingCategory.$id;
-            await db.updateDocument(DATABASE_ID,CATEGORY_TABLE_ID,savedId,data);
-            await placeAt(CATEGORY_TABLE_ID,savedId,sort);
-            if(file && old && old!==imageId) await deleteImage(old);
+            const oldImage=editingCategory.image_id;
+            const oldParentId=editingCategory.parent_id || "";
+            const id=editingCategory.$id;
+
+            await db.updateDocument(
+                DATABASE_ID,
+                CATEGORY_TABLE_ID,
+                id,
+                data
+            );
+
+            /*
+              若小分類被移到另一個大分類：
+              先整理舊群組，再把它插入新群組。
+            */
+            if(oldParentId!==parentId){
+                const oldSiblings=categories
+                    .filter(c=>
+                        c.$id!==id &&
+                        (c.parent_id || "")===oldParentId
+                    )
+                    .sort((a,b)=>
+                        (Number(a.sort_order)||0)-
+                        (Number(b.sort_order)||0)
+                    );
+
+                if(oldSiblings.length){
+                    await resequenceCategoryGroup(
+                        oldParentId,
+                        oldSiblings.map(x=>x.$id)
+                    );
+                }
+            }
+
+            const newGroup=categories
+                .filter(c=>
+                    c.$id!==id &&
+                    (c.parent_id || "")===parentId
+                )
+                .sort((a,b)=>
+                    (Number(a.sort_order)||0)-
+                    (Number(b.sort_order)||0)
+                )
+                .map(x=>x.$id);
+
+            const position=Math.max(
+                1,
+                Math.min(sort||1,newGroup.length+1)
+            );
+
+            newGroup.splice(position-1,0,id);
+
+            await resequenceCategoryGroup(
+                parentId,
+                newGroup
+            );
+
+            if(
+                !isChild &&
+                file &&
+                oldImage &&
+                oldImage!==imageId
+            ){
+                await deleteImage(oldImage);
+            }
+
+            /*
+              若大分類被改成小分類，舊的大分類圖片不再使用。
+              一般情況 UI 不會讓既有大分類直接改型態，
+              這裡仍做防呆。
+            */
+            if(isChild && oldImage){
+                await deleteImage(oldImage);
+            }
+
             say($("#categoryNotice"),"分類已更新");
+
         }else{
             const created=await db.createDocument(
-                DATABASE_ID,CATEGORY_TABLE_ID,Appwrite.ID.unique(),data,
+                DATABASE_ID,
+                CATEGORY_TABLE_ID,
+                Appwrite.ID.unique(),
+                data,
                 [
                     Appwrite.Permission.read(Appwrite.Role.any()),
                     Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
                     Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
                 ]
             );
-            savedId=created.$id;
-            await placeAt(CATEGORY_TABLE_ID,savedId,sort);
-            say($("#categoryNotice"),"分類已新增");
+
+            const group=categories
+                .filter(c=>(c.parent_id || "")===parentId)
+                .sort((a,b)=>
+                    (Number(a.sort_order)||0)-
+                    (Number(b.sort_order)||0)
+                )
+                .map(x=>x.$id);
+
+            const position=Math.max(
+                1,
+                Math.min(sort||1,group.length+1)
+            );
+
+            group.splice(position-1,0,created.$id);
+
+            await resequenceCategoryGroup(
+                parentId,
+                group
+            );
+
+            say(
+                $("#categoryNotice"),
+                isChild ? "小分類已新增" : "大分類已新增"
+            );
         }
+
         closeCategoryModal();
         await loadCategories();
+
     }catch(e){
         console.error(e);
-        if(uploaded) await deleteImage(uploaded);
-        say($("#categoryNotice"),"儲存失敗："+e.message,"err");
+
+        if(uploaded){
+            await deleteImage(uploaded);
+        }
+
+        say(
+            $("#categoryNotice"),
+            "儲存失敗："+e.message,
+            "err"
+        );
+
     }finally{
         btn.disabled=false;
         btn.textContent="儲存分類";
@@ -801,6 +1502,22 @@ $("#categoryForm").onsubmit=async e=>{
 };
 
 /* ================= 商品 ================= */
+
+function productMainImageId(product){
+    if(Array.isArray(product?.image_ids) && product.image_ids.length){
+        return product.image_ids[0];
+    }
+
+    if(typeof product?.image_ids==="string" && product.image_ids.trim()){
+        try{
+            const parsed=JSON.parse(product.image_ids);
+            if(Array.isArray(parsed) && parsed.length) return parsed[0];
+        }catch(e){}
+    }
+
+    return product?.image_id || "";
+}
+
 async function loadProducts(){
     const list=$("#productList");
     list.innerHTML='<div class="state">正在讀取商品...</div>';
@@ -822,8 +1539,8 @@ async function loadProducts(){
 
         list.innerHTML=products.map(d=>`
             <div class="row product-row sortable-row" data-id="${d.$id}">
-                <div>${d.image_id
-                    ? `<img class="thumb product-thumb" src="${fileUrl(d.image_id)}" alt="${esc(d.name)}">`
+                <div>${productMainImageId(d)
+                    ? `<img class="thumb product-thumb" src="${fileUrl(productMainImageId(d))}" alt="${esc(d.name)}">`
                     : '<div class="thumb product-thumb noimg">無圖片</div>'}</div>
                 <div class="sort-cell"><span class="drag-handle" title="拖曳排序">☰</span><span>${esc(d.sort_order)}</span></div>
                 <div><strong>${esc(d.name)}</strong></div>
@@ -1134,7 +1851,7 @@ $("#productForm").onsubmit=async e=>{
 $("#addCategory").onclick=async()=>{
     try{
         await loadCategories();
-        openCategoryModal();
+        openCategoryModal(null,"parent","");
     }catch(e){
         say($("#categoryNotice"),"分類讀取失敗："+e.message,"err");
     }
@@ -1169,6 +1886,18 @@ $("#logout").onclick=async()=>{
 (async()=>{
     await guard();
     await loadCategories();
+
+    /* 預先讀取商品資料，分類刪除時可檢查是否仍有商品使用 */
+    try{
+        const result=await db.listDocuments(
+            DATABASE_ID,
+            PRODUCT_TABLE_ID,
+            [Appwrite.Query.orderAsc("sort_order"),Appwrite.Query.limit(100)]
+        );
+        products=result.documents;
+    }catch(e){
+        console.warn("預讀商品失敗",e);
+    }
 })();
 </script>
 </body>
