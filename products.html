@@ -177,9 +177,26 @@
 .products-page .product-card:hover h2{color:#315d43}
 
 /* 麵包屑 */
+.products-breadcrumb{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:0!important;
+}
 .products-breadcrumb a{color:inherit;text-decoration:none}
 .products-breadcrumb a:hover{color:#315d43}
 .products-breadcrumb .current-category{color:#173b2a;font-weight:600}
+.products-breadcrumb .breadcrumb-separator{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  flex:0 0 30px;
+  margin:0!important;
+}
+#breadcrumbDynamic{
+  display:contents;
+}
 
 @media(max-width:1050px){
   .products-page .products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
