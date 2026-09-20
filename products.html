@@ -13,11 +13,227 @@
   text-align:center;
   color:#888;
 }
-.product-card-image img{
+
+/* ===== 大分類 / 小分類 ===== */
+.product-category-directory{
+  margin-bottom:38px;
+  overflow:visible;
+}
+.category-strip-shell{
+  position:relative;
+  border-bottom:1px solid #deded8;
+}
+.product-filter{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:34px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  scroll-behavior:smooth;
+  padding:0 0 2px;
+}
+.product-filter::-webkit-scrollbar{display:none}
+.product-filter-btn{
+  flex:0 0 auto;
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:max-content;
+  padding:15px 1px 17px;
+  border:0;
+  background:transparent;
+  color:#777;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.product-filter-btn::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:2px;
+  background:#315d43;
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform .2s ease;
+}
+.product-filter-btn:hover,
+.product-filter-btn.is-active{
+  color:#315d43;
+}
+.product-filter-btn.is-active::after{
+  transform:scaleX(1);
+}
+.filter-number{
+  color:#aaa;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.04em;
+}
+.product-filter-btn.is-active .filter-number{color:#76907e}
+.filter-arrow{
+  font-size:12px;
+  transition:transform .2s ease;
+}
+.product-filter-btn.is-open .filter-arrow{transform:rotate(180deg)}
+
+.subcategory-panel{
+  display:none;
+  padding:17px 0 0;
+}
+.subcategory-panel.is-open{display:block}
+.subcategory-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px 22px;
+  align-items:center;
+}
+.subcategory-btn{
+  position:relative;
+  border:0;
+  background:transparent;
+  padding:8px 0 9px;
+  color:#777;
+  font-size:14px;
+  cursor:pointer;
+}
+.subcategory-btn::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:3px;
+  height:1px;
+  background:#315d43;
+  transform:scaleX(0);
+  transition:transform .18s ease;
+}
+.subcategory-btn:hover,
+.subcategory-btn.is-active{
+  color:#315d43;
+}
+.subcategory-btn.is-active::after{transform:scaleX(1)}
+.subcategory-empty{
+  color:#aaa;
+  font-size:13px;
+  padding:8px 0;
+}
+
+/* ===== 商品卡 ===== */
+.products-grid{
+  align-items:start;
+}
+.product-card{
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+.product-card:hover{
+  transform:translateY(-3px);
+}
+.product-card-image-link{
   display:block;
+  color:inherit;
+  text-decoration:none;
+}
+.product-card-image{
+  position:relative;
+  width:100%;
+  aspect-ratio:1 / 1;
+  max-height:260px;
+  overflow:hidden;
+  background:#fff;
+}
+.product-card-images{
+  position:relative;
   width:100%;
   height:100%;
+}
+.product-card-photo{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
   object-fit:contain;
+  padding:10px;
+  opacity:0;
+  transform:scale(.98);
+  transition:opacity .2s ease, transform .25s ease;
+}
+.product-card-photo.is-active{
+  opacity:1;
+  transform:scale(1);
+}
+.product-card:hover .product-card-photo.is-active{
+  transform:scale(1.035);
+}
+.product-card-link{
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  color:#222;
+  padding-top:14px;
+}
+.product-card-link h2{
+  margin:0;
+  font-size:18px;
+  line-height:1.55;
+  font-weight:700;
+  transition:color .2s ease;
+}
+.product-card:hover .product-card-link h2{
+  color:#315d43;
+}
+.product-image-nav{
+  position:absolute;
+  top:50%;
+  z-index:4;
+  width:34px;
+  height:34px;
+  margin-top:-17px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  color:#333;
+  box-shadow:0 3px 12px rgba(0,0,0,.10);
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .18s ease, transform .18s ease;
+}
+.product-card-image:hover .product-image-nav{
+  opacity:1;
+  transform:translateY(0);
+}
+.product-image-prev{left:9px}
+.product-image-next{right:9px}
+
+@media(max-width:760px){
+  .product-category-directory{margin-bottom:28px}
+  .product-filter{
+    gap:25px;
+    padding-right:18px;
+  }
+  .product-filter-btn{
+    padding-top:12px;
+    padding-bottom:14px;
+    font-size:14px;
+  }
+  .subcategory-panel{padding-top:13px}
+  .subcategory-list{gap:5px 18px}
+  .product-card-image{max-height:220px}
+  .product-card-link h2{font-size:17px}
+  .product-image-nav{
+    opacity:.88;
+    transform:none;
+    width:31px;
+    height:31px;
+    margin-top:-15.5px;
+  }
 }
 </style>
 </head>
@@ -186,14 +402,19 @@
   <section class="products-catalog">
     <div class="section-container">
 
-      <section class="product-category-directory" aria-labelledby="productCategoryTitle">
-<nav class="product-filter" id="productFilter" aria-label="商品分類">
-            <button class="product-filter-btn is-active" type="button" data-filter="all">
-              <span class="filter-number">01</span>
-              <span class="filter-name">全部商品</span>
-              <span class="filter-arrow" aria-hidden="true">↗</span>
-            </button>
-          </nav>
+      <section class="product-category-directory" id="category" aria-label="商品分類">
+          <div class="category-strip-shell">
+            <nav class="product-filter" id="productFilter" aria-label="商品大分類">
+              <button class="product-filter-btn is-active" type="button" data-filter="all">
+                <span class="filter-number">01</span>
+                <span class="filter-name">全部商品</span>
+              </button>
+            </nav>
+          </div>
+
+          <div class="subcategory-panel" id="subcategoryPanel">
+            <div class="subcategory-list" id="subcategoryList"></div>
+          </div>
         </section>
 
       <div class="products-grid" id="productsGrid">
@@ -286,12 +507,15 @@
   const desktopLinks = document.getElementById('desktopCategoryLinks');
   const mobileLinks = document.getElementById('mobileCategoryLinks');
   const filterNav = document.getElementById('productFilter');
+  const subcategoryPanel = document.getElementById('subcategoryPanel');
+  const subcategoryList = document.getElementById('subcategoryList');
   const grid = document.getElementById('productsGrid');
   const empty = document.getElementById('productsEmpty');
 
   let categories = [];
   let products = [];
   let currentFilter = 'all';
+  let openParentId = '';
   let currentSearch = '';
 
   function esc(value) {
@@ -305,20 +529,33 @@
     return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
   }
 
+  function parents() {
+    return categories
+      .filter(category => !category.parent_id)
+      .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
+  }
+
+  function childrenOf(parentId) {
+    return categories
+      .filter(category => category.parent_id === parentId)
+      .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
+  }
+
+  function categoryById(id) {
+    return categories.find(category => category.$id === id);
+  }
 
   function normalizeImageIds(value) {
     if (!value) return [];
 
     if (Array.isArray(value)) {
-      return value
-        .map(item => {
-          if (typeof item === 'string') return item;
-          if (item && typeof item === 'object') {
-            return item.$id || item.id || item.file_id || item.image_id || '';
-          }
-          return '';
-        })
-        .filter(Boolean);
+      return value.map(item => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          return item.$id || item.id || item.file_id || item.image_id || '';
+        }
+        return '';
+      }).filter(Boolean);
     }
 
     if (typeof value === 'string') {
@@ -351,7 +588,6 @@
     });
 
     if (product.image_id) ids.unshift(product.image_id);
-
     return [...new Set(ids.filter(Boolean))];
   }
 
@@ -391,8 +627,10 @@
     const visible = products.filter(product => {
       const categoryMatch =
         currentFilter === 'all' || product.category_id === currentFilter;
+
       const searchMatch =
         !keyword || String(product.name || '').toLowerCase().includes(keyword);
+
       return categoryMatch && searchMatch;
     });
 
@@ -403,34 +641,150 @@
       return;
     }
 
-    grid.innerHTML = visible.map(product => `
-      <article
-        class="product-card"
-        data-category="${esc(product.category_id)}"
-      >
-        <div class="product-card-image">
-          ${productImageMarkup(product)}
-        </div>
+    grid.innerHTML = visible.map(product => {
+      const detailUrl = `product.html?id=${encodeURIComponent(product.$id)}`;
 
-        <a
-          href="product.html?id=${encodeURIComponent(product.$id)}"
-          class="product-card-link"
-          aria-label="查看 ${esc(product.name)}"
-        >
-          <h2>${esc(product.name)}</h2>
-        </a>
-      </article>
-    `).join('');
+      return `
+        <article class="product-card" data-category="${esc(product.category_id)}">
+          <a
+            href="${detailUrl}"
+            class="product-card-image-link"
+            aria-label="查看 ${esc(product.name)}"
+          >
+            <div class="product-card-image">
+              ${productImageMarkup(product)}
+            </div>
+          </a>
+
+          <a
+            href="${detailUrl}"
+            class="product-card-link"
+            aria-label="查看 ${esc(product.name)}"
+          >
+            <h2>${esc(product.name)}</h2>
+          </a>
+        </article>
+      `;
+    }).join('');
   }
 
-  function applyFilter(filter) {
+  function setFilter(filter) {
     currentFilter = filter;
 
-    document.querySelectorAll('.product-filter-btn').forEach(btn => {
+    document.querySelectorAll('.subcategory-btn').forEach(btn => {
       btn.classList.toggle('is-active', btn.dataset.filter === filter);
     });
 
+    document.querySelectorAll('.product-filter-btn').forEach(btn => {
+      const isAll = filter === 'all' && btn.dataset.filter === 'all';
+      const belongsToOpenParent =
+        filter !== 'all' &&
+        openParentId &&
+        btn.dataset.parentId === openParentId;
+
+      btn.classList.toggle('is-active', isAll || belongsToOpenParent);
+    });
+
+    const url = new URL(location.href);
+
+    if (filter === 'all') {
+      url.searchParams.delete('category');
+    } else {
+      url.searchParams.set('category', filter);
+    }
+
+    history.replaceState(null, '', url);
     renderProducts();
+  }
+
+  function closeSubcategories() {
+    openParentId = '';
+    subcategoryPanel.classList.remove('is-open');
+    subcategoryList.innerHTML = '';
+
+    document.querySelectorAll('.product-filter-btn[data-parent-id]').forEach(btn => {
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function openSubcategories(parentId, keepFilter = false) {
+    const parent = categoryById(parentId);
+    if (!parent) return;
+
+    const children = childrenOf(parentId);
+    openParentId = parentId;
+
+    document.querySelectorAll('.product-filter-btn[data-parent-id]').forEach(btn => {
+      const active = btn.dataset.parentId === parentId;
+      btn.classList.toggle('is-open', active);
+      btn.setAttribute('aria-expanded', active ? 'true' : 'false');
+    });
+
+    if (!children.length) {
+      subcategoryList.innerHTML =
+        '<div class="subcategory-empty">此大分類目前尚未建立小分類。</div>';
+    } else {
+      subcategoryList.innerHTML = children.map(child => `
+        <button
+          class="subcategory-btn${currentFilter === child.$id ? ' is-active' : ''}"
+          type="button"
+          data-filter="${esc(child.$id)}"
+        >${esc(child.name)}</button>
+      `).join('');
+    }
+
+    subcategoryPanel.classList.add('is-open');
+
+    if (!keepFilter && currentFilter === 'all') {
+      document.querySelector('.product-filter-btn[data-filter="all"]')
+        ?.classList.remove('is-active');
+    }
+  }
+
+  function renderCategoryNavigation() {
+    const parentItems = parents();
+
+    filterNav.innerHTML = `
+      <button class="product-filter-btn is-active" type="button" data-filter="all">
+        <span class="filter-number">01</span>
+        <span class="filter-name">全部商品</span>
+      </button>
+    `;
+
+    desktopLinks.innerHTML = '<a href="products.html">全部商品</a>';
+    mobileLinks.innerHTML = '<a href="products.html">全部商品</a>';
+
+    parentItems.forEach((parent, index) => {
+      const number = String(index + 2).padStart(2, '0');
+
+      filterNav.insertAdjacentHTML('beforeend', `
+        <button
+          class="product-filter-btn"
+          type="button"
+          data-parent-id="${esc(parent.$id)}"
+          aria-expanded="false"
+        >
+          <span class="filter-number">${number}</span>
+          <span class="filter-name">${esc(parent.name)}</span>
+          <span class="filter-arrow" aria-hidden="true">⌄</span>
+        </button>
+      `);
+
+      /* 頁首選單只列大分類；點擊後進商品頁並展開該大分類 */
+      const parentUrl =
+        `products.html?parent=${encodeURIComponent(parent.$id)}`;
+
+      desktopLinks.insertAdjacentHTML(
+        'beforeend',
+        `<a href="${parentUrl}">${esc(parent.name)}</a>`
+      );
+
+      mobileLinks.insertAdjacentHTML(
+        'beforeend',
+        `<a href="${parentUrl}">${esc(parent.name)}</a>`
+      );
+    });
   }
 
   async function loadCategories() {
@@ -440,47 +794,7 @@
     ]);
 
     categories = result.documents;
-
-    categories.forEach(category => {
-      const id = category.$id;
-      const name = esc(category.name);
-      const url = `products.html?category=${encodeURIComponent(id)}`;
-
-      desktopLinks.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${url}">${name}</a>`
-      );
-
-      mobileLinks.insertAdjacentHTML(
-        'beforeend',
-        `<a href="${url}">${name}</a>`
-      );
-
-      const number = String(categories.indexOf(category) + 2).padStart(2, '0');
-
-      filterNav.insertAdjacentHTML(
-        'beforeend',
-        `<button class="product-filter-btn" type="button" data-filter="${esc(id)}">
-          <span class="filter-number">${number}</span>
-          <span class="filter-name">${name}</span>
-          <span class="filter-arrow" aria-hidden="true">↗</span>
-        </button>`
-      );
-    });
-
-    filterNav.addEventListener('click', e => {
-      const button = e.target.closest('.product-filter-btn');
-      if (!button) return;
-
-      const filter = button.dataset.filter;
-      const url = new URL(location.href);
-
-      if (filter === 'all') url.searchParams.delete('category');
-      else url.searchParams.set('category', filter);
-
-      history.replaceState(null, '', url);
-      applyFilter(filter);
-    });
+    renderCategoryNavigation();
   }
 
   async function loadProducts() {
@@ -492,6 +806,63 @@
     products = result.documents;
   }
 
+  filterNav.addEventListener('click', e => {
+    const button = e.target.closest('.product-filter-btn');
+    if (!button) return;
+
+    if (button.dataset.filter === 'all') {
+      closeSubcategories();
+      setFilter('all');
+
+      const url = new URL(location.href);
+      url.searchParams.delete('parent');
+      history.replaceState(null, '', url);
+      return;
+    }
+
+    const parentId = button.dataset.parentId;
+    if (!parentId) return;
+
+    if (openParentId === parentId) {
+      closeSubcategories();
+
+      if (currentFilter !== 'all') {
+        setFilter('all');
+      } else {
+        document.querySelector('.product-filter-btn[data-filter="all"]')
+          ?.classList.add('is-active');
+      }
+
+      const url = new URL(location.href);
+      url.searchParams.delete('parent');
+      url.searchParams.delete('category');
+      history.replaceState(null, '', url);
+      return;
+    }
+
+    openSubcategories(parentId);
+
+    const url = new URL(location.href);
+    url.searchParams.set('parent', parentId);
+    history.replaceState(null, '', url);
+  });
+
+  subcategoryList.addEventListener('click', e => {
+    const button = e.target.closest('.subcategory-btn');
+    if (!button) return;
+
+    const filter = button.dataset.filter;
+    setFilter(filter);
+
+    const url = new URL(location.href);
+    if (openParentId) url.searchParams.set('parent', openParentId);
+    history.replaceState(null, '', url);
+  });
+
+  /*
+    圖片整張都可以進詳細頁。
+    只有點左右箭頭時攔截連結，改成切換商品圖片。
+  */
   grid.addEventListener('click', e => {
     const navButton = e.target.closest('.product-image-nav');
     if (!navButton) return;
@@ -524,14 +895,32 @@
     try {
       await Promise.all([loadCategories(), loadProducts()]);
 
-      const requested =
-        new URLSearchParams(location.search).get('category') || 'all';
+      const params = new URLSearchParams(location.search);
+      const requestedCategory = params.get('category') || '';
+      const requestedParent = params.get('parent') || '';
 
-      const exists =
-        requested === 'all' ||
-        categories.some(category => category.$id === requested);
+      const requestedCategoryData =
+        requestedCategory ? categoryById(requestedCategory) : null;
 
-      applyFilter(exists ? requested : 'all');
+      if (requestedCategoryData) {
+        if (requestedCategoryData.parent_id) {
+          openSubcategories(requestedCategoryData.parent_id, true);
+          setFilter(requestedCategoryData.$id);
+        } else {
+          /* 舊連結若直接指向大分類，只展開，不做「全部某分類」篩選 */
+          openSubcategories(requestedCategoryData.$id);
+          setFilter('all');
+        }
+      } else if (
+        requestedParent &&
+        parents().some(parent => parent.$id === requestedParent)
+      ) {
+        openSubcategories(requestedParent);
+        setFilter('all');
+      } else {
+        setFilter('all');
+      }
+
     } catch (error) {
       console.error('商品專區讀取失敗：', error);
       grid.innerHTML =
