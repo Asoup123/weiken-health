@@ -8,133 +8,134 @@
   <link rel="stylesheet" href="css/style.css">
 <style>
 .products-grid .products-loading{
-  grid-column:1 / -1;
-  padding:48px 0;
-  text-align:center;
-  color:#888;
-}
-.product-card-image img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:contain;
+  grid-column:1/-1;padding:48px 0;text-align:center;color:#888;
 }
 
-/* ===== 商品分類：大分類橫排 / hover 顯示小分類 ===== */
+/* ===== 分類：純文字、無格子 ===== */
 .product-category-directory{
   position:relative;
-  margin-bottom:54px;
-  border-top:1px solid rgba(36,75,54,.18);
+  margin-bottom:48px;
+  border:0!important;
 }
 .products-page .product-filter{
   display:flex!important;
+  align-items:center;
+  gap:34px!important;
   width:100%;
-  gap:0!important;
-  padding:0!important;
+  padding:0 0 15px!important;
   overflow-x:auto;
   overflow-y:hidden;
   flex-wrap:nowrap!important;
-  border-bottom:1px solid rgba(36,75,54,.15);
+  border:0!important;
+  border-bottom:1px solid rgba(36,75,54,.14)!important;
   scrollbar-width:none;
 }
 .products-page .product-filter::-webkit-scrollbar{display:none}
-
 .products-page .product-filter-btn{
-  flex:1 0 180px!important;
+  position:relative;
+  flex:0 0 auto!important;
   width:auto!important;
-  min-width:180px!important;
-  min-height:92px!important;
-  padding:0 18px!important;
-  display:flex!important;
-  align-items:center;
-  gap:14px;
+  min-width:0!important;
+  min-height:0!important;
+  padding:10px 0!important;
+  display:block!important;
   border:0!important;
-  border-right:1px solid rgba(36,75,54,.13)!important;
-  border-bottom:2px solid transparent!important;
   border-radius:0!important;
   background:transparent!important;
-  color:#173b2a!important;
+  color:#68736c!important;
+  font:inherit;
   text-align:left;
   cursor:pointer;
-  transition:background .2s ease,border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+  transition:color .18s ease;
+}
+.products-page .product-filter-btn::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-16px;
+  height:2px;
+  background:#315d43;
+  transform:scaleX(0);
+  transform-origin:center;
+  transition:transform .18s ease;
 }
 .products-page .product-filter-btn:hover,
-.products-page .product-filter-btn.is-parent-open,
-.products-page .product-filter-btn.is-active{
-  padding:0 18px!important;
-  background:rgba(168,183,155,.12)!important;
-  border-bottom-color:#356b4a!important;
+.products-page .product-filter-btn.is-active,
+.products-page .product-filter-btn.is-parent-open{
+  color:#173b2a!important;
+  background:transparent!important;
+  padding:10px 0!important;
 }
-.filter-number{
-  flex:0 0 auto;
-  color:rgba(36,75,54,.45);
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.12em;
+.products-page .product-filter-btn:hover::after,
+.products-page .product-filter-btn.is-active::after,
+.products-page .product-filter-btn.is-parent-open::after{
+  transform:scaleX(1);
 }
-.filter-name{
-  font-size:17px;
-  font-weight:600;
-  letter-spacing:.01em;
-  white-space:nowrap;
-}
-/* 分類箭頭完全移除 */
-.filter-arrow{display:none!important}
+.filter-number,.filter-arrow{display:none!important}
+.filter-name{font-size:16px;font-weight:600;letter-spacing:.01em}
 
-/* 小分類區 */
+/* 小分類也是純文字 */
 .subcategory-panel{
   position:absolute;
   z-index:30;
-  left:0;
-  right:0;
-  top:100%;
-  padding:0;
+  left:0;right:0;top:100%;
   background:#fff;
-  border-bottom:1px solid rgba(36,75,54,.16);
-  box-shadow:0 12px 24px rgba(23,59,42,.07);
+  border:0;
+  border-bottom:1px solid rgba(36,75,54,.12);
+  box-shadow:0 12px 22px rgba(23,59,42,.055);
 }
 .subcategory-panel[hidden]{display:none!important}
 .subcategory-list{
   display:flex;
   align-items:center;
   flex-wrap:wrap;
-  gap:0;
-  min-height:62px;
-  padding:8px 18px;
+  gap:28px;
+  min-height:58px;
+  padding:9px 0;
 }
 .subcategory-btn{
+  position:relative;
   appearance:none;
   border:0;
-  background:transparent;
-  padding:12px 18px;
-  color:#59635c;
+  background:transparent!important;
+  padding:10px 0;
+  color:#737b76;
   font:inherit;
   font-size:14px;
   cursor:pointer;
   white-space:nowrap;
-  transition:color .18s ease,background .18s ease;
+}
+.subcategory-btn::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:4px;
+  height:1px;
+  background:#315d43;
+  transform:scaleX(0);
+  transition:transform .18s ease;
 }
 .subcategory-btn:hover,
-.subcategory-btn.is-active{
-  color:#173b2a;
-  background:#f1f4ef;
-}
-.subcategory-empty{
-  padding:12px 18px;
-  color:#999;
-  font-size:14px;
-}
+.subcategory-btn.is-active{color:#173b2a}
+.subcategory-btn:hover::after,
+.subcategory-btn.is-active::after{transform:scaleX(1)}
+.subcategory-empty{padding:10px 0;color:#999;font-size:14px}
 
-/* 商品卡：維持圖片可點、縮小圖片、名稱加大、hover 回應 */
+/* ===== 商品卡 ===== */
 .products-page .products-grid{
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:48px 22px;
+  gap:30px 18px;
 }
 .products-page .product-card{
+  position:relative;
   min-width:0;
-  transition:transform .22s ease,box-shadow .22s ease;
+  padding:14px;
+  border:1px solid transparent;
+  background:#fff;
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
 }
 .products-page .product-card:hover{
+  border-color:rgba(49,93,67,.28);
+  box-shadow:0 10px 26px rgba(23,59,42,.07);
   transform:translateY(-3px);
 }
 .products-page .product-card-image{
@@ -146,11 +147,7 @@
   place-items:center;
   background:#fff;
 }
-.product-card-images{
-  position:absolute;
-  inset:0;
-  background:#fff;
-}
+.product-card-images{position:absolute;inset:0;background:#fff}
 .products-page .product-card-photo{
   position:absolute;
   inset:0;
@@ -158,84 +155,53 @@
   height:100%;
   max-height:260px;
   margin:auto;
-  padding:24px;
+  padding:20px;
   object-fit:contain;
   opacity:0;
   visibility:hidden;
   transition:opacity .25s ease,transform .25s ease;
 }
-.products-page .product-card-photo.is-active{
-  opacity:1;
-  visibility:visible;
-}
-.products-page .product-card:hover .product-card-photo.is-active{
-  transform:scale(1.035);
-}
-.product-card-image-link{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  display:block;
-}
+.products-page .product-card-photo.is-active{opacity:1;visibility:visible}
+.products-page .product-card:hover .product-card-photo.is-active{transform:scale(1.035)}
+.product-card-image-link{position:absolute;inset:0;z-index:2;display:block}
 .product-image-nav{z-index:5}
-.product-card-link{
-  display:block;
-  color:inherit;
-  text-decoration:none;
-  text-align:center;
-}
+.product-card-link{display:block;color:inherit;text-decoration:none;text-align:center}
 .products-page .product-card h2{
-  margin:14px 0 0;
+  margin:14px 0 2px;
   color:#173b2a;
   font-size:18px;
   line-height:1.5;
   font-weight:700;
-  transition:color .2s ease;
+  transition:color .18s ease;
 }
-.products-page .product-card:hover h2{color:#356b4a}
+.products-page .product-card:hover h2{color:#315d43}
+
+/* 麵包屑 */
+.products-breadcrumb a{color:inherit;text-decoration:none}
+.products-breadcrumb a:hover{color:#315d43}
+.products-breadcrumb .current-category{color:#173b2a;font-weight:600}
 
 @media(max-width:1050px){
-  .products-page .products-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
+  .products-page .products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-
 @media(max-width:700px){
-  .product-category-directory{margin-bottom:38px}
-  .products-page .product-filter-btn{
-    flex:0 0 auto!important;
-    min-width:145px!important;
-    min-height:70px!important;
-    padding:0 14px!important;
-  }
-  .products-page .product-filter-btn:hover,
-  .products-page .product-filter-btn.is-parent-open,
-  .products-page .product-filter-btn.is-active{
-    padding:0 14px!important;
-  }
+  .product-category-directory{margin-bottom:34px}
+  .products-page .product-filter{gap:24px!important;padding-bottom:12px!important}
+  .products-page .product-filter-btn::after{bottom:-13px}
   .filter-name{font-size:15px}
-
-  /* 手機沒有 hover：點大分類展開小分類 */
-  .subcategory-panel{
-    position:static;
-    box-shadow:none;
-  }
+  .subcategory-panel{position:static;box-shadow:none}
   .subcategory-list{
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    padding:6px 8px;
+    flex-wrap:nowrap;overflow-x:auto;gap:22px;padding:7px 0;
+    scrollbar-width:none;
   }
+  .subcategory-list::-webkit-scrollbar{display:none}
   .subcategory-btn{flex:0 0 auto}
-
   .products-page .products-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:32px 12px;
+    grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 8px;
   }
-  .products-page .product-card-photo{
-    max-height:220px;
-    padding:14px;
-  }
-  .products-page .product-card h2{font-size:17px}
+  .products-page .product-card{padding:9px}
+  .products-page .product-card-photo{max-height:220px;padding:12px}
+  .products-page .product-card h2{font-size:16px}
 }
 </style>
 </head>
@@ -393,10 +359,11 @@
 <main>
   <section class="products-breadcrumb-section">
     <div class="section-container">
-      <nav class="products-breadcrumb" aria-label="麵包屑導覽">
+      <nav class="products-breadcrumb" id="productsBreadcrumb" aria-label="麵包屑導覽">
         <a href="index.html">首頁</a>
         <span class="breadcrumb-separator">/</span>
-        <span aria-current="page">商品專區</span>
+        <a href="products.html">商品專區</a>
+        <span id="breadcrumbDynamic"></span>
       </nav>
     </div>
   </section>
@@ -407,11 +374,9 @@
       <section class="product-category-directory" id="category" aria-label="商品分類">
           <nav class="product-filter" id="productFilter" aria-label="商品大分類">
             <button class="product-filter-btn is-active" type="button" data-filter="all">
-              <span class="filter-number">01</span>
               <span class="filter-name">全部商品</span>
             </button>
           </nav>
-
           <div class="subcategory-panel" id="subcategoryPanel" hidden>
             <div class="subcategory-list" id="subcategoryList"></div>
           </div>
@@ -494,400 +459,340 @@
 <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
 <script>
 (() => {
-  const ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
-  const PROJECT_ID = "6aab96e3000fa724b62d";
-  const DATABASE_ID = "6aab978f00363c84475b";
-  const CATEGORY_TABLE_ID = "categories";
-  const PRODUCT_TABLE_ID = "products";
-  const BUCKET_ID = "weiken-images";
+  const ENDPOINT="https://sgp.cloud.appwrite.io/v1";
+  const PROJECT_ID="6aab96e3000fa724b62d";
+  const DATABASE_ID="6aab978f00363c84475b";
+  const CATEGORY_TABLE_ID="categories";
+  const PRODUCT_TABLE_ID="products";
+  const BUCKET_ID="weiken-images";
 
-  const client = new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
-  const db = new Appwrite.Databases(client);
+  const client=new Appwrite.Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
+  const db=new Appwrite.Databases(client);
 
-  const desktopLinks = document.getElementById('desktopCategoryLinks');
-  const mobileLinks = document.getElementById('mobileCategoryLinks');
-  const categoryDirectory = document.querySelector('.product-category-directory');
-  const filterNav = document.getElementById('productFilter');
-  const subcategoryPanel = document.getElementById('subcategoryPanel');
-  const subcategoryList = document.getElementById('subcategoryList');
-  const grid = document.getElementById('productsGrid');
-  const empty = document.getElementById('productsEmpty');
+  const desktopLinks=document.getElementById('desktopCategoryLinks');
+  const mobileLinks=document.getElementById('mobileCategoryLinks');
+  const filterNav=document.getElementById('productFilter');
+  const subcategoryPanel=document.getElementById('subcategoryPanel');
+  const subcategoryList=document.getElementById('subcategoryList');
+  const breadcrumbDynamic=document.getElementById('breadcrumbDynamic');
+  const grid=document.getElementById('productsGrid');
+  const empty=document.getElementById('productsEmpty');
 
-  let categories = [];
-  let products = [];
-  let currentFilter = 'all';
-  let currentSearch = '';
-  let openParentId = '';
-  let closeTimer = null;
+  let categories=[];
+  let products=[];
+  let currentMode='all'; // all | parent | child
+  let currentId='';
+  let currentSearch='';
+  let openParentId='';
+  let closeTimer=null;
 
-  function esc(value) {
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+  function esc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[ch]));
   }
-
-  function fileUrl(id) {
-    if (!id) return '';
-    return `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`;
+  function fileUrl(id){
+    return id?`${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${id}/view?project=${PROJECT_ID}`:'';
   }
-
-  function parents() {
-    return categories
-      .filter(category => !category.parent_id)
-      .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
+  function parents(){
+    return categories.filter(c=>!c.parent_id)
+      .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
   }
-
-  function childrenOf(parentId) {
-    return categories
-      .filter(category => category.parent_id === parentId)
-      .sort((a,b) => (Number(a.sort_order)||0) - (Number(b.sort_order)||0));
+  function childrenOf(parentId){
+    return categories.filter(c=>c.parent_id===parentId)
+      .sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
   }
+  function categoryById(id){return categories.find(c=>c.$id===id)}
 
-  function normalizeImageIds(value) {
-    if (!value) return [];
-
-    if (Array.isArray(value)) {
-      return value.map(item => {
-        if (typeof item === 'string') return item;
-        if (item && typeof item === 'object') {
-          return item.$id || item.id || item.file_id || item.image_id || '';
-        }
+  function normalizeImageIds(value){
+    if(!value)return [];
+    if(Array.isArray(value)){
+      return value.map(item=>{
+        if(typeof item==='string')return item;
+        if(item&&typeof item==='object')return item.$id||item.id||item.file_id||item.image_id||'';
         return '';
       }).filter(Boolean);
     }
-
-    if (typeof value === 'string') {
-      const text = value.trim();
-      if (!text) return [];
-
-      if (text.startsWith('[')) {
-        try { return normalizeImageIds(JSON.parse(text)); }
-        catch (error) {}
+    if(typeof value==='string'){
+      const text=value.trim();
+      if(!text)return [];
+      if(text.startsWith('[')){
+        try{return normalizeImageIds(JSON.parse(text))}catch(e){}
       }
-
-      return text.split(',').map(item => item.trim()).filter(Boolean);
+      return text.split(',').map(v=>v.trim()).filter(Boolean);
     }
-
     return [];
   }
-
-  function getProductImages(product) {
-    let ids = [];
-    [
-      product.image_ids,
-      product.images,
-      product.gallery_image_ids,
-      product.gallery_ids
-    ].forEach(value => ids.push(...normalizeImageIds(value)));
-
-    if (product.image_id) ids.unshift(product.image_id);
+  function getProductImages(product){
+    let ids=[];
+    [product.image_ids,product.images,product.gallery_image_ids,product.gallery_ids]
+      .forEach(v=>ids.push(...normalizeImageIds(v)));
+    if(product.image_id)ids.unshift(product.image_id);
     return [...new Set(ids.filter(Boolean))];
   }
+  function productImageMarkup(product){
+    const images=getProductImages(product);
+    if(!images.length)return '<span>商品圖片</span>';
 
-  function productImageMarkup(product) {
-    const images = getProductImages(product);
-
-    if (!images.length) return '<span>商品圖片</span>';
-
-    const slides = images.map((id,index) => `
-      <img
-        src="${fileUrl(id)}"
-        alt="${esc(product.name)}${images.length > 1 ? ` 第 ${index + 1} 張` : ''}"
+    const slides=images.map((id,index)=>`
+      <img src="${fileUrl(id)}"
+        alt="${esc(product.name)}${images.length>1?` 第 ${index+1} 張`:''}"
         loading="lazy"
-        class="product-card-photo${index === 0 ? ' is-active' : ''}"
-        data-image-index="${index}"
-      >
+        class="product-card-photo${index===0?' is-active':''}"
+        data-image-index="${index}">
     `).join('');
 
-    const controls = images.length > 1 ? `
+    const controls=images.length>1?`
       <button class="product-image-nav product-image-prev" type="button" aria-label="上一張商品圖片">←</button>
       <button class="product-image-nav product-image-next" type="button" aria-label="下一張商品圖片">→</button>
-    ` : '';
+    `:'';
 
-    return `
-      <div class="product-card-images" data-current-image="0" data-image-count="${images.length}">
-        <a
-          class="product-card-image-link"
-          href="product.html?id=${encodeURIComponent(product.$id)}"
-          aria-label="查看 ${esc(product.name)}"
-        ></a>
-        ${slides}
-        ${controls}
-      </div>
-    `;
+    return `<div class="product-card-images" data-current-image="0" data-image-count="${images.length}">
+      <a class="product-card-image-link" href="product.html?id=${encodeURIComponent(product.$id)}"
+         aria-label="查看 ${esc(product.name)}"></a>
+      ${slides}${controls}
+    </div>`;
   }
 
-  function renderProducts() {
-    const keyword = currentSearch.trim().toLowerCase();
+  function parentProductIds(parentId){
+    return new Set([parentId,...childrenOf(parentId).map(c=>c.$id)]);
+  }
 
-    const visible = products.filter(product => {
-      const categoryMatch =
-        currentFilter === 'all' || product.category_id === currentFilter;
-      const searchMatch =
-        !keyword || String(product.name || '').toLowerCase().includes(keyword);
-      return categoryMatch && searchMatch;
+  function renderProducts(){
+    const keyword=currentSearch.trim().toLowerCase();
+    let allowed=null;
+    if(currentMode==='parent')allowed=parentProductIds(currentId);
+
+    const visible=products.filter(product=>{
+      let categoryMatch=true;
+      if(currentMode==='child')categoryMatch=product.category_id===currentId;
+      if(currentMode==='parent')categoryMatch=allowed.has(product.category_id);
+      const searchMatch=!keyword||String(product.name||'').toLowerCase().includes(keyword);
+      return categoryMatch&&searchMatch;
     });
 
-    empty.hidden = visible.length !== 0;
+    empty.hidden=visible.length!==0;
+    if(!visible.length){grid.innerHTML='';return}
 
-    if (!visible.length) {
-      grid.innerHTML = '';
-      return;
-    }
-
-    grid.innerHTML = visible.map(product => `
+    grid.innerHTML=visible.map(product=>`
       <article class="product-card" data-category="${esc(product.category_id)}">
-        <div class="product-card-image">
-          ${productImageMarkup(product)}
-        </div>
-
-        <a
-          href="product.html?id=${encodeURIComponent(product.$id)}"
-          class="product-card-link"
-          aria-label="查看 ${esc(product.name)}"
-        >
+        <div class="product-card-image">${productImageMarkup(product)}</div>
+        <a href="product.html?id=${encodeURIComponent(product.$id)}"
+           class="product-card-link" aria-label="查看 ${esc(product.name)}">
           <h2>${esc(product.name)}</h2>
         </a>
       </article>
     `).join('');
   }
 
-  function setFilter(filter) {
-    currentFilter = filter;
-
-    document.querySelectorAll('.subcategory-btn').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.category === filter);
-    });
-
-    const allButton = filterNav.querySelector('[data-filter="all"]');
-    if (allButton) {
-      allButton.classList.toggle('is-active', filter === 'all' && !openParentId);
+  function renderBreadcrumb(){
+    if(currentMode==='all'){
+      breadcrumbDynamic.innerHTML='';
+      return;
     }
 
-    renderProducts();
+    if(currentMode==='parent'){
+      const parent=categoryById(currentId);
+      breadcrumbDynamic.innerHTML=parent?`
+        <span class="breadcrumb-separator">/</span>
+        <span class="current-category" aria-current="page">${esc(parent.name)}</span>
+      `:'';
+      return;
+    }
+
+    const child=categoryById(currentId);
+    const parent=child?categoryById(child.parent_id):null;
+    breadcrumbDynamic.innerHTML=child&&parent?`
+      <span class="breadcrumb-separator">/</span>
+      <a href="products.html?parent=${encodeURIComponent(parent.$id)}" data-breadcrumb-parent="${esc(parent.$id)}">${esc(parent.name)}</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="current-category" aria-current="page">${esc(child.name)}</span>
+    `:'';
   }
 
-  function setParentVisual(parentId) {
-    filterNav.querySelectorAll('.product-filter-btn[data-parent]').forEach(btn => {
-      btn.classList.toggle('is-parent-open', btn.dataset.parent === parentId);
+  function updateActiveStates(){
+    const allBtn=filterNav.querySelector('[data-filter="all"]');
+    if(allBtn)allBtn.classList.toggle('is-active',currentMode==='all'&&!openParentId);
+
+    filterNav.querySelectorAll('[data-parent]').forEach(btn=>{
+      const active=currentMode==='parent'&&btn.dataset.parent===currentId;
+      btn.classList.toggle('is-active',active);
+      btn.classList.toggle('is-parent-open',btn.dataset.parent===openParentId);
+    });
+
+    subcategoryList.querySelectorAll('[data-category]').forEach(btn=>{
+      btn.classList.toggle('is-active',currentMode==='child'&&btn.dataset.category===currentId);
     });
   }
 
-  function closeSubcategories() {
-    openParentId = '';
-    subcategoryPanel.hidden = true;
-    subcategoryList.innerHTML = '';
-    setParentVisual('');
-
-    const allButton = filterNav.querySelector('[data-filter="all"]');
-    if (allButton) allButton.classList.toggle('is-active', currentFilter === 'all');
+  function selectAll(){
+    currentMode='all';currentId='';
+    const url=new URL(location.href);
+    url.searchParams.delete('category');url.searchParams.delete('parent');
+    history.replaceState(null,'',url);
+    renderBreadcrumb();updateActiveStates();renderProducts();
   }
 
-  function showSubcategories(parentId) {
+  function selectParent(parentId){
+    currentMode='parent';currentId=parentId;
+    const url=new URL(location.href);
+    url.searchParams.delete('category');
+    url.searchParams.set('parent',parentId);
+    history.replaceState(null,'',url);
+    renderBreadcrumb();updateActiveStates();renderProducts();
+  }
+
+  function selectChild(childId,parentId){
+    currentMode='child';currentId=childId;
+    const url=new URL(location.href);
+    url.searchParams.set('category',childId);
+    url.searchParams.set('parent',parentId);
+    history.replaceState(null,'',url);
+    renderBreadcrumb();updateActiveStates();renderProducts();
+  }
+
+  function showSubcategories(parentId){
     clearTimeout(closeTimer);
-
-    const children = childrenOf(parentId);
-    openParentId = parentId;
-    setParentVisual(parentId);
-
-    const allButton = filterNav.querySelector('[data-filter="all"]');
-    if (allButton) allButton.classList.remove('is-active');
-
-    subcategoryList.innerHTML = children.length
-      ? children.map(child => `
-          <button
-            class="subcategory-btn ${child.$id === currentFilter ? 'is-active' : ''}"
-            type="button"
-            data-category="${esc(child.$id)}"
-            data-parent="${esc(parentId)}"
-          >${esc(child.name)}</button>
-        `).join('')
-      : '<span class="subcategory-empty">此分類目前尚未建立小分類。</span>';
-
-    subcategoryPanel.hidden = false;
+    openParentId=parentId;
+    const children=childrenOf(parentId);
+    subcategoryList.innerHTML=children.length?children.map(child=>`
+      <button class="subcategory-btn ${currentMode==='child'&&currentId===child.$id?'is-active':''}"
+        type="button" data-category="${esc(child.$id)}" data-parent="${esc(parentId)}">
+        ${esc(child.name)}
+      </button>
+    `).join(''):'<span class="subcategory-empty">此分類目前尚未建立小分類。</span>';
+    subcategoryPanel.hidden=false;
+    updateActiveStates();
   }
 
-  function scheduleClose() {
-    if (window.matchMedia('(max-width:700px)').matches) return;
+  function closeSubcategories(){
+    openParentId='';
+    subcategoryPanel.hidden=true;
+    subcategoryList.innerHTML='';
+    updateActiveStates();
+  }
+
+  function scheduleClose(){
+    if(window.matchMedia('(max-width:700px)').matches)return;
     clearTimeout(closeTimer);
-    closeTimer = setTimeout(() => closeSubcategories(), 120);
+    closeTimer=setTimeout(closeSubcategories,140);
   }
 
-  async function loadCategories() {
-    const result = await db.listDocuments(DATABASE_ID, CATEGORY_TABLE_ID, [
-      Appwrite.Query.orderAsc('sort_order'),
-      Appwrite.Query.limit(100)
+  async function loadCategories(){
+    const result=await db.listDocuments(DATABASE_ID,CATEGORY_TABLE_ID,[
+      Appwrite.Query.orderAsc('sort_order'),Appwrite.Query.limit(100)
     ]);
+    categories=result.documents;
 
-    categories = result.documents;
-    const parentList = parents();
-
-    /* 頁首只顯示大分類 */
-    parentList.forEach(parent => {
-      const url = `products.html?parent=${encodeURIComponent(parent.$id)}`;
-      const name = esc(parent.name);
-
-      desktopLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
-      mobileLinks.insertAdjacentHTML('beforeend', `<a href="${url}">${name}</a>`);
-    });
-
-    /* 商品頁上方只顯示大分類，沒有任何箭頭 */
-    parentList.forEach((parent,index) => {
-      const number = String(index + 2).padStart(2,'0');
-
-      filterNav.insertAdjacentHTML('beforeend', `
-        <button
-          class="product-filter-btn"
-          type="button"
-          data-parent="${esc(parent.$id)}"
-        >
-          <span class="filter-number">${number}</span>
-          <span class="filter-name">${esc(parent.name)}</span>
+    parents().forEach(parent=>{
+      const url=`products.html?parent=${encodeURIComponent(parent.$id)}`;
+      const name=esc(parent.name);
+      desktopLinks.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
+      mobileLinks.insertAdjacentHTML('beforeend',`<a href="${url}">${name}</a>`);
+      filterNav.insertAdjacentHTML('beforeend',`
+        <button class="product-filter-btn" type="button" data-parent="${esc(parent.$id)}">
+          <span class="filter-name">${name}</span>
         </button>
       `);
     });
 
-    /* 電腦：滑鼠移到大分類就顯示小分類 */
-    filterNav.addEventListener('mouseover', e => {
-      if (window.matchMedia('(max-width:700px)').matches) return;
-      const button = e.target.closest('.product-filter-btn[data-parent]');
-      if (!button) return;
-      showSubcategories(button.dataset.parent);
+    /* Desktop hover: only previews child categories */
+    filterNav.addEventListener('mouseover',e=>{
+      if(window.matchMedia('(max-width:700px)').matches)return;
+      const btn=e.target.closest('[data-parent]');
+      if(btn)showSubcategories(btn.dataset.parent);
+    });
+    filterNav.addEventListener('mouseleave',scheduleClose);
+    subcategoryPanel.addEventListener('mouseenter',()=>clearTimeout(closeTimer));
+    subcategoryPanel.addEventListener('mouseleave',scheduleClose);
+
+    /* Click parent: parent itself filters all products under it */
+    filterNav.addEventListener('click',e=>{
+      const all=e.target.closest('[data-filter="all"]');
+      if(all){closeSubcategories();selectAll();return}
+
+      const btn=e.target.closest('[data-parent]');
+      if(!btn)return;
+      const parentId=btn.dataset.parent;
+
+      if(window.matchMedia('(max-width:700px)').matches){
+        if(openParentId!==parentId)showSubcategories(parentId);
+      }
+      selectParent(parentId);
     });
 
-    filterNav.addEventListener('mouseleave', scheduleClose);
-    subcategoryPanel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-    subcategoryPanel.addEventListener('mouseleave', scheduleClose);
-
-    /* 手機：沒有 hover，所以點大分類展開 */
-    filterNav.addEventListener('click', e => {
-      const allButton = e.target.closest('.product-filter-btn[data-filter="all"]');
-      if (allButton) {
-        closeSubcategories();
-        const url = new URL(location.href);
-        url.searchParams.delete('category');
-        url.searchParams.delete('parent');
-        history.replaceState(null,'',url);
-        setFilter('all');
-        return;
-      }
-
-      const parentButton = e.target.closest('.product-filter-btn[data-parent]');
-      if (!parentButton) return;
-
-      const parentId = parentButton.dataset.parent;
-
-      if (window.matchMedia('(max-width:700px)').matches) {
-        if (openParentId === parentId && !subcategoryPanel.hidden) {
-          closeSubcategories();
-        } else {
-          showSubcategories(parentId);
-        }
-      }
+    subcategoryList.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-category]');
+      if(!btn)return;
+      selectChild(btn.dataset.category,btn.dataset.parent);
+      showSubcategories(btn.dataset.parent);
     });
 
-    subcategoryList.addEventListener('click', e => {
-      const button = e.target.closest('.subcategory-btn');
-      if (!button) return;
-
-      const categoryId = button.dataset.category;
-      const parentId = button.dataset.parent;
-      const url = new URL(location.href);
-
-      url.searchParams.set('category', categoryId);
-      url.searchParams.set('parent', parentId);
-      history.replaceState(null,'',url);
-
-      setFilter(categoryId);
-      showSubcategories(parentId);
+    breadcrumbDynamic.addEventListener('click',e=>{
+      const link=e.target.closest('[data-breadcrumb-parent]');
+      if(!link)return;
+      e.preventDefault();
+      selectParent(link.dataset.breadcrumbParent);
+      showSubcategories(link.dataset.breadcrumbParent);
     });
   }
 
-  async function loadProducts() {
-    const result = await db.listDocuments(DATABASE_ID, PRODUCT_TABLE_ID, [
-      Appwrite.Query.orderAsc('sort_order'),
-      Appwrite.Query.limit(100)
+  async function loadProducts(){
+    const result=await db.listDocuments(DATABASE_ID,PRODUCT_TABLE_ID,[
+      Appwrite.Query.orderAsc('sort_order'),Appwrite.Query.limit(100)
     ]);
-
-    products = result.documents;
+    products=result.documents;
   }
 
-  grid.addEventListener('click', e => {
-    const navButton = e.target.closest('.product-image-nav');
-    if (!navButton) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const imagesWrap = navButton.closest('.product-card-images');
-    if (!imagesWrap) return;
-
-    const photos = [...imagesWrap.querySelectorAll('.product-card-photo')];
-    if (photos.length < 2) return;
-
-    let current = Number(imagesWrap.dataset.currentImage || 0);
-
-    current = navButton.classList.contains('product-image-next')
-      ? (current + 1) % photos.length
-      : (current - 1 + photos.length) % photos.length;
-
-    photos.forEach((photo,index) => {
-      photo.classList.toggle('is-active', index === current);
-    });
-
-    imagesWrap.dataset.currentImage = String(current);
+  grid.addEventListener('click',e=>{
+    const nav=e.target.closest('.product-image-nav');
+    if(!nav)return;
+    e.preventDefault();e.stopPropagation();
+    const wrap=nav.closest('.product-card-images');
+    const photos=[...wrap.querySelectorAll('.product-card-photo')];
+    if(photos.length<2)return;
+    let current=Number(wrap.dataset.currentImage||0);
+    current=nav.classList.contains('product-image-next')
+      ?(current+1)%photos.length:(current-1+photos.length)%photos.length;
+    photos.forEach((p,i)=>p.classList.toggle('is-active',i===current));
+    wrap.dataset.currentImage=String(current);
   });
 
-  async function start() {
-    try {
-      await Promise.all([loadCategories(), loadProducts()]);
+  async function start(){
+    try{
+      await Promise.all([loadCategories(),loadProducts()]);
+      const params=new URLSearchParams(location.search);
+      const childId=params.get('category');
+      const parentId=params.get('parent');
 
-      const params = new URLSearchParams(location.search);
-      const requestedCategory = params.get('category');
-      const requestedParent = params.get('parent');
-
-      const child = requestedCategory
-        ? categories.find(c => c.$id === requestedCategory && c.parent_id)
-        : null;
-
-      if (child) {
-        setFilter(child.$id);
+      const child=childId?categoryById(childId):null;
+      if(child&&child.parent_id){
+        currentMode='child';currentId=child.$id;
         showSubcategories(child.parent_id);
-        return;
+      }else{
+        const parent=parentId?parents().find(c=>c.$id===parentId):null;
+        if(parent){
+          currentMode='parent';currentId=parent.$id;
+          showSubcategories(parent.$id);
+        }else{
+          currentMode='all';currentId='';
+        }
       }
-
-      const parent = requestedParent
-        ? parents().find(c => c.$id === requestedParent)
-        : null;
-
-      if (parent) {
-        setFilter('all');
-        showSubcategories(parent.$id);
-        return;
-      }
-
-      setFilter('all');
-
-    } catch (error) {
-      console.error('商品專區讀取失敗：', error);
-      grid.innerHTML =
-        '<div class="products-loading">商品讀取失敗，請稍後再試。</div>';
+      renderBreadcrumb();updateActiveStates();renderProducts();
+    }catch(error){
+      console.error('商品專區讀取失敗：',error);
+      grid.innerHTML='<div class="products-loading">商品讀取失敗，請稍後再試。</div>';
     }
   }
 
-  const searchForm = document.getElementById('headerSearch');
-  const searchInput = document.getElementById('searchInput');
-
-  if (searchForm && searchInput) {
-    searchForm.addEventListener('submit', e => {
-      e.preventDefault();
-      currentSearch = searchInput.value;
-      renderProducts();
+  const searchForm=document.getElementById('headerSearch');
+  const searchInput=document.getElementById('searchInput');
+  if(searchForm&&searchInput){
+    searchForm.addEventListener('submit',e=>{
+      e.preventDefault();currentSearch=searchInput.value;renderProducts();
     });
-
-    searchInput.addEventListener('input', () => {
-      currentSearch = searchInput.value;
-      renderProducts();
+    searchInput.addEventListener('input',()=>{
+      currentSearch=searchInput.value;renderProducts();
     });
   }
 
