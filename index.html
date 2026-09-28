@@ -205,8 +205,34 @@
 
 
 /* ===== WEIKEN LIFE：後台影片 ===== */
-.video-placeholder.has-home-video{position:relative;overflow:hidden;padding:0!important}
-.video-placeholder.has-home-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.video-block:has(.video-placeholder.has-home-video){
+  width:100%;
+}
+.video-placeholder.has-home-video{
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16 / 9!important;
+  overflow:hidden!important;
+  padding:0!important;
+  border-radius:10px!important;
+  clip-path:none!important;
+}
+.video-placeholder.has-home-video::before,
+.video-placeholder.has-home-video::after{
+  border-radius:10px!important;
+  clip-path:none!important;
+}
+.video-placeholder.has-home-video iframe{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  border:0!important;
+  border-radius:10px!important;
+  display:block!important;
+}
 .video-placeholder.has-home-video .video-top,
 .video-placeholder.has-home-video .play-button,
 .video-placeholder.has-home-video .video-bottom{display:none!important}
