@@ -766,6 +766,7 @@ const DATABASE_ID="6aab978f00363c84475b";
 const CATEGORY_TABLE_ID="categories";
 const PRODUCT_TABLE_ID="products";
 const BANNER_TABLE_ID="banners";
+const HOME_VIDEO_TABLE_ID="home_video";
 const BUCKET_ID="weiken-images";
 const ADMIN_TEAM_ID="6aaba9fa001fa283e8a7";
 
@@ -2187,6 +2188,13 @@ $("#logout").onclick=async()=>{
     .category-parent-actions{grid-column:2/3!important}
     .banner-grid{grid-template-columns:1fr}
 }
+
+.video-admin-card{max-width:760px;background:#fff;border:1px solid #e5e5e1;border-radius:14px;padding:22px}
+.video-admin-card label{display:block;font-weight:700;margin-bottom:9px}
+.video-admin-card input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;outline:none}
+.video-admin-card input:focus{border-color:#8d9c91;box-shadow:0 0 0 3px rgba(49,93,67,.08)}
+.video-admin-help{margin:9px 0 18px;color:#888;font-size:13px;line-height:1.7}
+.video-admin-actions{display:flex;gap:10px;align-items:center}
 </style>
 
 <script>
@@ -2497,6 +2505,114 @@ $("#logout").onclick=async()=>{
             say($("#bannerNotice"),"首頁廣告已刪除");
         }catch(e){
             say($("#bannerNotice"),"刪除失敗："+e.message,"err");
+        }
+    });
+
+    /* ---------- 首頁影片管理 ---------- */
+    let homeVideoDocument=null;
+
+    const videoNav=document.createElement("button");
+    videoNav.className="nav";
+    videoNav.type="button";
+    videoNav.textContent="首頁影片";
+    navList.appendChild(videoNav);
+
+    const videoPage=document.createElement("section");
+    videoPage.id="homeVideoPage";
+    videoPage.className="page";
+    videoPage.innerHTML=`
+        <div class="top">
+            <div>
+                <h2>首頁影片管理</h2>
+                <p>設定首頁 WEIKEN LIFE 顯示的 YouTube 影片。</p>
+            </div>
+        </div>
+        <div id="homeVideoNotice" class="notice"></div>
+        <div class="video-admin-card">
+            <label for="homeVideoUrl">YouTube 影片連結</label>
+            <input id="homeVideoUrl" type="url" placeholder="例如：https://www.youtube.com/watch?v=...">
+            <div class="video-admin-help">可貼 YouTube 一般影片、youtu.be、Shorts 或 Live 連結。首頁只會使用這裡儲存的一支影片。</div>
+            <div class="video-admin-actions">
+                <button id="homeVideoSave" type="button" class="save">儲存影片</button>
+            </div>
+        </div>
+    `;
+    main.appendChild(videoPage);
+
+    videoNav.addEventListener("click",async()=>{
+        document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+        document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+        videoNav.classList.add("active");
+        videoPage.classList.add("active");
+        await loadHomeVideoAdmin();
+    });
+
+    async function loadHomeVideoAdmin(){
+        try{
+            const result=await db.listDocuments(
+                DATABASE_ID,
+                HOME_VIDEO_TABLE_ID,
+                [Appwrite.Query.limit(1)]
+            );
+            homeVideoDocument=result.documents[0] || null;
+            $("#homeVideoUrl").value=homeVideoDocument?.video_url || "";
+        }catch(e){
+            console.error(e);
+            say($("#homeVideoNotice"),"讀取影片設定失敗："+e.message,"err");
+        }
+    }
+
+    $("#homeVideoSave").addEventListener("click",async()=>{
+        const input=$("#homeVideoUrl");
+        const button=$("#homeVideoSave");
+        const videoUrl=input.value.trim();
+
+        if(!videoUrl){
+            say($("#homeVideoNotice"),"請貼上 YouTube 影片連結","err");
+            return;
+        }
+
+        try{
+            const parsed=new URL(videoUrl);
+            const host=parsed.hostname.toLowerCase();
+            if(!(host==="youtu.be" || host.endsWith("youtube.com"))){
+                say($("#homeVideoNotice"),"目前請使用 YouTube 影片連結","err");
+                return;
+            }
+        }catch(e){
+            say($("#homeVideoNotice"),"影片連結格式不正確","err");
+            return;
+        }
+
+        button.disabled=true;
+        button.textContent="儲存中...";
+        try{
+            await loadHomeVideoAdmin();
+            if(homeVideoDocument){
+                homeVideoDocument=await db.updateDocument(
+                    DATABASE_ID,HOME_VIDEO_TABLE_ID,homeVideoDocument.$id,{video_url:videoUrl}
+                );
+            }else{
+                homeVideoDocument=await db.createDocument(
+                    DATABASE_ID,
+                    HOME_VIDEO_TABLE_ID,
+                    Appwrite.ID.unique(),
+                    {video_url:videoUrl},
+                    [
+                        Appwrite.Permission.read(Appwrite.Role.any()),
+                        Appwrite.Permission.update(Appwrite.Role.team(ADMIN_TEAM_ID)),
+                        Appwrite.Permission.delete(Appwrite.Role.team(ADMIN_TEAM_ID))
+                    ]
+                );
+            }
+            input.value=homeVideoDocument.video_url || videoUrl;
+            say($("#homeVideoNotice"),"首頁影片已儲存");
+        }catch(e){
+            console.error(e);
+            say($("#homeVideoNotice"),"儲存失敗："+e.message,"err");
+        }finally{
+            button.disabled=false;
+            button.textContent="儲存影片";
         }
     });
 
