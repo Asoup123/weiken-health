@@ -203,6 +203,14 @@
   }
 }
 
+
+/* ===== WEIKEN LIFE：後台影片 ===== */
+.video-placeholder.has-home-video{position:relative;overflow:hidden;padding:0!important}
+.video-placeholder.has-home-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.video-placeholder.has-home-video .video-top,
+.video-placeholder.has-home-video .play-button,
+.video-placeholder.has-home-video .video-bottom{display:none!important}
+
 </style>
 
 </head>
@@ -499,7 +507,7 @@
 
           <div class="video-block">
 
-            <div class="video-placeholder">
+            <div class="video-placeholder" id="homeVideoBox">
 
               <div class="video-top">
                 <span>WEIKEN VIDEO</span>
@@ -625,6 +633,7 @@
     const CATEGORY_TABLE_ID = "categories";
     const PRODUCT_TABLE_ID = "products";
     const BANNER_TABLE_ID = "banners";
+    const HOME_VIDEO_TABLE_ID = "home_video";
     const BUCKET_ID = "weiken-images";
 
     const client = new Appwrite.Client()
@@ -923,9 +932,57 @@
       restartBannerTimer();
     });
 
+    function youtubeEmbedUrl(rawUrl) {
+      const value = String(rawUrl || "").trim();
+      if (!value) return "";
+      try {
+        const url = new URL(value);
+        let id = "";
+        if (url.hostname === "youtu.be" || url.hostname === "www.youtu.be") {
+          id = url.pathname.split("/").filter(Boolean)[0] || "";
+        } else if (url.hostname.includes("youtube.com")) {
+          if (url.pathname === "/watch") id = url.searchParams.get("v") || "";
+          else {
+            const parts = url.pathname.split("/").filter(Boolean);
+            if (["shorts","embed","live"].includes(parts[0])) id = parts[1] || "";
+          }
+        }
+        return id ? `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0` : "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    async function loadHomeVideo() {
+      const box = document.getElementById("homeVideoBox");
+      if (!box) return;
+      try {
+        const result = await db.listDocuments(
+          DATABASE_ID,
+          HOME_VIDEO_TABLE_ID,
+          [Appwrite.Query.limit(1)]
+        );
+        const videoUrl = result.documents[0]?.video_url || "";
+        const embedUrl = youtubeEmbedUrl(videoUrl);
+        if (!embedUrl) return;
+
+        box.classList.add("has-home-video");
+        box.innerHTML = `<iframe
+          src="${embedUrl}"
+          title="WEIKEN LIFE 影片"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>`;
+      } catch (error) {
+        console.error("首頁影片讀取失敗：", error);
+      }
+    }
+
     (async () => {
       await loadCategoriesAndMenus();
-      await Promise.all([loadFeaturedProducts(), loadBanners()]);
+      await Promise.all([loadFeaturedProducts(), loadBanners(), loadHomeVideo()]);
     })();
   })();
   </script>
